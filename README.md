@@ -1,4 +1,4 @@
-# StationFuel
+# Station Essence
 
 Carte pour trouver la station-service la moins chère en France, avec les prix des carburants en temps réel **et** un vrai planificateur d'itinéraire. C'est la version la plus aboutie du projet StationFuel.
 
