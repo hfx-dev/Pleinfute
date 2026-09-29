@@ -1264,7 +1264,7 @@ svg{display:block;}
     </div>
     <div class="map-right">
       <button class="locate" id="locate-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"></circle><path d="M12 2v3M12 19v3M2 12h3M19 12h3"></path><circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none"></circle></svg> Ma position</button>
-      <div class="maptag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 2 7l10 5 10-5-10-5z"></path><path d="m2 17 10 5 10-5M2 12l10 5 10-5"></path></svg> OpenStreetMap</div>
+      <div class="maptag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 2 7l10 5 10-5-10-5z"></path><path d="m2 17 10 5 10-5M2 12l10 5 10-5"></path></svg> Wikimedia · OpenStreetMap</div>
     </div>
   </div>
 </div>
@@ -1366,8 +1366,8 @@ svg{display:block;}
     const addTiles = () => {
       const dark = root.dataset.theme === 'dark';
       $('map').classList.toggle('map-dark', dark);
-      return L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution:'© OpenStreetMap contributors', maxZoom:19, subdomains:'abc'
+      return L.tileLayer('https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}{r}.png', {
+        attribution:'Wikimedia maps | © OpenStreetMap contributors', maxZoom:19
       }).addTo(map);
     };
     tileLayer = addTiles();
