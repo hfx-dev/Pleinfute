@@ -759,7 +759,10 @@ svg{display:block;}
 .natlow-label{display:flex;align-items:center;gap:6px;flex-shrink:0;font-size:11px;font-weight:700;
   text-transform:uppercase;letter-spacing:.05em;color:var(--faint);white-space:nowrap;}
 .natlow-label svg{width:14px;height:14px;color:var(--primary);}
-.natlow-pills{display:flex;align-items:center;gap:7px;overflow:hidden;min-width:0;}
+.natlow-pills{display:flex;align-items:center;gap:7px;overflow-x:auto;overflow-y:hidden;min-width:0;
+  scrollbar-width:thin;scrollbar-color:var(--border-strong) transparent;}
+.natlow-pills::-webkit-scrollbar{height:6px;}
+.natlow-pills::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:9px;}
 .np{display:flex;align-items:center;gap:7px;flex-shrink:0;background:var(--surface-2);
   border:1px solid var(--border);border-radius:999px;padding:5px 12px;cursor:pointer;font-family:inherit;transition:all .15s;}
 .np:hover{border-color:var(--primary);box-shadow:0 2px 8px color-mix(in srgb,var(--primary) 18%,transparent);transform:translateY(-1px);}
@@ -894,9 +897,9 @@ svg{display:block;}
 .obadge.h24{background:var(--info-soft);color:var(--info);}
 .obadge.closed{background:var(--tier-high-soft);color:var(--tier-high);}
 .rankchip{font-size:11.5px;font-weight:700;padding:4px 9px;border-radius:999px;background:var(--surface-3);color:var(--muted);font-variant-numeric:tabular-nums;}
-.bestchip{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:700;padding:4px 10px;
-  border-radius:999px;background:var(--gold-soft);color:var(--gold);white-space:nowrap;}
-.bestchip svg{width:12px;height:12px;}
+.bestchip{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;
+  border-radius:999px;background:var(--gold-soft);color:var(--gold);flex-shrink:0;}
+.bestchip svg{width:13px;height:13px;}
 .scard__routes{display:flex;gap:7px;flex-shrink:0;}
 .rbtn{display:inline-flex;align-items:center;gap:5px;height:32px;padding:0 12px;border-radius:9px;
   font-size:12px;font-weight:700;text-decoration:none;border:1px solid var(--border);
@@ -1799,7 +1802,7 @@ svg{display:block;}
           ? ('+' + (s.detour<1 ? Math.round(s.detour*1000)+' m' : s.detour.toFixed(1).replace('.',',')+' km') + ' du trajet')
           : (s.distance<1 ? Math.round(s.distance*1000)+' m' : s.distance.toFixed(1).replace('.',',')+' km');
         const openBadge = s.open==='h24' ? '<span class="obadge h24">24h/24</span>' : '<span class="obadge open"><span class="d"></span>Ouvert</span>';
-        const rankBadge = best ? '<span class="bestchip"><svg class="star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.3 6.9.7-5.2 4.7 1.5 6.8L12 17.8 5.9 21.3l1.5-6.8L2.2 9.7l6.9-.7z"/></svg>Le moins cher</span>' : `<span class="rankchip">#${i+1}</span>`;
+        const rankBadge = best ? '<span class="bestchip" title="Le moins cher"><svg class="star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.3 6.9.7-5.2 4.7 1.5 6.8L12 17.8 5.9 21.3l1.5-6.8L2.2 9.7l6.9-.7z"/></svg></span>' : `<span class="rankchip">#${i+1}</span>`;
         const gmaps=`https://www.google.com/maps/dir/?api=1&destination=${s.lat},${s.lng}`;
         const waze=`https://waze.com/ul?ll=${s.lat},${s.lng}&navigate=yes`;
         const arrow='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>';
@@ -1946,7 +1949,7 @@ svg{display:block;}
                     : "Position indisponible, réessaie";
           geoToast(msg, 'err');
           if(!fromClick){
-            $('api-status').innerHTML = '<span class="dot" style="background:var(--tier-high)"></span> <span style="color:var(--tier-high)">Position requise — clique sur « Ma position » ou cherche une ville</span>';
+            $('api-status').innerHTML = '<span class="dot" style="background:var(--tier-high)"></span> <span style="color:var(--tier-high)">Position requise</span>';
             state.stations=[]; applyFilters();
           }
         },
