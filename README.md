@@ -33,7 +33,7 @@ Application 100% statique (un seul fichier `index.html`, aucun backend, aucune d
 - **Partage** : copier un message prêt à envoyer, ou partager directement sur WhatsApp.
 
 ### Interface
-- Carte interactive (Leaflet + fond de carte OpenStreetMap/CARTO) avec regroupement des marqueurs (clustering) et popups détaillées.
+- Carte interactive (Leaflet + fond de carte OpenStreetMap) avec regroupement des marqueurs (clustering) et popups détaillées.
 - Thème clair/sombre.
 - Interface responsive.
 
@@ -46,6 +46,6 @@ Aucune installation nécessaire : ouvrez `index.html` dans un navigateur, ou act
 ## Sources de données
 
 - Prix des carburants : [API officielle data.economie.gouv.fr](https://data.economie.gouv.fr/explore/dataset/prix-des-carburants-en-france-flux-instantane-v2/)
-- Fond de carte : OpenStreetMap / CARTO
+- Fond de carte : OpenStreetMap (tuiles standard, aucune clé requise)
 - Recherche d'adresses : Nominatim (OpenStreetMap)
 - Calcul d'itinéraire : OSRM / Valhalla

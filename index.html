@@ -925,6 +925,33 @@ svg{display:block;}
 /* ---- MAP ---- */
 .map-area{grid-area:map;position:relative;overflow:hidden;}
 #map{width:100%;height:100%;z-index:1;background:var(--surface-2);}
+#map.map-dark .leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) brightness(.95) contrast(.9) saturate(.85);}
+
+/* ---- GUIDED TOUR ---- */
+.tour-overlay{position:fixed;inset:0;z-index:5000;display:none;}
+.tour-block{position:fixed;inset:0;background:transparent;}
+.tour-spot{position:fixed;border-radius:14px;box-shadow:0 0 0 9999px rgba(8,12,9,.6);pointer-events:none;
+  transition:top .25s ease,left .25s ease,width .25s ease,height .25s ease,opacity .2s ease;opacity:0;}
+.tour-bubble{position:fixed;width:280px;max-width:calc(100vw - 32px);background:var(--surface);
+  border:1px solid var(--border);border-radius:16px;padding:16px 18px;box-shadow:var(--shadow-lg);
+  z-index:5002;transition:top .25s ease,left .25s ease;}
+.tour-bubble h4{font-family:var(--font-display);font-size:14.5px;font-weight:700;margin-bottom:7px;
+  display:flex;align-items:center;gap:9px;padding-right:20px;}
+.tour-bubble h4 .n{width:21px;height:21px;border-radius:50%;background:var(--primary);color:#fff;
+  font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.tour-bubble p{font-size:13px;color:var(--muted);line-height:1.5;margin-bottom:15px;}
+.tour-nav{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.tour-dots{font-size:11px;color:var(--faint);font-weight:700;font-variant-numeric:tabular-nums;flex-shrink:0;}
+.tour-btns{display:flex;gap:6px;}
+.tour-btns button{height:30px;padding:0 13px;border-radius:8px;font-size:12.5px;font-weight:700;}
+.tour-btn-prev{background:var(--surface-3);color:var(--text);}
+.tour-btn-prev:hover{background:var(--surface-2);}
+.tour-btn-next{background:var(--primary);color:#fff;}
+.tour-btn-next:hover{background:var(--primary-hover);}
+.tour-close{position:absolute;top:9px;right:9px;width:26px;height:26px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;color:var(--faint);}
+.tour-close:hover{background:var(--surface-3);color:var(--text);}
+.tour-close svg{width:14px;height:14px;}
 .leaflet-control-zoom a{border-radius:9px !important;color:var(--text) !important;background:var(--surface) !important;border-color:var(--border) !important;}
 .userdot{width:18px;height:18px;border-radius:50%;background:var(--info);border:3px solid #fff;
   box-shadow:0 0 0 6px color-mix(in srgb,var(--info) 22%,transparent),0 2px 8px rgba(0,0,0,.3);}
@@ -1136,6 +1163,9 @@ svg{display:block;}
     <div class="header-right">
       <span class="badge-od"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M12 5v14"></path></svg> Open Data</span>
       <div class="status" id="api-status"><span class="spin"></span> Chargement…</div>
+      <button class="icon-btn" id="tour-btn" aria-label="Aide / visite guidée" title="Comment ça marche ?">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 1.5-1.5 2-2.25 2.75S12 13.5 12 14.5"></path><circle cx="12" cy="17.6" r=".6" fill="currentColor" stroke="none"></circle></svg>
+      </button>
       <button class="icon-btn" id="theme-btn" aria-label="Changer le thème">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"></path></svg>
       </button>
@@ -1234,7 +1264,7 @@ svg{display:block;}
     </div>
     <div class="map-right">
       <button class="locate" id="locate-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"></circle><path d="M12 2v3M12 19v3M2 12h3M19 12h3"></path><circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none"></circle></svg> Ma position</button>
-      <div class="maptag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 2 7l10 5 10-5-10-5z"></path><path d="m2 17 10 5 10-5M2 12l10 5 10-5"></path></svg> OpenStreetMap · CARTO</div>
+      <div class="maptag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 2 7l10 5 10-5-10-5z"></path><path d="m2 17 10 5 10-5M2 12l10 5 10-5"></path></svg> OpenStreetMap</div>
     </div>
   </div>
 </div>
@@ -1335,9 +1365,10 @@ svg{display:block;}
     let tileLayer;
     const addTiles = () => {
       const dark = root.dataset.theme === 'dark';
-      const url = dark ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
-                       : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
-      return L.tileLayer(url, { attribution:'© OpenStreetMap © CARTO', maxZoom:19 }).addTo(map);
+      $('map').classList.toggle('map-dark', dark);
+      return L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution:'© OpenStreetMap contributors', maxZoom:19, subdomains:'abc'
+      }).addTo(map);
     };
     tileLayer = addTiles();
     setTimeout(() => map.invalidateSize(), 250);
@@ -1934,6 +1965,102 @@ svg{display:block;}
       themeBtn.innerHTML = root.dataset.theme==='dark' ? moon : sun;
       if(tileLayer){ tileLayer.remove(); tileLayer=addTiles(); }
     });
+
+    /* ---- GUIDED TOUR ---- */
+    const TOUR_STEPS = [
+      { target:'#natlow-pills', mode:null, title:'Prix les moins chers de France', text:'Ces pastilles affichent en direct le prix le plus bas du moment pour chaque carburant, partout en France. Clique sur une pastille pour voir où se trouve la station.' },
+      { target:'#mode-seg', mode:null, title:'Deux façons de chercher', text:'Bascule entre « Autour de moi » pour chercher près d’un point, et « Itinéraire » pour planifier un trajet.' },
+      { target:'#search', mode:'around', title:'Chercher une ville', text:'Tape une ville ou une adresse pour déplacer la carte ailleurs qu’à ta position actuelle.' },
+      { target:'#fuels', mode:'around', title:'Choisir le carburant', text:'Sélectionne le carburant à comparer : SP95, SP98, Gazole, E10, E85 ou GPL.' },
+      { target:'#radius-block', mode:'around', title:'Régler le rayon', text:'Choisis jusqu’à quelle distance chercher des stations autour du point sélectionné.' },
+      { target:'#draw-toolbar', mode:'around', title:'Dessiner une zone', text:'Pour une recherche plus précise qu’un simple rayon, dessine une zone directement sur la carte : cercle, rectangle ou forme libre.' },
+      { target:'#locate-btn', mode:'around', title:'Se localiser', text:'Clique ici pour te localiser et voir tout de suite les stations autour de toi.' },
+      { target:'#list', mode:'around', title:'La liste des stations', text:'Les stations sont classées par prix, avec un code couleur du moins cher (vert) au plus cher (rouge). Clique sur une carte pour la centrer sur la carte, ou partage-la.' },
+      { target:'#route-panel', mode:'route', title:'Planifier un itinéraire', text:'Renseigne un point de départ et une arrivée, et ajoute des étapes intermédiaires si besoin.' },
+      { target:'#route-go', mode:'route', title:'Calculer le trajet', text:'Configure d’abord les options (péages, autoroutes, ferries, consommation du véhicule), puis calcule l’itinéraire : les stations les moins chères sur ton trajet s’affichent automatiquement, dans l’ordre de passage.' },
+      { target:'#theme-btn', mode:null, title:'Thème clair / sombre', text:'Bascule l’affichage entre thème clair et thème sombre.' },
+    ];
+    let tourStep=-1, tourPrevMode=null, tourResizeHandler=null;
+    function tourOverlay(){
+      let ov=document.getElementById('tour-overlay');
+      if(!ov){
+        ov=document.createElement('div'); ov.id='tour-overlay'; ov.className='tour-overlay';
+        ov.innerHTML=`<div class="tour-block" id="tour-block"></div><div class="tour-spot" id="tour-spot"></div>
+          <div class="tour-bubble" id="tour-bubble">
+            <button class="tour-close" id="tour-close" aria-label="Fermer la visite guidée"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+            <h4><span class="n" id="tour-n">1</span><span id="tour-title"></span></h4>
+            <p id="tour-text"></p>
+            <div class="tour-nav">
+              <span class="tour-dots" id="tour-dots"></span>
+              <div class="tour-btns">
+                <button class="tour-btn-prev" id="tour-prev">Précédent</button>
+                <button class="tour-btn-next" id="tour-next">Suivant</button>
+              </div>
+            </div>
+          </div>`;
+        document.body.appendChild(ov);
+        $('tour-close').addEventListener('click', endTour);
+        $('tour-block').addEventListener('click', ()=>tourGo(1));
+        $('tour-prev').addEventListener('click', ()=>tourGo(-1));
+        $('tour-next').addEventListener('click', ()=>tourGo(1));
+      }
+      return ov;
+    }
+    function startTour(){
+      tourOverlay().style.display='block';
+      tourPrevMode=state.mode; tourStep=0;
+      renderTourStep();
+      tourResizeHandler=()=>positionTour();
+      window.addEventListener('resize', tourResizeHandler);
+      window.addEventListener('scroll', tourResizeHandler, true);
+    }
+    function endTour(){
+      const ov=document.getElementById('tour-overlay');
+      if(ov) ov.style.display='none';
+      if(tourResizeHandler){ window.removeEventListener('resize', tourResizeHandler); window.removeEventListener('scroll', tourResizeHandler, true); tourResizeHandler=null; }
+      if(tourPrevMode && tourPrevMode!==state.mode){
+        const b=document.querySelector(`#mode-seg button[data-mode="${tourPrevMode}"]`); if(b) b.click();
+      }
+      tourStep=-1;
+    }
+    function tourGo(dir){
+      const next=tourStep+dir;
+      if(next<0) return;
+      if(next>=TOUR_STEPS.length){ endTour(); return; }
+      tourStep=next; renderTourStep();
+    }
+    function renderTourStep(){
+      const step=TOUR_STEPS[tourStep];
+      if(step.mode && step.mode!==state.mode){
+        const b=document.querySelector(`#mode-seg button[data-mode="${step.mode}"]`); if(b) b.click();
+      }
+      $('tour-n').textContent=tourStep+1;
+      $('tour-title').textContent=step.title;
+      $('tour-text').textContent=step.text;
+      $('tour-dots').textContent=`${tourStep+1} / ${TOUR_STEPS.length}`;
+      $('tour-prev').style.visibility = tourStep===0 ? 'hidden' : 'visible';
+      $('tour-next').textContent = tourStep===TOUR_STEPS.length-1 ? 'Terminer' : 'Suivant';
+      requestAnimationFrame(()=>requestAnimationFrame(positionTour));
+    }
+    function positionTour(){
+      if(tourStep<0) return;
+      const step=TOUR_STEPS[tourStep];
+      const el=document.querySelector(step.target);
+      const spot=$('tour-spot'), bubble=$('tour-bubble');
+      if(!el){ spot.style.opacity='0'; return; }
+      const r=el.getBoundingClientRect(), pad=8;
+      spot.style.opacity='1';
+      spot.style.top=(r.top-pad)+'px'; spot.style.left=(r.left-pad)+'px';
+      spot.style.width=(r.width+pad*2)+'px'; spot.style.height=(r.height+pad*2)+'px';
+      const bw=280, bh=bubble.offsetHeight||170, margin=14;
+      let top, left;
+      if(r.right+margin+bw < window.innerWidth){ left=r.right+margin; top=Math.min(Math.max(r.top,margin), window.innerHeight-bh-margin); }
+      else if(r.bottom+margin+bh < window.innerHeight){ top=r.bottom+margin; left=Math.min(Math.max(r.left,margin), window.innerWidth-bw-margin); }
+      else if(r.top-margin-bh > 0){ top=r.top-margin-bh; left=Math.min(Math.max(r.left,margin), window.innerWidth-bw-margin); }
+      else { left=Math.max(r.left-bw-margin, margin); top=Math.min(Math.max(r.top,margin), window.innerHeight-bh-margin); }
+      bubble.style.top=top+'px'; bubble.style.left=left+'px';
+    }
+    $('tour-btn').addEventListener('click', startTour);
 
     /* ---- NATIONAL LOW ---- */
     const NAT=[['Gazole','gazole_prix'],['SP95','sp95_prix'],['SP98','sp98_prix'],['E10','e10_prix'],['E85','e85_prix'],['GPL','gplc_prix']];
