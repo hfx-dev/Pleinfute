@@ -1717,11 +1717,28 @@ svg{display:block;}
     searchInput.addEventListener('input', (e) => {
       const q=e.target.value.trim(); searchWrap.classList.toggle('has-text', q.length>0);
       clearTimeout(searchTimeout); if(q.length<2){ hideSugg(); return; }
-      searchTimeout=setTimeout(()=>fetchSugg(q),220);
+      searchTimeout=setTimeout(()=>fetchSugg(q),180);
     });
     async function fetchSugg(q){
       try{
-        const url=`https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=6&countrycodes=fr&accept-language=fr&q=${encodeURIComponent(q)}`;
+        // Base officielle des communes de France (geo.api.gouv.fr, Etalab) : couvre les
+        // ~35 000 communes (y compris les plus petits villages), contrairement à l'instance
+        // publique Nominatim, limitée/rate-limitée et pensée pour la recherche d'adresses
+        // plutôt que l'autocomplétion ville par préfixe.
+        const url=`https://geo.api.gouv.fr/communes?nom=${encodeURIComponent(q)}&boost=population&limit=8&fields=nom,codesPostaux,centre,departement`;
+        const data=await (await fetch(url)).json();
+        suggestions=(Array.isArray(data)?data:[]).filter(c=>c && c.centre && c.centre.coordinates).map(c=>({
+          name:c.nom,
+          sub:[c.departement && c.departement.nom, c.codesPostaux && c.codesPostaux[0]].filter(Boolean).join(' · ')||'France',
+          lat:c.centre.coordinates[1], lon:c.centre.coordinates[0]
+        }));
+        if(!suggestions.length) await fetchSuggFallback(q);
+        else renderSugg();
+      }catch(e){ await fetchSuggFallback(q); }
+    }
+    async function fetchSuggFallback(q){
+      try{
+        const url=`https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=8&countrycodes=fr&accept-language=fr&q=${encodeURIComponent(q)}`;
         const data=await (await fetch(url,{headers:{'Accept-Language':'fr'}})).json();
         const seen=new Set();
         suggestions=(data||[]).map(r=>{ const a=r.address||{};
@@ -1729,8 +1746,8 @@ svg{display:block;}
           const sub=[a.county,a.state].filter(Boolean).join(' · ')||'France';
           return {name,sub,lat:parseFloat(r.lat),lon:parseFloat(r.lon)};
         }).filter(s=>{ const k=s.name+'|'+s.sub; if(!s.name||seen.has(k))return false; seen.add(k); return true; });
-        renderSugg();
-      }catch(e){ hideSugg(); }
+      }catch(e){ suggestions=[]; }
+      renderSugg();
     }
     function renderSugg(){
       activeIndex=-1;
