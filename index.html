@@ -2444,7 +2444,7 @@ svg{display:block;}
       spot.style.opacity='1';
       spot.style.top=(r.top-pad)+'px'; spot.style.left=(r.left-pad)+'px';
       spot.style.width=(r.width+pad*2)+'px'; spot.style.height=(r.height+pad*2)+'px';
-      const bw=280, bh=bubble.offsetHeight||170, margin=14;
+      const bw=bubble.offsetWidth||280, bh=bubble.offsetHeight||170, margin=14;
       let top, left;
       if(r.right+margin+bw < window.innerWidth){ left=r.right+margin; top=Math.min(Math.max(r.top,margin), window.innerHeight-bh-margin); }
       else if(r.bottom+margin+bh < window.innerHeight){ top=r.bottom+margin; left=Math.min(Math.max(r.left,margin), window.innerWidth-bw-margin); }
