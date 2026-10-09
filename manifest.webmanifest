@@ -1,6 +1,6 @@
 {
-  "name": "Station Essence",
-  "short_name": "Essence",
+  "name": "Plein Futé",
+  "short_name": "Plein Futé",
   "description": "Trouvez la station-service la moins chère en France, prix en temps réel et planification d'itinéraire.",
   "start_url": "./index.html",
   "scope": "./",
