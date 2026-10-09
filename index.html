@@ -1039,11 +1039,11 @@ svg{display:block;}
 .dr-switch.on::after{transform:translateX(14px);}
 .detail-row.disabled .dr-switch{cursor:default;}
 
-.zone-banner{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);z-index:600;display:none;
-  align-items:center;gap:13px;background:var(--primary);color:#fff;padding:11px 17px;border-radius:999px;
-  box-shadow:var(--shadow-lg);font-size:13.5px;font-weight:700;}
+.zone-banner{position:absolute;top:12px;left:12px;z-index:620;display:none;
+  align-items:center;gap:7px;background:var(--primary);color:#fff;padding:7px 8px 7px 12px;border-radius:999px;
+  box-shadow:var(--shadow-md);font-size:11.5px;font-weight:700;white-space:nowrap;}
 .zone-banner.open{display:flex;}
-.zone-banner button{background:rgba(255,255,255,.22);color:#fff;border-radius:999px;padding:6px 14px;font-size:12.5px;font-weight:700;}
+.zone-banner button{background:rgba(255,255,255,.22);color:#fff;border-radius:999px;padding:4px 10px;font-size:10.5px;font-weight:700;}
 .zone-banner button:hover{background:rgba(255,255,255,.36);}
 .leaflet-draw.leaflet-control{display:none;}
 
@@ -1210,7 +1210,6 @@ svg{display:block;}
 .chip-row-mobile .chip{flex-shrink:0;box-shadow:var(--shadow-sm);}
 .chip-row-mobile .chip:not(.active){background:var(--surface);}
 .natlow-row-mobile{display:none;}
-.zone-banner{top:12px;bottom:auto;left:50%;transform:translateX(-50%);}
 
 /* Full-page search/filters takeover, opened by the search pill or the route button.
    Top-level sibling of .app (not nested in .sidebar) so its position:fixed is never
@@ -1683,6 +1682,14 @@ svg{display:block;}
       document.querySelectorAll('.dtool[data-draw]').forEach(b => b.classList.remove('active')); }
     function clearZone(){ cancelDraw(); drawnItems.clearLayers(); state.zoneLayer=null;
       $('zone-banner').classList.remove('open'); applyFilters(); }
+    function positionZoneBanner(){
+      const banner=$('zone-banner');
+      const refBtn=$('route-toggle-btn'), mapArea=document.querySelector('.map-area');
+      if(!refBtn || !mapArea) return;
+      const r=refBtn.getBoundingClientRect(), m=mapArea.getBoundingClientRect();
+      banner.style.left=(r.right-m.left+10)+'px';
+      banner.style.top='12px';
+    }
     function pointInPolygon(lat,lng,ll){ let inside=false; for(let i=0,j=ll.length-1;i<ll.length;j=i++){
       const yi=ll[i].lat,xi=ll[i].lng,yj=ll[j].lat,xj=ll[j].lng;
       if(((yi>lat)!==(yj>lat)) && (lng<(xj-xi)*(lat-yi)/(yj-yi)+xi)) inside=!inside; } return inside; }
@@ -1695,7 +1702,7 @@ svg{display:block;}
       drawnItems.clearLayers(); drawnItems.addLayer(e.layer); state.zoneLayer = e.layer; cancelDraw();
       const label = activeShapeType==='circle'?'Cercle':activeShapeType==='rectangle'?'Rectangle':'Forme';
       $('zone-banner-text').textContent = `Zone « ${label} » active`;
-      $('zone-banner').classList.add('open'); applyFilters();
+      $('zone-banner').classList.add('open'); positionZoneBanner(); applyFilters();
     });
     document.querySelectorAll('.dtool[data-draw]').forEach(btn => btn.addEventListener('click', () => {
       const t = btn.dataset.draw;
