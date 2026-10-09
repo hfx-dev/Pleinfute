@@ -1037,6 +1037,9 @@ svg{display:block;}
 .dr-switch.on{background:var(--primary);}
 .dr-switch.on::after{transform:translateX(14px);}
 .detail-row.disabled .dr-switch{cursor:default;}
+.toll-dot{width:20px;height:20px;border-radius:50%;background:var(--surface);border:1.5px solid #c9a227;
+  box-shadow:var(--shadow-sm);display:flex;align-items:center;justify-content:center;color:#a9821a;}
+.toll-dot svg{width:12px;height:12px;}
 
 .zone-banner{position:absolute;top:12px;left:12px;z-index:620;display:none;
   align-items:center;gap:7px;background:var(--primary);color:#fff;padding:7px 8px 7px 12px;border-radius:999px;
@@ -1398,6 +1401,11 @@ svg{display:block;}
         <span class="dr-label">Transport en commun</span>
         <span class="dr-switch" id="switch-transit"></span>
       </div>
+      <div class="detail-row" id="detail-toll">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M9.5 9.5a2.5 2.5 0 0 1 5 0c0 1.2-1 1.8-2 2.3-.7.4-1 .8-1 1.7M12 16.5h.01"></path></svg>
+        <span class="dr-label">Péages</span>
+        <span class="dr-switch" id="switch-toll"></span>
+      </div>
       <div class="detail-row disabled" title="Nécessite un rendu 3D (non disponible dans cette version)">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10l8-5 8 5v10"></path><path d="M9 20v-7h6v7"></path></svg>
         <span class="dr-label">Bâtiments en relief<br><span class="dr-sub">Nécessite une refonte 3D</span></span>
@@ -1563,10 +1571,18 @@ svg{display:block;}
     map.zoomControl.setPosition('bottomright');
     L.control.scale({ imperial:false, position:'bottomleft' }).addTo(map);
     /* ---- MAP STYLES (base) + DETAIL OVERLAYS ---- */
+    // Clé gratuite à créer sur https://www.thunderforest.com/ (compte gratuit, 150k tuiles/mois),
+    // puis à restreindre par domaine dans le dashboard Thunderforest pour éviter tout abus.
+    const THUNDERFOREST_API_KEY = 'YOUR_THUNDERFOREST_API_KEY';
     const MAP_STYLES = {
       minimal: { layers:() => [
-        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', { maxZoom:19, maxNativeZoom:16, attribution:'Tiles © Esri' }),
-        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}', { maxZoom:19, maxNativeZoom:16, attribution:'Tiles © Esri' })
+        THUNDERFOREST_API_KEY && THUNDERFOREST_API_KEY!=='YOUR_THUNDERFOREST_API_KEY'
+          ? L.tileLayer(`https://{s}.tile.thunderforest.com/atlas/{z}/{x}/{y}.png?apikey=${THUNDERFOREST_API_KEY}`,
+              { subdomains:'abc', maxZoom:19, attribution:'Maps © Thunderforest, Data © OpenStreetMap contributors' })
+          : L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', { maxZoom:19, maxNativeZoom:16, attribution:'Tiles © Esri' }),
+        ...(THUNDERFOREST_API_KEY && THUNDERFOREST_API_KEY!=='YOUR_THUNDERFOREST_API_KEY' ? [] : [
+          L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}', { maxZoom:19, maxNativeZoom:16, attribution:'Tiles © Esri' })
+        ])
       ]},
       satellite: { layers:() => [
         L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom:19, attribution:'Tiles © Esri — Source: Esri, Maxar, Earthstar Geographics' })
@@ -1600,6 +1616,30 @@ svg{display:block;}
       return L.tileLayer('https://tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png',
         { pane:'overlayPane', maxZoom:19, opacity:.9, attribution:'OpenRailwayMap' });
     }
+    let tollLayer=null;
+    const TOLL_ICON = L.divIcon({
+      html:'<div class="toll-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><path d="M9.5 9.5a2.5 2.5 0 0 1 5 0c0 1.2-1 1.8-2 2.3-.7.4-1 .8-1 1.7M12 16.5h.01"/></svg></div>',
+      className:'', iconSize:[20,20], iconAnchor:[10,10]
+    });
+    async function fetchTollBooths(){
+      try{
+        const cached=JSON.parse(localStorage.getItem('tollBooths')||'null');
+        if(cached && Array.isArray(cached.d) && (Date.now()-cached.t)<30*24*3600*1000) return cached.d;
+      }catch(e){}
+      const q=`[out:json][timeout:60];area["ISO3166-1"="FR"][admin_level=2]->.a;(node["barrier"="toll_booth"](area.a););out body;`;
+      const data=await (await fetch('https://overpass-api.de/api/interpreter?data='+encodeURIComponent(q))).json();
+      const d=(data.elements||[]).filter(e=>e.lat!=null&&e.lon!=null).map(e=>({lat:e.lat,lon:e.lon,name:(e.tags&&e.tags.name)||'Péage'}));
+      try{ localStorage.setItem('tollBooths', JSON.stringify({t:Date.now(), d})); }catch(e){}
+      return d;
+    }
+    async function makeTollLayer(){
+      const group=L.layerGroup();
+      try{
+        const booths=await fetchTollBooths();
+        booths.forEach(b=>L.marker([b.lat,b.lon], { icon:TOLL_ICON, pane:'overlayPane', title:b.name }).addTo(group));
+      }catch(e){}
+      return group;
+    }
     function toggleDetail(key, sw){
       const on = sw.classList.toggle('on');
       try{ localStorage.setItem('detail_'+key, on?'1':'0'); }catch(e){}
@@ -1607,14 +1647,19 @@ svg{display:block;}
         if(on){ fireLayer=makeFireLayer().addTo(map); } else if(fireLayer){ fireLayer.remove(); fireLayer=null; }
       } else if(key==='transit'){
         if(on){ transitLayer=makeTransitLayer().addTo(map); } else if(transitLayer){ transitLayer.remove(); transitLayer=null; }
+      } else if(key==='toll'){
+        if(on){ makeTollLayer().then(g=>{ if(sw.classList.contains('on')){ tollLayer=g.addTo(map); } }); }
+        else if(tollLayer){ tollLayer.remove(); tollLayer=null; }
       }
     }
-    const switchFire=$('switch-fire'), switchTransit=$('switch-transit');
+    const switchFire=$('switch-fire'), switchTransit=$('switch-transit'), switchToll=$('switch-toll');
     switchFire.addEventListener('click',()=>toggleDetail('fire', switchFire));
     switchTransit.addEventListener('click',()=>toggleDetail('transit', switchTransit));
+    switchToll.addEventListener('click',()=>toggleDetail('toll', switchToll));
     try{
       if(localStorage.getItem('detail_fire')==='1') toggleDetail('fire', switchFire);
       if(localStorage.getItem('detail_transit')==='1') toggleDetail('transit', switchTransit);
+      if(localStorage.getItem('detail_toll')==='1') toggleDetail('toll', switchToll);
     }catch(e){}
 
     const layersBtn=$('layers-btn'), layersPanel=$('layers-panel');
