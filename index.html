@@ -781,7 +781,7 @@ svg{display:block;}
 .natlow-loading{font-size:12px;color:var(--faint);}
 
 .header-right{display:flex;align-items:center;gap:12px;flex-shrink:0;}
-.status{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);font-weight:500;white-space:nowrap;}
+.status{display:none;}
 .status .dot{width:8px;height:8px;border-radius:50%;background:var(--tier-low);}
 .badge-od{display:flex;align-items:center;gap:5px;background:var(--primary-soft);color:var(--primary);
   font-size:11px;font-weight:700;padding:5px 11px;border-radius:999px;letter-spacing:.02em;}
@@ -1210,8 +1210,6 @@ svg{display:block;}
 .chip-row-mobile .chip{flex-shrink:0;box-shadow:var(--shadow-sm);}
 .chip-row-mobile .chip:not(.active){background:var(--surface);}
 .natlow-row-mobile{display:none;}
-.map-tools{top:128px;}
-.map-right{top:128px;}
 .zone-banner{top:12px;bottom:auto;left:50%;transform:translateX(-50%);}
 
 /* Full-page search/filters takeover, opened by the search pill or the route button.
@@ -1277,7 +1275,6 @@ svg{display:block;}
   .map-tools{display:none;}
   .map-right{right:12px;gap:7px;top:164px;}
   .locate{padding:9px 12px;font-size:12.5px;}
-  .maptag{display:none;}
 
   .natlow-row-mobile{display:flex;position:absolute;top:112px;left:12px;right:12px;z-index:630;
     max-width:440px;gap:6px;overflow-x:auto;padding-bottom:2px;}
@@ -1379,7 +1376,6 @@ svg{display:block;}
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5z"></path><path d="m2 17 10 5 10-5M2 12l10 5 10-5"></path></svg>
       </button>
       <button class="locate" id="locate-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"></circle><path d="M12 2v3M12 19v3M2 12h3M19 12h3"></path><circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none"></circle></svg> Ma position</button>
-      <div class="maptag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 2 7l10 5 10-5-10-5z"></path><path d="m2 17 10 5 10-5M2 12l10 5 10-5"></path></svg> Esri · OpenStreetMap</div>
     </div>
     <div class="layers-panel" id="layers-panel">
       <h4>Type de carte</h4>
