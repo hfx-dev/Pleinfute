@@ -937,7 +937,9 @@ svg{display:block;}
 /* ---- MAP ---- */
 .map-area{grid-area:map;position:relative;overflow:hidden;}
 #map{width:100%;height:100%;z-index:1;background:var(--surface-2);}
-#map.map-dark .leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) brightness(.95) contrast(.9) saturate(.85);}
+#map.map-dark.style-minimal .leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) brightness(.95) contrast(.9) saturate(.85);}
+#map.map-dark.style-satellite .leaflet-tile-pane,
+#map.map-dark.style-relief .leaflet-tile-pane{filter:brightness(.8) contrast(1.05);}
 
 /* ---- GUIDED TOUR ---- */
 .tour-overlay{position:fixed;inset:0;z-index:5000;display:none;}
@@ -1004,6 +1006,38 @@ svg{display:block;}
 .maptag{display:flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--border);
   border-radius:10px;padding:7px 11px;box-shadow:var(--shadow-sm);font-size:11.5px;color:var(--muted);font-weight:600;}
 .maptag svg{width:13px;height:13px;}
+
+.layers-btn{width:44px;height:44px;border-radius:50%;background:var(--surface);border:1px solid var(--border);
+  box-shadow:var(--shadow-md);display:flex;align-items:center;justify-content:center;color:var(--text);flex-shrink:0;}
+.layers-btn:hover{background:var(--surface-2);}
+.layers-btn.active{background:var(--primary);border-color:var(--primary);color:#fff;}
+.layers-btn svg{width:19px;height:19px;}
+
+.layers-panel{position:absolute;z-index:700;background:var(--surface);border:1px solid var(--border);
+  border-radius:16px;box-shadow:var(--shadow-lg);padding:14px;width:216px;display:none;}
+.layers-panel.open{display:block;}
+.layers-panel h4{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;
+  color:var(--faint);margin:0 0 8px;}
+.layers-panel h4:not(:first-child){margin-top:14px;}
+.style-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.style-opt{display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px 4px;border-radius:12px;
+  border:2px solid transparent;font-size:11px;font-weight:600;color:var(--muted);}
+.style-opt:hover{background:var(--surface-2);}
+.style-opt .sw{width:40px;height:40px;border-radius:50%;border:1px solid var(--border);background-size:cover;background-position:center;}
+.style-opt.sel{border-color:var(--primary);color:var(--primary);}
+.style-opt.sel .sw{box-shadow:0 0 0 2px var(--primary);}
+.detail-row{display:flex;align-items:center;gap:10px;padding:7px 2px;}
+.detail-row svg{width:17px;height:17px;flex-shrink:0;color:var(--muted);}
+.detail-row .dr-label{flex:1;font-size:13px;font-weight:600;color:var(--text);}
+.detail-row .dr-sub{font-size:10.5px;color:var(--faint);font-weight:500;}
+.detail-row.disabled{opacity:.5;}
+.dr-switch{width:34px;height:20px;border-radius:999px;background:var(--surface-3);border:1px solid var(--border);
+  position:relative;flex-shrink:0;transition:background .15s;}
+.dr-switch::after{content:'';position:absolute;top:1px;left:1px;width:16px;height:16px;border-radius:50%;
+  background:#fff;box-shadow:var(--shadow-sm);transition:transform .15s;}
+.dr-switch.on{background:var(--primary);}
+.dr-switch.on::after{transform:translateX(14px);}
+.detail-row.disabled .dr-switch{cursor:default;}
 
 .zone-banner{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);z-index:600;display:none;
   align-items:center;gap:13px;background:var(--primary);color:#fff;padding:11px 17px;border-radius:999px;
@@ -1341,8 +1375,40 @@ svg{display:block;}
       <button id="zone-clear-btn">Effacer</button>
     </div>
     <div class="map-right">
+      <button class="layers-btn" id="layers-btn" aria-label="Type de carte" title="Type de carte">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5z"></path><path d="m2 17 10 5 10-5M2 12l10 5 10-5"></path></svg>
+      </button>
       <button class="locate" id="locate-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"></circle><path d="M12 2v3M12 19v3M2 12h3M19 12h3"></path><circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none"></circle></svg> Ma position</button>
       <div class="maptag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 2 7l10 5 10-5-10-5z"></path><path d="m2 17 10 5 10-5M2 12l10 5 10-5"></path></svg> Esri · OpenStreetMap</div>
+    </div>
+    <div class="layers-panel" id="layers-panel">
+      <h4>Type de carte</h4>
+      <div class="style-grid">
+        <button class="style-opt" data-style="minimal"><span class="sw" style="background:linear-gradient(135deg,#f2f3f0,#dbdfd6)"></span>Minimum</button>
+        <button class="style-opt" data-style="satellite"><span class="sw" style="background:linear-gradient(135deg,#3a4a2f,#1d2a1a)"></span>Satellite</button>
+        <button class="style-opt" data-style="relief"><span class="sw" style="background:linear-gradient(135deg,#d8cdb0,#a8906a)"></span>Relief</button>
+      </div>
+      <h4>Détails de la carte</h4>
+      <div class="detail-row" id="detail-fire">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c1 3-2 4-2 7a4 4 0 0 0 8 0c0-1-.5-2-1-3 1 0 2 1 2 3a7 7 0 1 1-14 0c0-5 4-6 4-10 1 1 2 2 3 3z"></path></svg>
+        <span class="dr-label">Feu de forêt</span>
+        <span class="dr-switch" id="switch-fire"></span>
+      </div>
+      <div class="detail-row disabled" title="Nécessite un abonnement à un fournisseur de trafic en temps réel (non disponible gratuitement)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11h18M3 15h18M7 3v4M17 3v4M7 17v4M17 17v4"></path></svg>
+        <span class="dr-label">Trafic<br><span class="dr-sub">Nécessite une clé API payante</span></span>
+        <span class="dr-switch"></span>
+      </div>
+      <div class="detail-row" id="detail-transit">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="14" rx="3"></rect><path d="M4 12h16M8 18l-2 3M16 18l2 3"></path><circle cx="8" cy="15" r="0" fill="currentColor"></circle></svg>
+        <span class="dr-label">Transport en commun</span>
+        <span class="dr-switch" id="switch-transit"></span>
+      </div>
+      <div class="detail-row disabled" title="Nécessite un rendu 3D (non disponible dans cette version)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10l8-5 8 5v10"></path><path d="M9 20v-7h6v7"></path></svg>
+        <span class="dr-label">Bâtiments en relief<br><span class="dr-sub">Nécessite une refonte 3D</span></span>
+        <span class="dr-switch"></span>
+      </div>
     </div>
   </div>
 </div>
@@ -1502,16 +1568,84 @@ svg{display:block;}
     const map = L.map('map', { zoomControl:true, attributionControl:true, preferCanvas:true }).setView([25, 10], 3);
     map.zoomControl.setPosition('bottomright');
     L.control.scale({ imperial:false, position:'bottomleft' }).addTo(map);
-    let tileLayer;
-    const addTiles = () => {
-      const dark = root.dataset.theme === 'dark';
-      $('map').classList.toggle('map-dark', dark);
-      return L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
-        attribution:'Tiles © Esri — Source: Esri, HERE, Garmin, FAO, NOAA, USGS, © OpenStreetMap contributors', maxZoom:19
-      }).addTo(map);
+    /* ---- MAP STYLES (base) + DETAIL OVERLAYS ---- */
+    const MAP_STYLES = {
+      minimal: { layers:() => [
+        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', { maxZoom:19, maxNativeZoom:16, attribution:'Tiles © Esri' }),
+        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}', { maxZoom:19, maxNativeZoom:16, attribution:'Tiles © Esri' })
+      ]},
+      satellite: { layers:() => [
+        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom:19, attribution:'Tiles © Esri — Source: Esri, Maxar, Earthstar Geographics' })
+      ]},
+      relief: { layers:() => [
+        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer/tile/{z}/{y}/{x}', { maxZoom:19, maxNativeZoom:13, attribution:'Tiles © Esri' }),
+        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}', { maxZoom:19, maxNativeZoom:16, attribution:'Tiles © Esri', opacity:.8 })
+      ]}
     };
-    tileLayer = addTiles();
+    let baseLayers = [];
+    let currentStyle = (()=>{ try{ return localStorage.getItem('mapStyle') || 'minimal'; }catch(e){ return 'minimal'; } })();
+    function setBaseStyle(name){
+      if(!MAP_STYLES[name]) return;
+      baseLayers.forEach(l=>l.remove());
+      baseLayers = MAP_STYLES[name].layers().map(l=>l.addTo(map));
+      baseLayers.forEach(l=>l.bringToBack());
+      $('map').className = $('map').className.replace(/\bstyle-\w+\b/g,'').trim() + ' style-'+name;
+      currentStyle = name;
+      try{ localStorage.setItem('mapStyle', name); }catch(e){}
+      document.querySelectorAll('.style-opt').forEach(b=>b.classList.toggle('sel', b.dataset.style===name));
+      $('layers-btn').classList.toggle('active', name!=='minimal');
+    }
+    const addTiles = () => { $('map').classList.toggle('map-dark', root.dataset.theme==='dark'); };
+    addTiles();
+    setBaseStyle(currentStyle);
     setTimeout(() => map.invalidateSize(), 250);
+
+    let fireLayer=null, transitLayer=null;
+    function makeFireLayer(){
+      const d=new Date(Date.now()-86400000); const iso=d.toISOString().slice(0,10);
+      return L.tileLayer(`https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/MODIS_Terra_Thermal_Anomalies_All/default/${iso}/GoogleMapsCompatible_Level7/{z}/{y}/{x}.png`,
+        { pane:'overlayPane', maxNativeZoom:7, maxZoom:19, opacity:.85, attribution:'NASA GIBS / MODIS' });
+    }
+    function makeTransitLayer(){
+      return L.tileLayer('https://tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png',
+        { pane:'overlayPane', maxZoom:19, opacity:.9, attribution:'OpenRailwayMap' });
+    }
+    function toggleDetail(key, sw){
+      const on = sw.classList.toggle('on');
+      try{ localStorage.setItem('detail_'+key, on?'1':'0'); }catch(e){}
+      if(key==='fire'){
+        if(on){ fireLayer=makeFireLayer().addTo(map); } else if(fireLayer){ fireLayer.remove(); fireLayer=null; }
+      } else if(key==='transit'){
+        if(on){ transitLayer=makeTransitLayer().addTo(map); } else if(transitLayer){ transitLayer.remove(); transitLayer=null; }
+      }
+    }
+    const switchFire=$('switch-fire'), switchTransit=$('switch-transit');
+    switchFire.addEventListener('click',()=>toggleDetail('fire', switchFire));
+    switchTransit.addEventListener('click',()=>toggleDetail('transit', switchTransit));
+    try{
+      if(localStorage.getItem('detail_fire')==='1') toggleDetail('fire', switchFire);
+      if(localStorage.getItem('detail_transit')==='1') toggleDetail('transit', switchTransit);
+    }catch(e){}
+
+    const layersBtn=$('layers-btn'), layersPanel=$('layers-panel');
+    layersBtn.addEventListener('click',(e)=>{
+      e.stopPropagation();
+      const opening=!layersPanel.classList.contains('open');
+      layersPanel.classList.toggle('open', opening);
+      if(opening){
+        const r=layersBtn.getBoundingClientRect();
+        layersPanel.style.top=Math.min(r.top, window.innerHeight-layersPanel.offsetHeight-12)+'px';
+        layersPanel.style.right=(window.innerWidth-r.left+8)+'px';
+      }
+    });
+    document.querySelectorAll('.style-opt').forEach(btn=>{
+      btn.addEventListener('click',()=>setBaseStyle(btn.dataset.style));
+    });
+    document.addEventListener('click',(e)=>{
+      if(layersPanel.classList.contains('open') && !layersPanel.contains(e.target) && e.target!==layersBtn && !layersBtn.contains(e.target)){
+        layersPanel.classList.remove('open');
+      }
+    });
 
     let userMarker = null, accCircle = null;
     const setUser = (lat,lng,accuracy) => {
@@ -2187,7 +2321,7 @@ svg{display:block;}
     themeBtn.addEventListener('click',()=>{
       root.dataset.theme = root.dataset.theme==='dark' ? 'light' : 'dark';
       themeBtn.innerHTML = root.dataset.theme==='dark' ? moon : sun;
-      if(tileLayer){ tileLayer.remove(); tileLayer=addTiles(); }
+      addTiles();
     });
 
     /* ---- GUIDED TOUR ---- */
