@@ -938,8 +938,7 @@ svg{display:block;}
 .map-area{grid-area:map;position:relative;overflow:hidden;}
 #map{width:100%;height:100%;z-index:1;background:var(--surface-2);}
 #map.map-dark.style-minimal .leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) brightness(.95) contrast(.9) saturate(.85);}
-#map.map-dark.style-satellite .leaflet-tile-pane,
-#map.map-dark.style-relief .leaflet-tile-pane{filter:brightness(.8) contrast(1.05);}
+#map.map-dark.style-satellite .leaflet-tile-pane{filter:brightness(.8) contrast(1.05);}
 
 /* ---- GUIDED TOUR ---- */
 .tour-overlay{position:fixed;inset:0;z-index:5000;display:none;}
@@ -1019,11 +1018,11 @@ svg{display:block;}
 .layers-panel h4{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;
   color:var(--faint);margin:0 0 8px;}
 .layers-panel h4:not(:first-child){margin-top:14px;}
-.style-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.style-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;}
 .style-opt{display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px 4px;border-radius:12px;
   border:2px solid transparent;font-size:11px;font-weight:600;color:var(--muted);}
 .style-opt:hover{background:var(--surface-2);}
-.style-opt .sw{width:40px;height:40px;border-radius:50%;border:1px solid var(--border);background-size:cover;background-position:center;}
+.style-opt .sw{width:40px;height:40px;flex-shrink:0;border-radius:50%;border:1px solid var(--border);background-size:cover;background-position:center;}
 .style-opt.sel{border-color:var(--primary);color:var(--primary);}
 .style-opt.sel .sw{box-shadow:0 0 0 2px var(--primary);}
 .detail-row{display:flex;align-items:center;gap:10px;padding:7px 2px;}
@@ -1382,7 +1381,6 @@ svg{display:block;}
       <div class="style-grid">
         <button class="style-opt" data-style="minimal"><span class="sw" style="background:linear-gradient(135deg,#f2f3f0,#dbdfd6)"></span>Minimum</button>
         <button class="style-opt" data-style="satellite"><span class="sw" style="background:linear-gradient(135deg,#3a4a2f,#1d2a1a)"></span>Satellite</button>
-        <button class="style-opt" data-style="relief"><span class="sw" style="background:linear-gradient(135deg,#d8cdb0,#a8906a)"></span>Relief</button>
       </div>
       <h4>Détails de la carte</h4>
       <div class="detail-row" id="detail-fire">
@@ -1572,14 +1570,10 @@ svg{display:block;}
       ]},
       satellite: { layers:() => [
         L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom:19, attribution:'Tiles © Esri — Source: Esri, Maxar, Earthstar Geographics' })
-      ]},
-      relief: { layers:() => [
-        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer/tile/{z}/{y}/{x}', { maxZoom:19, maxNativeZoom:13, attribution:'Tiles © Esri' }),
-        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}', { maxZoom:19, maxNativeZoom:16, attribution:'Tiles © Esri', opacity:.8 })
       ]}
     };
     let baseLayers = [];
-    let currentStyle = (()=>{ try{ return localStorage.getItem('mapStyle') || 'minimal'; }catch(e){ return 'minimal'; } })();
+    let currentStyle = (()=>{ try{ const s=localStorage.getItem('mapStyle'); return (s && MAP_STYLES[s]) ? s : 'minimal'; }catch(e){ return 'minimal'; } })();
     function setBaseStyle(name){
       if(!MAP_STYLES[name]) return;
       baseLayers.forEach(l=>l.remove());
