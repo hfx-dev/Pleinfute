@@ -1573,12 +1573,12 @@ svg{display:block;}
     /* ---- MAP STYLES (base) + DETAIL OVERLAYS ---- */
     // Clé gratuite à créer sur https://www.thunderforest.com/ (compte gratuit, 150k tuiles/mois),
     // puis à restreindre par domaine dans le dashboard Thunderforest pour éviter tout abus.
-    const THUNDERFOREST_API_KEY = 'YOUR_THUNDERFOREST_API_KEY';
+    const THUNDERFOREST_API_KEY = 'f531c08684c043979d7c5178a900a068';
     const MAP_STYLES = {
       minimal: { layers:() => [
         THUNDERFOREST_API_KEY && THUNDERFOREST_API_KEY!=='YOUR_THUNDERFOREST_API_KEY'
-          ? L.tileLayer(`https://{s}.tile.thunderforest.com/atlas/{z}/{x}/{y}.png?apikey=${THUNDERFOREST_API_KEY}`,
-              { subdomains:'abc', maxZoom:19, attribution:'Maps © Thunderforest, Data © OpenStreetMap contributors' })
+          ? L.tileLayer(`https://api.thunderforest.com/atlas/{z}/{x}/{y}.png?apikey=${THUNDERFOREST_API_KEY}`,
+              { maxZoom:19, attribution:'Maps © Thunderforest, Data © OpenStreetMap contributors' })
           : L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', { maxZoom:19, maxNativeZoom:16, attribution:'Tiles © Esri' }),
         ...(THUNDERFOREST_API_KEY && THUNDERFOREST_API_KEY!=='YOUR_THUNDERFOREST_API_KEY' ? [] : [
           L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}', { maxZoom:19, maxNativeZoom:16, attribution:'Tiles © Esri' })
