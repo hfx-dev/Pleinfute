@@ -1226,7 +1226,7 @@ svg{display:block;}
   .sidebar[data-sheet="half"] .sheet-slide{transform:translateY(40%);}
   .sidebar[data-sheet="full"] .sheet-slide{transform:translateY(0);}
   .sheet-handle{display:flex;align-items:center;justify-content:center;width:100%;height:22px;
-    flex-shrink:0;background:transparent;border:none;cursor:pointer;}
+    flex-shrink:0;background:transparent;border:none;cursor:pointer;touch-action:none;}
   .sheet-handle span{width:36px;height:4px;border-radius:99px;background:var(--border-strong);}
 
   .search input{height:44px;}
@@ -1342,7 +1342,7 @@ svg{display:block;}
     </div>
     <div class="map-right">
       <button class="locate" id="locate-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"></circle><path d="M12 2v3M12 19v3M2 12h3M19 12h3"></path><circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none"></circle></svg> Ma position</button>
-      <div class="maptag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 2 7l10 5 10-5-10-5z"></path><path d="m2 17 10 5 10-5M2 12l10 5 10-5"></path></svg> Wikimedia · OpenStreetMap</div>
+      <div class="maptag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 2 7l10 5 10-5-10-5z"></path><path d="m2 17 10 5 10-5M2 12l10 5 10-5"></path></svg> Esri · OpenStreetMap</div>
     </div>
   </div>
 </div>
@@ -1506,8 +1506,8 @@ svg{display:block;}
     const addTiles = () => {
       const dark = root.dataset.theme === 'dark';
       $('map').classList.toggle('map-dark', dark);
-      return L.tileLayer('https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}{r}.png', {
-        attribution:'Wikimedia maps | © OpenStreetMap contributors', maxZoom:19
+      return L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+        attribution:'Tiles © Esri — Source: Esri, HERE, Garmin, FAO, NOAA, USGS, © OpenStreetMap contributors', maxZoom:19
       }).addTo(map);
     };
     tileLayer = addTiles();
@@ -1870,13 +1870,54 @@ svg{display:block;}
     const isMobile = () => window.matchMedia('(max-width:760px)').matches;
     const SHEET_STATES=['peek','half','full'];
     const sheetHandle=$('sheet-handle');
-    if(sheetHandle){
-      sheetHandle.addEventListener('click',()=>{
-        const cur=sbEl.dataset.sheet||'half';
-        const idx=(SHEET_STATES.indexOf(cur)+1)%SHEET_STATES.length;
-        sbEl.dataset.sheet=SHEET_STATES[idx];
-        setTimeout(()=>map.invalidateSize(),320);
+    const sheetSlide=$('sheet-slide');
+    function sheetTranslateFor(state, h){
+      if(state==='full') return 0;
+      if(state==='half') return h*0.4;
+      return Math.max(h-96, 0); // peek
+    }
+    if(sheetHandle && sheetSlide){
+      let dragging=false, moved=false, startY=0, startTranslate=0, sheetH=0;
+      const currentTranslateY=()=>new DOMMatrixReadOnly(getComputedStyle(sheetSlide).transform).m42;
+      const settle=(state)=>{
+        sbEl.dataset.sheet=state;
+        sheetSlide.style.transform=`translateY(${sheetTranslateFor(state, sheetH)}px)`;
+        setTimeout(()=>{ sheetSlide.style.transition=''; sheetSlide.style.transform=''; map.invalidateSize(); },320);
+      };
+      sheetHandle.addEventListener('pointerdown',(e)=>{
+        if(!isMobile()) return;
+        dragging=true; moved=false;
+        startY=e.clientY;
+        sheetH=sheetSlide.getBoundingClientRect().height;
+        startTranslate=currentTranslateY();
+        sheetSlide.style.transition='none';
+        sheetHandle.setPointerCapture(e.pointerId);
       });
+      sheetHandle.addEventListener('pointermove',(e)=>{
+        if(!dragging) return;
+        const dy=e.clientY-startY;
+        if(Math.abs(dy)>4) moved=true;
+        const max=Math.max(sheetH-96, 0);
+        const next=Math.min(max, Math.max(0, startTranslate+dy));
+        sheetSlide.style.transform=`translateY(${next}px)`;
+      });
+      const endDrag=()=>{
+        if(!dragging) return;
+        dragging=false;
+        sheetSlide.style.transition='';
+        if(!moved){
+          const cur=sbEl.dataset.sheet||'half';
+          const idx=(SHEET_STATES.indexOf(cur)+1)%SHEET_STATES.length;
+          settle(SHEET_STATES[idx]);
+          return;
+        }
+        const cur=currentTranslateY();
+        const nearest=SHEET_STATES.reduce((a,b)=>
+          Math.abs(sheetTranslateFor(b, sheetH)-cur) < Math.abs(sheetTranslateFor(a, sheetH)-cur) ? b : a);
+        settle(nearest);
+      };
+      sheetHandle.addEventListener('pointerup', endDrag);
+      sheetHandle.addEventListener('pointercancel', endDrag);
     }
     $('route-add').addEventListener('click',addStop);
     $('route-go').addEventListener('click',computeRoute);
