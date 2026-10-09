@@ -1210,6 +1210,7 @@ svg{display:block;}
 .chip-row-mobile .chip{flex-shrink:0;box-shadow:var(--shadow-sm);}
 .chip-row-mobile .chip:not(.active){background:var(--surface);}
 .natlow-row-mobile{display:none;}
+.map-tools{top:124px;}
 
 /* Full-page search/filters takeover, opened by the search pill or the route button.
    Top-level sibling of .app (not nested in .sidebar) so its position:fixed is never
@@ -1371,10 +1372,10 @@ svg{display:block;}
       <button id="zone-clear-btn">Effacer</button>
     </div>
     <div class="map-right">
+      <button class="locate" id="locate-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"></circle><path d="M12 2v3M12 19v3M2 12h3M19 12h3"></path><circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none"></circle></svg> Ma position</button>
       <button class="layers-btn" id="layers-btn" aria-label="Type de carte" title="Type de carte">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5z"></path><path d="m2 17 10 5 10-5M2 12l10 5 10-5"></path></svg>
       </button>
-      <button class="locate" id="locate-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"></circle><path d="M12 2v3M12 19v3M2 12h3M19 12h3"></path><circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none"></circle></svg> Ma position</button>
     </div>
     <div class="layers-panel" id="layers-panel">
       <h4>Type de carte</h4>
@@ -1684,11 +1685,11 @@ svg{display:block;}
       $('zone-banner').classList.remove('open'); applyFilters(); }
     function positionZoneBanner(){
       const banner=$('zone-banner');
-      const refBtn=$('route-toggle-btn'), mapArea=document.querySelector('.map-area');
-      if(!refBtn || !mapArea) return;
-      const r=refBtn.getBoundingClientRect(), m=mapArea.getBoundingClientRect();
-      banner.style.left=(r.right-m.left+10)+'px';
-      banner.style.top='12px';
+      const refBox=document.querySelector('.map-tools'), mapArea=document.querySelector('.map-area');
+      if(!refBox || !mapArea) return;
+      const r=refBox.getBoundingClientRect(), m=mapArea.getBoundingClientRect();
+      banner.style.left=(r.left-m.left)+'px';
+      banner.style.top=(r.bottom-m.top+16)+'px';
     }
     function pointInPolygon(lat,lng,ll){ let inside=false; for(let i=0,j=ll.length-1;i<ll.length;j=i++){
       const yi=ll[i].lat,xi=ll[i].lng,yj=ll[j].lat,xj=ll[j].lng;
