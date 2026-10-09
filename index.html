@@ -1350,9 +1350,9 @@ svg{display:block;}
       </button>
     </div>
     <div class="chip-row-mobile" id="chip-row-mobile">
-      <button class="chip active" data-fuel="SP95">SP95</button>
+      <button class="chip" data-fuel="SP95">SP95</button>
       <button class="chip" data-fuel="SP98">SP98</button>
-      <button class="chip" data-fuel="Gazole">Gazole</button>
+      <button class="chip active" data-fuel="Gazole">Gazole</button>
       <button class="chip" data-fuel="E10">E10</button>
       <button class="chip" data-fuel="E85">E85</button>
       <button class="chip" data-fuel="GPLc">GPL</button>
@@ -1437,9 +1437,9 @@ svg{display:block;}
   <div>
     <span class="field-label">Type de carburant</span>
     <div class="fuels" id="fuels">
-      <button class="chip active" data-fuel="SP95">SP95</button>
+      <button class="chip" data-fuel="SP95">SP95</button>
       <button class="chip" data-fuel="SP98">SP98</button>
-      <button class="chip" data-fuel="Gazole">Gazole</button>
+      <button class="chip active" data-fuel="Gazole">Gazole</button>
       <button class="chip" data-fuel="E10">E10</button>
       <button class="chip" data-fuel="E85">E85</button>
       <button class="chip" data-fuel="GPLc">GPL</button>
@@ -1517,7 +1517,7 @@ svg{display:block;}
     if (!root.dataset.theme) root.dataset.theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 
     const state = {
-      userLat: null, userLng: null, radius: 25, fuel: 'SP95', sort: 'price',
+      userLat: null, userLng: null, radius: 25, fuel: 'Gazole', sort: 'price',
       stations: [], filtered: [], zoneLayer: null, selectedId: null, priceLow: 0, priceHigh: 0,
       mode: 'around', stops: null, routeCoords: null,
       routeOpts: { tolls:false, highways:false, ferries:false, conso:6.5 }, lastRoute:null
