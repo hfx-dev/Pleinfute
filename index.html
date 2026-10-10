@@ -4,6 +4,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Plein Futé — Prix des carburants</title>
 
+<!-- App 100% statique à fichier unique (scripts/styles inline, gestionnaires onclick) :
+     'unsafe-inline' est donc nécessaire pour script-src/style-src. Cette CSP n'empêche pas
+     l'exécution d'un script injecté inline, mais bloque le chargement/l'exfiltration vers
+     tout domaine externe non listé ici (limite l'impact d'une éventuelle injection). -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://server.arcgisonline.com https://api.thunderforest.com https://tiles.openrailwaymap.org https://gibs.earthdata.nasa.gov; connect-src 'self' https://data.economie.gouv.fr https://geo.api.gouv.fr https://nominatim.openstreetmap.org https://router.project-osrm.org https://valhalla1.openstreetmap.de; manifest-src 'self'; base-uri 'self'; form-action 'self';">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png" type="image/png">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -1536,6 +1543,8 @@ svg{display:block;}
     ];
     function detectBrand(t){ t=(t||'').toLowerCase(); for(const [b,c] of BRANDS){ const k=b.toLowerCase().replace('e.','').replace('é','e'); if(t.includes(k)) return {name:b,color:c}; } return null; }
     function titleCase(s){ return (s||'').toLowerCase().replace(/\b\w/g, c=>c.toUpperCase()); }
+    const ESC_MAP={'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'};
+    function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, c=>ESC_MAP[c]); }
     function fmt(p){ return Number(p).toFixed(3).replace('.',','); }
     function fmt2(p){ return Number(p).toFixed(3).replace('.',','); }
     function textOn(hex){ const h=hex.replace('#',''); const r=parseInt(h.substr(0,2),16),g=parseInt(h.substr(2,2),16),b=parseInt(h.substr(4,2),16); return (0.299*r+0.587*g+0.114*b)/255 > 0.62 ? '#1a1f1a' : '#ffffff'; }
@@ -1764,7 +1773,7 @@ svg{display:block;}
         suggBox.innerHTML=suggestions.map((s,i)=>`
           <div class="sugg-item" data-i="${i}" role="option">
             <span class="pin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
-            <span style="min-width:0"><span class="sugg-name" style="display:block">${s.name}</span><span class="sugg-sub" style="display:block">${s.sub}</span></span>
+            <span style="min-width:0"><span class="sugg-name" style="display:block">${esc(s.name)}</span><span class="sugg-sub" style="display:block">${esc(s.sub)}</span></span>
           </div>`).join('');
         suggBox.querySelectorAll('.sugg-item').forEach(el=>el.addEventListener('mousedown',(ev)=>{ ev.preventDefault(); choosePlace(suggestions[+el.dataset.i]); }));
       }
@@ -1831,7 +1840,7 @@ svg{display:block;}
       wrap.innerHTML=state.stops.map((st,i)=>{
         const badge = st.role==='start' ? 'A' : st.role==='end' ? 'B' : '';
         const ph = st.role==='start' ? 'Départ…' : st.role==='end' ? 'Arrivée…' : 'Étape…';
-        const val = (st.label||'').replace(/"/g,'&quot;');
+        const val = esc(st.label||'');
         return `<div class="rstop" data-i="${i}">
           <span class="rstop-ic ${st.role}">${badge}</span>
           <div class="rstop-field">
@@ -1867,7 +1876,7 @@ svg{display:block;}
               const sub=[a.county,a.state,a.country].filter(Boolean).join(' · ')||'';
               return {name,sub,lat:parseFloat(r.lat),lng:parseFloat(r.lon)};
             }).filter(s=>{ const k=s.name+'|'+s.sub; if(!s.name||seen.has(k))return false; seen.add(k); return true; });
-            box.innerHTML = list.length ? list.map((s,j)=>`<div class="it" data-j="${j}"><span class="pin">${PIN_SVG}</span><span style="min-width:0"><span class="nm">${s.name}</span><span class="sb">${s.sub}</span></span></div>`).join('') : '<div class="it" style="color:var(--faint)">Aucun résultat</div>';
+            box.innerHTML = list.length ? list.map((s,j)=>`<div class="it" data-j="${j}"><span class="pin">${PIN_SVG}</span><span style="min-width:0"><span class="nm">${esc(s.name)}</span><span class="sb">${esc(s.sub)}</span></span></div>`).join('') : '<div class="it" style="color:var(--faint)">Aucun résultat</div>';
             box.classList.add('show');
             box.querySelectorAll('.it[data-j]').forEach(el=>el.addEventListener('mousedown',(ev)=>{ ev.preventDefault();
               const s=list[+el.dataset.j]; state.stops[i]={...state.stops[i],label:s.name,lat:s.lat,lng:s.lng};
@@ -2180,11 +2189,11 @@ svg{display:block;}
         const gmaps=`https://www.google.com/maps/dir/?api=1&destination=${s.lat},${s.lng}`;
         const waze=`https://waze.com/ul?ll=${s.lat},${s.lng}&navigate=yes`;
         const arrow='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>';
-        return `<div class="scard t-${tier} ${best?'best':''} ${sel?'is-sel':''}" data-id="${s.id}" role="button" tabindex="0" aria-label="${s.brandName}, ${fmt(price)} euros">
+        return `<div class="scard t-${tier} ${best?'best':''} ${sel?'is-sel':''}" data-id="${s.id}" role="button" tabindex="0" aria-label="${esc(s.brandName)}, ${fmt(price)} euros">
           <span class="scard__logo" style="background:${logoBg};color:${logoFg}">${logo}</span>
           <span class="scard__body">
-            <span class="scard__name">${s.brandName}</span>
-            <span class="scard__sub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${s.cityShort} · ${distLabel}</span>
+            <span class="scard__name">${esc(s.brandName)}</span>
+            <span class="scard__sub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${esc(s.cityShort)} · ${distLabel}</span>
           </span>
           <span class="scard__price">
             <span class="scard__price-val">${fmt(price)}<span class="scard__cur">€</span></span>
@@ -2193,8 +2202,8 @@ svg{display:block;}
           <span class="scard__footer">
             <span class="scard__tags">${openBadge}${rankBadge}</span>
             <span class="scard__routes">
-              <a class="rbtn gmaps" href="${gmaps}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${arrow}Maps</a>
-              <a class="rbtn waze" href="${waze}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${arrow}Waze</a>
+              <a class="rbtn gmaps" href="${gmaps}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">${arrow}Maps</a>
+              <a class="rbtn waze" href="${waze}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">${arrow}Waze</a>
               <button class="rbtn share-ic" title="Partager cette station" onclick="event.stopPropagation();window.__shareStation('${s.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg></button>
             </span>
           </span>
@@ -2223,12 +2232,12 @@ svg{display:block;}
         const gmaps=`https://www.google.com/maps/dir/?api=1&destination=${s.lat},${s.lng}`;
         const waze=`https://waze.com/ul?ll=${s.lat},${s.lng}&navigate=yes`;
         const arrow='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>';
-        m.bindPopup(`<div class="pop-name">${s.brandName}</div>
-          <div class="pop-addr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${s.address||s.city}</div>
+        m.bindPopup(`<div class="pop-name">${esc(s.brandName)}</div>
+          <div class="pop-addr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${esc(s.address||s.city)}</div>
           <div class="pop-prices">${Object.entries(s.prices).map(([f,p])=>`<span class="pop-tag ${f===state.fuel?'hl':''}">${f} <b>${fmt(p)} €</b></span>`).join('')}</div>
           <div class="pop-routes">
-            <a class="rbtn gmaps" href="${gmaps}" target="_blank" rel="noopener">${arrow}Maps</a>
-            <a class="rbtn waze" href="${waze}" target="_blank" rel="noopener">${arrow}Waze</a>
+            <a class="rbtn gmaps" href="${gmaps}" target="_blank" rel="noopener noreferrer">${arrow}Maps</a>
+            <a class="rbtn waze" href="${waze}" target="_blank" rel="noopener noreferrer">${arrow}Waze</a>
             <button class="rbtn share-ic" title="Partager" onclick="window.__shareStation('${s.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg></button>
           </div>`);
         markers[s.id]=m;
@@ -2493,12 +2502,12 @@ svg{display:block;}
         const gmaps=`https://www.google.com/maps/dir/?api=1&destination=${st.lat},${st.lng}`;
         const waze=`https://waze.com/ul?ll=${st.lat},${st.lng}&navigate=yes`;
         const arrow='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>';
-        natMarker.bindPopup(`<div class="pop-name">${st.brandName} — ${label} le moins cher de France</div>
-          <div class="pop-addr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${st.address||st.city}, ${st.city}</div>
+        natMarker.bindPopup(`<div class="pop-name">${esc(st.brandName)} — ${label} le moins cher de France</div>
+          <div class="pop-addr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${esc(st.address||st.city)}, ${esc(st.city)}</div>
           <div class="pop-prices">${Object.entries(st.prices).map(([f,pv])=>`<span class="pop-tag ${FUEL_FIELDS[f]===field?'hl':''}">${f} <b>${fmt(pv)} €</b></span>`).join('')}</div>
           <div class="pop-routes">
-            <a class="rbtn gmaps" href="${gmaps}" target="_blank" rel="noopener">${arrow}Maps</a>
-            <a class="rbtn waze" href="${waze}" target="_blank" rel="noopener">${arrow}Waze</a>
+            <a class="rbtn gmaps" href="${gmaps}" target="_blank" rel="noopener noreferrer">${arrow}Maps</a>
+            <a class="rbtn waze" href="${waze}" target="_blank" rel="noopener noreferrer">${arrow}Waze</a>
           </div>`);
         map.flyTo([st.lat, st.lng], 14, { animate:true, duration:1.1 });
         map.once('moveend', ()=>natMarker&&natMarker.openPopup());
