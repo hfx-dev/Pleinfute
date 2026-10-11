@@ -8,7 +8,7 @@
      'unsafe-inline' est donc nécessaire pour script-src/style-src. Cette CSP n'empêche pas
      l'exécution d'un script injecté inline, mais bloque le chargement/l'exfiltration vers
      tout domaine externe non listé ici (limite l'impact d'une éventuelle injection). -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://server.arcgisonline.com https://api.thunderforest.com https://tiles.openrailwaymap.org https://gibs.earthdata.nasa.gov; connect-src 'self' https://data.economie.gouv.fr https://geo.api.gouv.fr https://nominatim.openstreetmap.org https://router.project-osrm.org https://valhalla1.openstreetmap.de; manifest-src 'self'; base-uri 'self'; form-action 'self';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://server.arcgisonline.com https://api.thunderforest.com https://tiles.openrailwaymap.org https://gibs.earthdata.nasa.gov; connect-src 'self' https://data.economie.gouv.fr https://geo.api.gouv.fr https://nominatim.openstreetmap.org https://router.project-osrm.org https://valhalla1.openstreetmap.de https://sedeaplicaciones.minetur.gob.es; manifest-src 'self'; base-uri 'self'; form-action 'self';">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 
 <link rel="manifest" href="manifest.webmanifest">
@@ -1524,7 +1524,7 @@ svg{display:block;}
     if (!root.dataset.theme) root.dataset.theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 
     const state = {
-      userLat: null, userLng: null, radius: 25, fuel: 'Gazole', sort: 'price',
+      userLat: null, userLng: null, country: 'fr', radius: 25, fuel: 'Gazole', sort: 'price',
       stations: [], filtered: [], zoneLayer: null, selectedId: null, priceLow: 0, priceHigh: 0,
       mode: 'around', stops: null, routeCoords: null,
       routeOpts: { tolls:false, highways:false, ferries:false, conso:6.5 }, lastRoute:null
@@ -1539,7 +1539,10 @@ svg{display:block;}
       ['E.Leclerc','#0066B3'],['Leclerc','#0066B3'],['Super U','#E2001A'],['Système U','#E2001A'],
       ['Auchan','#E2001A'],['Casino','#D2122E'],['Esso','#1B3A8B'],['Shell','#FBCE07'],['BP','#0A9B49'],
       ['Avia','#E2001A'],['Agip','#F2C200'],['Dyneff','#005CA9'],['Lidl','#0050AA'],['Aldi','#1E3A8A'],
-      ['Géant','#E2001A'],['Cora','#E2001A'],['Elan','#2E8B57'],['ENI','#F6C700']
+      ['Géant','#E2001A'],['Cora','#E2001A'],['Elan','#2E8B57'],['ENI','#F6C700'],
+      ['Repsol','#FF6600'],['Cepsa','#E2231A'],['Galp','#E2001A'],['Campsa','#0A5EB0'],['Disa','#005CA9'],
+      ['Petronor','#0A9B49'],['Plenoil','#E2001A'],['Ballenoil','#1B3A8B'],['Petroprix','#F6C700'],
+      ['Meroil','#005CA9'],['Avanza','#0A9B49'],['Alcampo','#E2001A']
     ];
     function detectBrand(t){ t=(t||'').toLowerCase(); for(const [b,c] of BRANDS){ const k=b.toLowerCase().replace('e.','').replace('é','e'); if(t.includes(k)) return {name:b,color:c}; } return null; }
     function titleCase(s){ return (s||'').toLowerCase().replace(/\b\w/g, c=>c.toUpperCase()); }
@@ -1566,6 +1569,65 @@ svg{display:block;}
       };
     }
     function dist(a,b,c,d){ const R=6371,dLat=(c-a)*Math.PI/180,dLng=(d-b)*Math.PI/180; const x=Math.sin(dLat/2)**2+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(dLng/2)**2; return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x)); }
+
+    /* ---- ESPAGNE : source de données alternative (MITECO) ----
+       L'API espagnole ne permet pas de filtrer par rayon autour d'un point : elle renvoie
+       toutes les stations du pays en un seul appel. On la met donc en cache (6h) et on
+       filtre la distance nous-mêmes, comme pour le couloir d'itinéraire. */
+    const ES_API='https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/';
+    function esNum(v){ if(v==null||v==='') return null; const n=parseFloat(String(v).replace(',','.')); return isNaN(n)?null:n; }
+    function mapRecordES(rec, i){
+      const lat=esNum(rec.Latitud);
+      const lng=esNum(rec['Longitud (WGS84)'] ?? rec['Longitud']);
+      const prices={};
+      for(const [key,val] of Object.entries(rec)){
+        if(!/^precio/i.test(key)) continue;
+        const n=esNum(val); if(n==null) continue;
+        const k=key.toLowerCase();
+        if(k.includes('95')) prices.SP95=n;
+        else if(k.includes('98')) prices.SP98=n;
+        else if(k.includes('glp')) prices.GPLc=n;
+        else if(k.includes('gasoleo a')||k.includes('gasóleo a')) prices.Gazole=n;
+      }
+      const brandRaw=rec['Rótulo']||rec['Rotulo']||'';
+      const brand=detectBrand(brandRaw+' '+(rec['Dirección']||rec['Direccion']||''));
+      const city=titleCase(rec['Localidad']||''); const cp=rec['C.P.']||rec['CP']||'';
+      const horario=rec['Horario']||'';
+      return {
+        id:'es-'+(rec.IDEESS!=null?rec.IDEESS:i),
+        brandName: brand ? brand.name : (brandRaw ? titleCase(brandRaw) : 'Station-service'),
+        brandColor: brand ? brand.color : null,
+        address: titleCase(rec['Dirección']||rec['Direccion']||''),
+        city:(cp?cp+' ':'')+city, cityShort: city||'Station',
+        lat, lng, prices,
+        open: /24\s*h/i.test(horario) ? 'h24' : 'open', source:'es'
+      };
+    }
+    async function fetchSpainStations(){
+      try{
+        const cached=JSON.parse(localStorage.getItem('esStations')||'null');
+        if(cached && Array.isArray(cached.d) && (Date.now()-cached.t)<6*3600*1000) return cached.d;
+      }catch(e){}
+      const res=await fetch(ES_API); if(!res.ok) throw new Error('HTTP '+res.status);
+      const data=await res.json();
+      const list=(data.ListaEESSPrecio||[]).map(mapRecordES)
+        .filter(s=>s.lat!=null && s.lng!=null && !isNaN(s.lat) && !isNaN(s.lng));
+      try{ localStorage.setItem('esStations', JSON.stringify({t:Date.now(), d:list})); }catch(e){}
+      return list;
+    }
+    /* Détecte le pays (France/Espagne) à partir d'une position : géocodage inverse
+       Nominatim en priorité, repli sur une zone géographique approximative si ça échoue. */
+    async function detectCountry(lat,lng){
+      try{
+        const url=`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=jsonv2&zoom=3`;
+        const data=await (await fetch(url,{headers:{'Accept-Language':'fr'}})).json();
+        const cc=((data.address&&data.address.country_code)||'').toLowerCase();
+        if(cc==='es') return 'es';
+        if(cc==='fr') return 'fr';
+      }catch(e){}
+      if(lat<43.0 && lat>35.9 && lng>-9.5 && lng<3.4) return 'es';
+      return 'fr';
+    }
 
     /* ---- MAP ---- */
     const map = L.map('map', { zoomControl:true, attributionControl:true, preferCanvas:true }).setView([25, 10], 3);
@@ -1741,14 +1803,25 @@ svg{display:block;}
         // Base officielle des communes de France (geo.api.gouv.fr, Etalab) : couvre les
         // ~35 000 communes (y compris les plus petits villages), contrairement à l'instance
         // publique Nominatim, limitée/rate-limitée et pensée pour la recherche d'adresses
-        // plutôt que l'autocomplétion ville par préfixe.
-        const url=`https://geo.api.gouv.fr/communes?nom=${encodeURIComponent(q)}&boost=population&limit=8&fields=nom,codesPostaux,centre,departement`;
-        const data=await (await fetch(url)).json();
-        suggestions=(Array.isArray(data)?data:[]).filter(c=>c && c.centre && c.centre.coordinates).map(c=>({
+        // plutôt que l'autocomplétion ville par préfixe. En parallèle, Nominatim scopé à
+        // l'Espagne couvre les villes espagnoles (pas de base officielle équivalente connue).
+        const frUrl=`https://geo.api.gouv.fr/communes?nom=${encodeURIComponent(q)}&boost=population&limit=6&fields=nom,codesPostaux,centre,departement`;
+        const esUrl=`https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=4&countrycodes=es&accept-language=fr&q=${encodeURIComponent(q)}`;
+        const [frData, esData] = await Promise.all([
+          fetch(frUrl).then(r=>r.json()).catch(()=>[]),
+          fetch(esUrl,{headers:{'Accept-Language':'fr'}}).then(r=>r.json()).catch(()=>[])
+        ]);
+        const frSugg=(Array.isArray(frData)?frData:[]).filter(c=>c && c.centre && c.centre.coordinates).map(c=>({
           name:c.nom,
           sub:[c.departement && c.departement.nom, c.codesPostaux && c.codesPostaux[0]].filter(Boolean).join(' · ')||'France',
           lat:c.centre.coordinates[1], lon:c.centre.coordinates[0]
         }));
+        const esSugg=(Array.isArray(esData)?esData:[]).map(r=>{ const a=r.address||{};
+          const name=a.city||a.town||a.village||a.municipality||r.name||(r.display_name||'').split(',')[0];
+          const sub=[a.province||a.county, 'Espagne'].filter(Boolean).join(' · ');
+          return {name,sub,lat:parseFloat(r.lat),lon:parseFloat(r.lon)};
+        }).filter(s=>s.name && !isNaN(s.lat) && !isNaN(s.lon));
+        suggestions=[...frSugg, ...esSugg];
         if(!suggestions.length) await fetchSuggFallback(q);
         else renderSugg();
       }catch(e){ await fetchSuggFallback(q); }
@@ -1808,14 +1881,22 @@ svg{display:block;}
       setLoading(true);
       $('api-status').innerHTML = '<span class="spin"></span> Chargement…';
       try{
-        const where=`distance(geom, geom'POINT(${state.userLng} ${state.userLat})', ${FETCH_RADIUS}km)`;
-        const url=`${API_BASE}?where=${encodeURIComponent(where)}&limit=100`;
-        const res=await fetch(url); if(!res.ok) throw new Error('HTTP '+res.status);
-        const data=await res.json();
-        const recs=(data.results||[]).filter(r=>r.geom&&r.geom.lat!=null);
-        state.stations=recs.map(mapRecord).map(s=>({ ...s, distance:dist(state.userLat,state.userLng,s.lat,s.lng) }));
+        state.country = await detectCountry(state.userLat, state.userLng);
+        if(state.country==='es'){
+          const all=await fetchSpainStations();
+          state.stations=all.map(s=>({ ...s, distance:dist(state.userLat,state.userLng,s.lat,s.lng) }))
+            .filter(s=>s.distance<=FETCH_RADIUS);
+          $('api-status').innerHTML = `<span class="dot"></span> ${state.stations.length} estaciones · MITECO`;
+        } else {
+          const where=`distance(geom, geom'POINT(${state.userLng} ${state.userLat})', ${FETCH_RADIUS}km)`;
+          const url=`${API_BASE}?where=${encodeURIComponent(where)}&limit=100`;
+          const res=await fetch(url); if(!res.ok) throw new Error('HTTP '+res.status);
+          const data=await res.json();
+          const recs=(data.results||[]).filter(r=>r.geom&&r.geom.lat!=null);
+          state.stations=recs.map(mapRecord).map(s=>({ ...s, distance:dist(state.userLat,state.userLng,s.lat,s.lng) }));
+          $('api-status').innerHTML = `<span class="dot"></span> ${state.stations.length} stations · data.gouv.fr`;
+        }
         applyFilters(); fitToResults();
-        $('api-status').innerHTML = `<span class="dot"></span> ${state.stations.length} stations · data.gouv.fr`;
       }catch(e){
         state.stations=[]; applyFilters();
         $('api-status').innerHTML = '<span class="dot" style="background:var(--tier-high)"></span> <span style="color:var(--tier-high)">Erreur de chargement</span>';

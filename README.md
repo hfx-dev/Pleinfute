@@ -8,6 +8,7 @@ Application 100% statique (un seul fichier `index.html`, aucun backend, aucune d
 
 ### Données et prix
 - **Prix en temps réel** — données issues de l'API officielle du gouvernement français (`data.economie.gouv.fr`, prix des carburants en flux instantané) : Gazole (sélectionné par défaut), SP95, SP98, E10, E85, GPLc.
+- **Espagne** — détection automatique du pays via la position : en Espagne, les stations viennent de l'API officielle du MITECO (gouvernement espagnol). E10/E85 n'existent pas sur le marché espagnol et n'apparaissent donc pas pour ces stations ; le mode Itinéraire et les prix nationaux les moins chers restent pour l'instant limités à la France.
 - **Prix les moins chers de France** — une rangée de pastilles affiche le prix national le plus bas par carburant (dans l'en-tête sur desktop, dans la top bar sur mobile) ; cliquer sur l'une d'elles centre la carte sur la station correspondante, où qu'elle soit en France.
 - **Détection de marque** — reconnaissance automatique de l'enseigne (TotalEnergies, Leclerc, Intermarché, Carrefour, Shell, BP, etc.) à partir de l'adresse.
 
