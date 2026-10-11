@@ -8,7 +8,7 @@
      'unsafe-inline' est donc nécessaire pour script-src/style-src. Cette CSP n'empêche pas
      l'exécution d'un script injecté inline, mais bloque le chargement/l'exfiltration vers
      tout domaine externe non listé ici (limite l'impact d'une éventuelle injection). -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://server.arcgisonline.com https://api.thunderforest.com https://tiles.openrailwaymap.org https://gibs.earthdata.nasa.gov; connect-src 'self' https://data.economie.gouv.fr https://geo.api.gouv.fr https://nominatim.openstreetmap.org https://router.project-osrm.org https://valhalla1.openstreetmap.de https://sedeaplicaciones.minetur.gob.es; manifest-src 'self'; base-uri 'self'; form-action 'self';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://server.arcgisonline.com https://api.thunderforest.com https://tiles.openrailwaymap.org https://gibs.earthdata.nasa.gov; connect-src 'self' https://data.economie.gouv.fr https://geo.api.gouv.fr https://nominatim.openstreetmap.org https://router.project-osrm.org https://valhalla1.openstreetmap.de https://sedeaplicaciones.minetur.gob.es https://creativecommons.tankerkoenig.de; manifest-src 'self'; base-uri 'self'; form-action 'self';">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 
 <link rel="manifest" href="manifest.webmanifest">
@@ -1542,7 +1542,9 @@ svg{display:block;}
       ['Géant','#E2001A'],['Cora','#E2001A'],['Elan','#2E8B57'],['ENI','#F6C700'],
       ['Repsol','#FF6600'],['Cepsa','#E2231A'],['Galp','#E2001A'],['Campsa','#0A5EB0'],['Disa','#005CA9'],
       ['Petronor','#0A9B49'],['Plenoil','#E2001A'],['Ballenoil','#1B3A8B'],['Petroprix','#F6C700'],
-      ['Meroil','#005CA9'],['Avanza','#0A9B49'],['Alcampo','#E2001A']
+      ['Meroil','#005CA9'],['Avanza','#0A9B49'],['Alcampo','#E2001A'],
+      ['Aral','#0A5EB0'],['Jet','#E2001A'],['Star','#FBCE07'],['HEM','#0A9B49'],['OMV','#002F6C'],
+      ['Westfalen','#0A5EB0'],['Supermarkt-Tankstelle','#1E3A8A']
     ];
     function detectBrand(t){ t=(t||'').toLowerCase(); for(const [b,c] of BRANDS){ const k=b.toLowerCase().replace('e.','').replace('é','e'); if(t.includes(k)) return {name:b,color:c}; } return null; }
     function titleCase(s){ return (s||'').toLowerCase().replace(/\b\w/g, c=>c.toUpperCase()); }
@@ -1615,17 +1617,53 @@ svg{display:block;}
       try{ localStorage.setItem('esStations', JSON.stringify({t:Date.now(), d:list})); }catch(e){}
       return list;
     }
-    /* Détecte le pays (France/Espagne) à partir d'une position : géocodage inverse
-       Nominatim en priorité, repli sur une zone géographique approximative si ça échoue. */
+    /* ---- ALLEMAGNE : Tankerkönig (clé gratuite requise, https://creativecommons.tankerkoenig.de/) ----
+       Contrairement à l'Espagne, l'API accepte un rayon directement (comme la France) :
+       pas besoin de mettre tout le pays en cache. */
+    const TANKERKOENIG_API_KEY = 'YOUR_TANKERKOENIG_API_KEY';
+    function deNum(v){ return (v===false || v==null) ? null : Number(v); }
+    function mapRecordDE(rec){
+      const brandRaw=rec.brand||rec.name||'';
+      const brand=detectBrand(brandRaw+' '+(rec.street||''));
+      const prices={};
+      const g=deNum(rec.diesel); if(g!=null) prices.Gazole=g;
+      const e5=deNum(rec.e5); if(e5!=null) prices.SP95=e5;
+      const e10=deNum(rec.e10); if(e10!=null) prices.E10=e10;
+      const city=titleCase(rec.place||''); const cp=rec.postCode||'';
+      const addr=[rec.street, rec.houseNumber].filter(Boolean).join(' ');
+      return {
+        id:'de-'+rec.id,
+        brandName: brand ? brand.name : (brandRaw ? titleCase(brandRaw) : 'Station-service'),
+        brandColor: brand ? brand.color : null,
+        address: titleCase(addr),
+        city:(cp?cp+' ':'')+city, cityShort: city||'Station',
+        lat: rec.lat, lng: rec.lng, prices,
+        open:'open', source:'de'
+      };
+    }
+    async function fetchGermanyStations(lat,lng,radiusKm){
+      const rad=Math.min(radiusKm,25); // limite imposée par l'API
+      const url=`https://creativecommons.tankerkoenig.de/json/list.php?lat=${lat}&lng=${lng}&rad=${rad}&sort=dist&type=all&apikey=${TANKERKOENIG_API_KEY}`;
+      const res=await fetch(url); if(!res.ok) throw new Error('HTTP '+res.status);
+      const data=await res.json();
+      if(!data.ok) throw new Error('tankerkoenig ko');
+      return (data.stations||[]).filter(s=>s.lat!=null && s.lng!=null).map(mapRecordDE);
+    }
+    const hasTankerkoenigKey = () => TANKERKOENIG_API_KEY && TANKERKOENIG_API_KEY!=='YOUR_TANKERKOENIG_API_KEY';
+
+    /* Détecte le pays à partir d'une position : géocodage inverse Nominatim en priorité,
+       repli sur une zone géographique approximative si ça échoue. */
     async function detectCountry(lat,lng){
       try{
         const url=`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=jsonv2&zoom=3`;
         const data=await (await fetch(url,{headers:{'Accept-Language':'fr'}})).json();
         const cc=((data.address&&data.address.country_code)||'').toLowerCase();
         if(cc==='es') return 'es';
+        if(cc==='de' && hasTankerkoenigKey()) return 'de';
         if(cc==='fr') return 'fr';
       }catch(e){}
       if(lat<43.0 && lat>35.9 && lng>-9.5 && lng<3.4) return 'es';
+      if(hasTankerkoenigKey() && lat>47.2 && lat<55.1 && lng>5.8 && lng<15.1) return 'de';
       return 'fr';
     }
 
@@ -1807,21 +1845,23 @@ svg{display:block;}
         // l'Espagne couvre les villes espagnoles (pas de base officielle équivalente connue).
         const frUrl=`https://geo.api.gouv.fr/communes?nom=${encodeURIComponent(q)}&boost=population&limit=6&fields=nom,codesPostaux,centre,departement`;
         const esUrl=`https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=4&countrycodes=es&accept-language=fr&q=${encodeURIComponent(q)}`;
-        const [frData, esData] = await Promise.all([
+        const deUrl=`https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=4&countrycodes=de&accept-language=fr&q=${encodeURIComponent(q)}`;
+        const [frData, esData, deData] = await Promise.all([
           fetch(frUrl).then(r=>r.json()).catch(()=>[]),
-          fetch(esUrl,{headers:{'Accept-Language':'fr'}}).then(r=>r.json()).catch(()=>[])
+          fetch(esUrl,{headers:{'Accept-Language':'fr'}}).then(r=>r.json()).catch(()=>[]),
+          hasTankerkoenigKey() ? fetch(deUrl,{headers:{'Accept-Language':'fr'}}).then(r=>r.json()).catch(()=>[]) : Promise.resolve([])
         ]);
         const frSugg=(Array.isArray(frData)?frData:[]).filter(c=>c && c.centre && c.centre.coordinates).map(c=>({
           name:c.nom,
           sub:[c.departement && c.departement.nom, c.codesPostaux && c.codesPostaux[0]].filter(Boolean).join(' · ')||'France',
           lat:c.centre.coordinates[1], lon:c.centre.coordinates[0]
         }));
-        const esSugg=(Array.isArray(esData)?esData:[]).map(r=>{ const a=r.address||{};
+        const mapForeignSugg=(data,label)=>(Array.isArray(data)?data:[]).map(r=>{ const a=r.address||{};
           const name=a.city||a.town||a.village||a.municipality||r.name||(r.display_name||'').split(',')[0];
-          const sub=[a.province||a.county, 'Espagne'].filter(Boolean).join(' · ');
+          const sub=[a.province||a.county||a.state, label].filter(Boolean).join(' · ');
           return {name,sub,lat:parseFloat(r.lat),lon:parseFloat(r.lon)};
         }).filter(s=>s.name && !isNaN(s.lat) && !isNaN(s.lon));
-        suggestions=[...frSugg, ...esSugg];
+        suggestions=[...frSugg, ...mapForeignSugg(esData,'Espagne'), ...mapForeignSugg(deData,'Allemagne')];
         if(!suggestions.length) await fetchSuggFallback(q);
         else renderSugg();
       }catch(e){ await fetchSuggFallback(q); }
@@ -1887,6 +1927,10 @@ svg{display:block;}
           state.stations=all.map(s=>({ ...s, distance:dist(state.userLat,state.userLng,s.lat,s.lng) }))
             .filter(s=>s.distance<=FETCH_RADIUS);
           $('api-status').innerHTML = `<span class="dot"></span> ${state.stations.length} estaciones · MITECO`;
+        } else if(state.country==='de'){
+          const recs=await fetchGermanyStations(state.userLat, state.userLng, FETCH_RADIUS);
+          state.stations=recs.map(s=>({ ...s, distance:dist(state.userLat,state.userLng,s.lat,s.lng) }));
+          $('api-status').innerHTML = `<span class="dot"></span> ${state.stations.length} Tankstellen · Tankerkönig`;
         } else {
           const where=`distance(geom, geom'POINT(${state.userLng} ${state.userLat})', ${FETCH_RADIUS}km)`;
           const url=`${API_BASE}?where=${encodeURIComponent(where)}&limit=100`;
