@@ -11,7 +11,7 @@ Application 100% statique (un seul fichier `index.html`, aucun backend, aucune d
 - **Espagne** — détection automatique du pays via la position : en Espagne, les stations viennent de l'API officielle du MITECO (gouvernement espagnol). E10/E85 n'existent pas sur le marché espagnol et n'apparaissent donc pas pour ces stations.
 - **Allemagne** — stations issues de [Tankerkönig](https://creativecommons.tankerkoenig.de/) (nécessite une clé API gratuite). SP98/E85/GPLc ne sont pas couverts par cette API et n'apparaissent donc pas pour ces stations.
 - Le mode Itinéraire et les prix nationaux les moins chers restent pour l'instant limités à la France.
-- **Prix les moins chers de France** — une rangée de pastilles affiche le prix national le plus bas par carburant (dans l'en-tête sur desktop, dans la top bar sur mobile) ; cliquer sur l'une d'elles centre la carte sur la station correspondante, où qu'elle soit en France.
+- **Prix les moins chers de France** — une rangée de pastilles affiche, pour chaque carburant, la fourchette de prix nationale (du moins cher au plus cher, ex. « 1,654–1,892 € ») ; cliquer sur l'une d'elles centre la carte sur la station la moins chère correspondante, où qu'elle soit en France.
 - **Détection de marque** — reconnaissance automatique de l'enseigne (TotalEnergies, Leclerc, Intermarché, Carrefour, Shell, BP, etc.) à partir de l'adresse.
 
 ### Localisation et recherche
@@ -19,7 +19,7 @@ Application 100% statique (un seul fichier `index.html`, aucun backend, aucune d
 - **Recherche de ville par préfixe** sur la base officielle des communes de France (`geo.api.gouv.fr`, Etalab) : couvre les ~35 000 communes, y compris les plus petits villages, avec Nominatim (OpenStreetMap) en repli automatique si besoin.
 
 ### Recherche « Autour de moi »
-- **Actualisation automatique en se déplaçant sur la carte** : à partir d'un certain niveau de zoom (ville/quartier), déplacer ou zoomer la carte relance la recherche autour du nouveau centre visible, sans recentrer la carte ni interrompre une zone dessinée à la main.
+- **Actualisation automatique en se déplaçant sur la carte** : à partir d'un certain niveau de zoom (ville/quartier), déplacer ou zoomer la carte relance la recherche autour du nouveau centre visible, sans recentrer la carte ni interrompre une zone dessinée à la main. Un bouton « Rechercher ici » (façon Park4night) apparaît pendant le déplacement pour forcer la recherche immédiatement sans attendre.
 - Rayon de recherche réglable (5 / 10 / 25 km).
 - **Zone dessinée à la main** sur la carte (cercle, rectangle ou polygone) comme alternative au rayon — disponible sur desktop.
 - Tri des résultats par prix, distance ou nom.
@@ -32,7 +32,8 @@ Application 100% statique (un seul fichier `index.html`, aucun backend, aucune d
 - Recherche automatique des **stations les moins chères sur le trajet** (couloir de ~10 km autour de l'itinéraire), triées dans l'ordre de passage du départ à l'arrivée.
 
 ### Carte
-- **Sélecteur de type de carte** : style Minimum (moderne et épuré, noms de villages à tous les zooms, numéros d'autoroute/départementales) ou Satellite, mémorisé d'une visite à l'autre.
+- **Sélecteur de type de carte** (haut à droite) : style Minimum (moderne et épuré, noms de villages à tous les zooms, numéros d'autoroute/départementales) ou Satellite, mémorisé d'une visite à l'autre.
+- **Bouton « Ma position »** placé en bas à droite, à l'emplacement désormais standard sur les applications de cartographie mobiles.
 - **Détails superposables** : calque feu de forêt (données satellite NASA GIBS/MODIS) et calque transport en commun (OpenRailwayMap), chacun activable/désactivable indépendamment.
 - Carte interactive (Leaflet) avec regroupement des marqueurs (clustering) et popups détaillées.
 - Thème clair/sombre.
