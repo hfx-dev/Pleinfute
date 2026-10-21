@@ -2265,8 +2265,14 @@ svg{display:block;}
       const opening=!layersPanel.classList.contains('open');
       layersPanel.classList.toggle('open', opening);
       if(opening){
+        // .layers-panel est position:absolute, ancré sur .map-area (pas sur la fenêtre) :
+        // son "top" doit donc être relatif au coin de .map-area, pas à celui du viewport,
+        // sans quoi le panneau s'ouvre décalé vers le bas de la hauteur de l'en-tête.
         const r=layersBtn.getBoundingClientRect();
-        layersPanel.style.top=Math.min(r.top, window.innerHeight-layersPanel.offsetHeight-12)+'px';
+        const mapRect=mapAreaEl.getBoundingClientRect();
+        const topRel=r.top-mapRect.top;
+        const maxTop=mapRect.height-layersPanel.offsetHeight-12;
+        layersPanel.style.top=Math.max(12, Math.min(topRel, maxTop))+'px';
         layersPanel.style.right=(window.innerWidth-r.left+8)+'px';
       }
     });
