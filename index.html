@@ -1219,7 +1219,28 @@ svg{display:block;}
 .search-pill svg{width:19px;height:19px;flex-shrink:0;}
 .search-pill span{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
   clip:rect(0,0,0,0);white-space:nowrap;border:0;}
-.natlow-row-mobile{display:none;}
+
+/* Bouton "prix les moins chers" : au clic, les prix se déploient en éventail
+   circulaire autour du bouton (animation ressort), et se rétractent au
+   doigt/clic sur le bouton ou n'importe où ailleurs à l'écran. */
+.natlow-btn{flex-shrink:0;width:48px;height:48px;border-radius:50%;display:flex;
+  align-items:center;justify-content:center;background:var(--surface);border:1px solid var(--border);
+  box-shadow:var(--shadow-md);color:var(--muted);transition:background .2s,color .2s,border-color .2s,transform .2s;}
+.natlow-btn svg{width:19px;height:19px;}
+.natlow-btn.open{background:var(--primary);color:#fff;border-color:var(--primary);transform:rotate(45deg);}
+.natlow-burst{position:fixed;top:0;left:0;width:0;height:0;z-index:645;pointer-events:none;}
+.natlow-bubble{position:absolute;left:0;top:0;display:flex;flex-direction:column;align-items:center;gap:1px;
+  background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:7px 13px;
+  box-shadow:var(--shadow-md);white-space:nowrap;pointer-events:none;opacity:0;
+  transform:translate(-50%,-50%) scale(.25);
+  transition:transform .45s cubic-bezier(.34,1.56,.64,1), opacity .22s ease;}
+.natlow-bubble .f{font-size:9.5px;font-weight:700;color:var(--muted);letter-spacing:.02em;}
+.natlow-bubble .p{font-size:12.5px;font-weight:700;color:var(--primary);font-variant-numeric:tabular-nums;}
+.natlow-burst.open .natlow-bubble{
+  transform:translate(calc(-50% + var(--bx)), calc(-50% + var(--by))) scale(1);
+  opacity:1;pointer-events:auto;}
+.natlow-bubble:hover{border-color:var(--primary);}
+.natlow-loading{font-size:11px;color:var(--faint);font-weight:600;}
 .map-tools{top:calc(var(--header-bottom, 76px) + 16px);}
 
 /* Full-page search/filters takeover, opened by the search pill or the route button.
@@ -1286,14 +1307,6 @@ svg{display:block;}
   .map-right{right:12px;gap:7px;}
   .locate{padding:9px 12px;font-size:12.5px;}
 
-  .natlow-row-mobile{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;}
-  .natlow-row-mobile::-webkit-scrollbar{display:none;}
-  .natlow-row-mobile .np{flex-shrink:0;background:var(--surface);box-shadow:var(--shadow-sm);
-    padding:4px 10px;}
-  .natlow-row-mobile .np .f{font-size:10px;}
-  .natlow-row-mobile .np .p{font-size:12px;}
-  .natlow-row-mobile .natlow-loading{font-size:11.5px;color:var(--faint);flex-shrink:0;white-space:nowrap;}
-
   .modal{padding:16px;}
   .tour-bubble{width:calc(100vw - 32px);}
 }
@@ -1356,9 +1369,12 @@ svg{display:block;}
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>
           <span id="search-pill-label">Autour de moi</span>
         </button>
+        <button class="natlow-btn" id="natlow-btn" aria-label="Prix les moins chers" title="Prix les moins chers">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 17l5 0 0 -5"></path><path d="M21 17l-7.5 -7.5l-4 4l-6 -6"></path></svg>
+        </button>
       </div>
-      <div class="natlow-row-mobile" id="natlow-row-mobile"><span class="natlow-loading">Chargement…</span></div>
     </div>
+    <div class="natlow-burst" id="natlow-burst"></div>
     <div id="map"></div>
     <div class="map-tools" id="draw-toolbar">
       <span class="t"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><path d="M2 2l7.586 7.586"></path></svg> Dessiner une zone</span>
@@ -2599,9 +2615,76 @@ svg{display:block;}
 
     /* ---- NATIONAL LOW ---- */
     const NAT=[['Gazole','gazole_prix'],['SP95','sp95_prix'],['SP98','sp98_prix'],['E10','e10_prix'],['E85','e85_prix'],['GPL','gplc_prix']];
+    const natlowBtn=$('natlow-btn'), natlowBurst=$('natlow-burst');
+    let natlowEntries=[];
+    function closeNatlowBurst(){
+      natlowBtn.classList.remove('open'); natlowBurst.classList.remove('open');
+    }
+    /* Calcule des positions (bx,by) sans chevauchement ni sortie d'écran, en
+       plaçant chaque bulle sur le premier angle/rayon libre le long d'un arc
+       bas-droite (le bouton est près du bord gauche : un arc symétrique
+       ferait sortir sa moitié gauche hors champ). Recalculé à chaque
+       ouverture pour s'adapter à la largeur d'écran réelle. */
+    function solveBurstLayout(n, bx0, vw){
+      const hw=44, hh=26;
+      const rectOf=(bx,by)=>[bx-hw,bx+hw,by-hh,by+hh];
+      const overlaps=(a,b)=>a[0]<b[1]&&a[1]>b[0]&&a[2]<b[3]&&a[3]>b[2];
+      const placedRects=[], out=[];
+      for(let i=0;i<n;i++){
+        const targetFrac = n>1 ? i/(n-1) : 0.5;
+        const targetAngle = 118-(118-(-16))*targetFrac;
+        const angles=[]; for(let a=-16;a<=118;a+=4) angles.push(a);
+        angles.sort((a,b)=>Math.abs(targetAngle-a)-Math.abs(targetAngle-b));
+        let found=null;
+        for(const ang of angles){
+          const rad=ang*Math.PI/180;
+          for(let r=85;r<=180;r+=3){
+            const bx=r*Math.cos(rad), by=r*Math.sin(rad);
+            const rc=rectOf(bx,by);
+            if(bx0+rc[0]<4 || bx0+rc[1]>vw-4 || rc[2]<-70) continue;
+            if(placedRects.some(p=>overlaps(rc,p))) continue;
+            found={bx,by,rc}; break;
+          }
+          if(found) break;
+        }
+        if(!found){ const rad=targetAngle*Math.PI/180, r=190; const bx=r*Math.cos(rad), by=r*Math.sin(rad); found={bx,by,rc:rectOf(bx,by)}; }
+        placedRects.push(found.rc); out.push({bx:found.bx, by:found.by});
+      }
+      return out;
+    }
+    function openNatlowBurst(){
+      const r=natlowBtn.getBoundingClientRect();
+      const bx0=r.left+r.width/2;
+      natlowBurst.style.left=bx0+'px';
+      natlowBurst.style.top=(r.top+r.height/2)+'px';
+      const layout=solveBurstLayout(natlowEntries.length, bx0, window.innerWidth);
+      natlowBurst.querySelectorAll('.natlow-bubble').forEach((el,i)=>{
+        el.style.setProperty('--bx', Math.round(layout[i].bx)+'px');
+        el.style.setProperty('--by', Math.round(layout[i].by)+'px');
+        el.style.transitionDelay=(i*0.035)+'s';
+      });
+      natlowBtn.classList.add('open'); natlowBurst.classList.add('open');
+    }
+    natlowBtn.addEventListener('click',(e)=>{
+      e.stopPropagation();
+      if(natlowBtn.classList.contains('open')) closeNatlowBurst(); else openNatlowBurst();
+    });
+    document.addEventListener('click',(e)=>{
+      if(natlowBtn.classList.contains('open') && !natlowBurst.contains(e.target) && e.target!==natlowBtn && !natlowBtn.contains(e.target)){
+        closeNatlowBurst();
+      }
+    });
+    function renderNatlowBurst(entries){
+      natlowEntries=entries;
+      natlowBurst.innerHTML=entries.map(({label,value})=>
+        `<button class="natlow-bubble" title="Voir cette station sur la carte"><span class="f">${label}</span><span class="p">${fmt(value)} €</span></button>`
+      ).join('');
+      natlowBurst.querySelectorAll('.natlow-bubble').forEach((el,i)=>{
+        el.addEventListener('click',()=>{ showNatLow(entries[i].natIndex, el); closeNatlowBurst(); });
+      });
+    }
     (async function natLow(){
       const box=$('natlow-pills');
-      const boxMobile=$('natlow-row-mobile');
       try{
         const select=NAT.map(([_,f],i)=>`min(${f}) as m${i}`).join(',');
         const url=`${API_BASE}?select=${encodeURIComponent(select)}&limit=1`;
@@ -2610,12 +2693,13 @@ svg{display:block;}
         const html=NAT.map(([label],i)=>{ const v=row['m'+i]; if(v==null) return '';
           return `<button class="np" data-nat="${i}" title="Voir cette station sur la carte"><span class="f">${label}</span><span class="p">${fmt(v)} €</span></button>`; }).join('');
         box.innerHTML=html;
-        if(boxMobile) boxMobile.innerHTML=html;
-        [box, boxMobile].forEach(b=>{ if(!b) return;
-          b.querySelectorAll('.np[data-nat]').forEach(btn=>btn.addEventListener('click',()=>showNatLow(+btn.dataset.nat, btn))); });
+        box.querySelectorAll('.np[data-nat]').forEach(btn=>btn.addEventListener('click',()=>showNatLow(+btn.dataset.nat, btn)));
+        const entries=NAT.map(([label],i)=>({label, value:row['m'+i], natIndex:i})).filter(e=>e.value!=null);
+        if(entries.length) renderNatlowBurst(entries);
+        else natlowBurst.innerHTML='';
       }catch(e){
         const msg='<span class="natlow-loading">Prix nationaux indisponibles</span>';
-        box.innerHTML=msg; if(boxMobile) boxMobile.innerHTML=msg;
+        box.innerHTML=msg;
       }
     })();
 
