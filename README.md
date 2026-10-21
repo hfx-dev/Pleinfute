@@ -14,7 +14,7 @@ Application 100% statique (un seul fichier `index.html`, aucun backend, aucune d
 - **Espagne** — détection automatique du pays via la position : en Espagne, les stations viennent de l'API officielle du MITECO (gouvernement espagnol). E10/E85 n'existent pas sur le marché espagnol et n'apparaissent donc pas pour ces stations.
 - **Allemagne** — stations issues de [Tankerkönig](https://creativecommons.tankerkoenig.de/) (nécessite une clé API gratuite). SP98/E85/GPLc ne sont pas couverts par cette API et n'apparaissent donc pas pour ces stations.
 - Le mode Itinéraire et les prix nationaux les moins chers restent pour l'instant limités à la France.
-- **Prix les moins chers de France** — une rangée de pastilles affiche, pour chaque carburant, la fourchette de prix nationale (du moins cher au plus cher, ex. « 1,654–1,892 € ») ; cliquer sur l'une d'elles centre la carte sur la station la moins chère correspondante, où qu'elle soit en France.
+- **Prix les moins chers de France** — pour chaque carburant, la fourchette de prix nationale (du moins cher au plus cher, ex. « 1,654–1,892 € »), affichée en continu dans l'en-tête sur desktop, et accessible via le bouton dédié dans la barre du haut sur mobile (ouvre un panneau superposé à la carte juste sous l'en-tête) ; cliquer sur un prix centre la carte sur la station correspondante, où qu'elle soit en France.
 - **Détection de marque** — reconnaissance automatique de l'enseigne (TotalEnergies, Leclerc, Intermarché, Carrefour, Shell, BP, etc.) à partir de l'adresse.
 
 ### Localisation et recherche
@@ -50,7 +50,7 @@ Application 100% statique (un seul fichier `index.html`, aucun backend, aucune d
 - **Partage** : copier un message prêt à envoyer, ou partager directement sur WhatsApp.
 
 ### Mobile
-- Interface entièrement repensée façon Google Maps : barre de recherche flottante, recherche plein écran avec sélection instantanée, liste des stations en feuille coulissante (glisser au doigt pour l'agrandir/réduire librement).
+- Interface entièrement repensée façon Google Maps : icônes de recherche et de prix les moins chers regroupées dans la barre du haut avec les autres réglages (aide, paramètres, thème), recherche plein écran avec sélection instantanée, liste des stations en feuille coulissante (glisser au doigt pour l'agrandir/réduire librement).
 - **Installable comme une vraie app** (PWA) : icône sur l'écran d'accueil, ouverture en plein écran sans barre de navigateur, fonctionne même hors ligne pour la coquille de l'app.
 - Visite guidée interactive (bouton « ? ») qui explique chaque fonctionnalité.
 
