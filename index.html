@@ -1035,6 +1035,11 @@ svg{display:block;}
 .style-opt .sw{width:40px;height:40px;flex-shrink:0;border-radius:50%;border:1px solid var(--border);background-size:cover;background-position:center;}
 .style-opt.sel{border-color:var(--primary);color:var(--primary);}
 .style-opt.sel .sw{box-shadow:0 0 0 2px var(--primary);}
+.lang-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;}
+.lang-opt{padding:10px 4px;border-radius:12px;border:2px solid var(--border);font-size:12.5px;font-weight:700;
+  color:var(--muted);background:var(--surface-2);text-align:center;}
+.lang-opt:hover{background:var(--surface-3);}
+.lang-opt.sel{border-color:var(--primary);color:var(--primary);background:var(--surface);}
 .detail-row{display:flex;align-items:center;gap:10px;padding:7px 2px;}
 .detail-row svg{width:17px;height:17px;flex-shrink:0;color:var(--muted);}
 .detail-row .dr-label{flex:1;font-size:13px;font-weight:600;color:var(--text);}
@@ -1347,19 +1352,19 @@ svg{display:block;}
       Plein Futé
     </div>
     <div class="natlow">
-      <span class="natlow-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 17l5 0 0 -5"></path><path d="M21 17l-7.5 -7.5l-4 4l-6 -6"></path></svg> Moins chers en France</span>
-      <div class="natlow-pills" id="natlow-pills"><span class="natlow-loading">Chargement…</span></div>
+      <span class="natlow-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 17l5 0 0 -5"></path><path d="M21 17l-7.5 -7.5l-4 4l-6 -6"></path></svg> <span data-i18n="natlowLabel">Moins chers en France</span></span>
+      <div class="natlow-pills" id="natlow-pills"><span class="natlow-loading" data-i18n="natlowLoading">Chargement…</span></div>
     </div>
     <div class="header-right">
       <span class="badge-od"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M12 5v14"></path></svg> Open Data</span>
-      <div class="status" id="api-status"><span class="spin"></span> Chargement…</div>
-      <button class="icon-btn" id="tour-btn" aria-label="Aide / visite guidée" title="Comment ça marche ?">
+      <div class="status" id="api-status"><span class="spin"></span> <span data-i18n="apiStatusLoading">Chargement…</span></div>
+      <button class="icon-btn" id="tour-btn" data-i18n-aria="tourBtnAria" data-i18n-title="tourBtnTitle" aria-label="Aide / visite guidée" title="Comment ça marche ?">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 1.5-1.5 2-2.25 2.75S12 13.5 12 14.5"></path><circle cx="12" cy="17.6" r=".6" fill="currentColor" stroke="none"></circle></svg>
       </button>
-      <button class="icon-btn" id="settings-btn" aria-label="Paramètres" title="Paramètres">
+      <button class="icon-btn" id="settings-btn" data-i18n-aria="settingsBtnAria" data-i18n-title="settingsBtnAria" aria-label="Paramètres" title="Paramètres">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
       </button>
-      <button class="icon-btn" id="theme-btn" aria-label="Changer le thème">
+      <button class="icon-btn" id="theme-btn" data-i18n-aria="themeBtnAria" aria-label="Changer le thème">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"></path></svg>
       </button>
     </div>
@@ -1367,16 +1372,16 @@ svg{display:block;}
 
   <aside class="sidebar" data-sheet="peek" id="sidebar">
    <div class="sheet-slide" id="sheet-slide">
-    <button class="sheet-handle" id="sheet-handle" aria-label="Agrandir/réduire la liste"><span></span></button>
+    <button class="sheet-handle" id="sheet-handle" data-i18n-aria="sheetHandleAria" aria-label="Agrandir/réduire la liste"><span></span></button>
     <div class="results-head">
       <span class="results-count" id="results-count"><b>0</b> stations</span>
-      <button class="filters-toggle" id="filters-toggle" title="Masquer les filtres" aria-expanded="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg><span>Filtres</span>
+      <button class="filters-toggle" id="filters-toggle" data-i18n-title="filtersHideTitle" title="Masquer les filtres" aria-expanded="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg><span data-i18n="filtersShow">Filtres</span>
       </button>
       <div class="legend">
-        <span><i style="background:var(--tier-low)"></i>Bas</span>
-        <span><i style="background:var(--tier-mid)"></i>Moyen</span>
-        <span><i style="background:var(--tier-high)"></i>Élevé</span>
+        <span><i style="background:var(--tier-low)"></i><span data-i18n="legendLow">Bas</span></span>
+        <span><i style="background:var(--tier-mid)"></i><span data-i18n="legendMid">Moyen</span></span>
+        <span><i style="background:var(--tier-high)"></i><span data-i18n="legendHigh">Élevé</span></span>
       </div>
     </div>
 
@@ -1392,11 +1397,11 @@ svg{display:block;}
   <div class="map-area">
     <div class="map-header-stack" id="map-header-stack">
       <div class="topbar">
-        <button class="search-pill" id="search-pill" aria-label="Rechercher">
+        <button class="search-pill" id="search-pill" data-i18n-aria="searchPillAria" aria-label="Rechercher">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>
-          <span id="search-pill-label">Autour de moi</span>
+          <span id="search-pill-label" data-i18n="searchDefaultLabel">Autour de moi</span>
         </button>
-        <button class="natlow-btn" id="natlow-btn" aria-label="Prix les moins chers" title="Prix les moins chers">
+        <button class="natlow-btn" id="natlow-btn" data-i18n-aria="natlowBtnTitle" data-i18n-title="natlowBtnTitle" aria-label="Prix les moins chers" title="Prix les moins chers">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 17l5 0 0 -5"></path><path d="M21 17l-7.5 -7.5l-4 4l-6 -6"></path></svg>
         </button>
       </div>
@@ -1404,53 +1409,53 @@ svg{display:block;}
     <div class="natlow-burst" id="natlow-burst"></div>
     <div id="map"></div>
     <div class="map-tools" id="draw-toolbar">
-      <span class="t"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><path d="M2 2l7.586 7.586"></path></svg> Dessiner une zone</span>
-      <button class="dtool" data-draw="circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle></svg> Cercle</button>
-      <button class="dtool" data-draw="rectangle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"></rect></svg> Rectangle</button>
-      <button class="dtool" data-draw="polygon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3v12h8v6h6"></path></svg> Forme libre</button>
-      <button class="dtool danger" data-draw="clear"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"></path></svg> Effacer la zone</button>
+      <span class="t"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><path d="M2 2l7.586 7.586"></path></svg> <span data-i18n="drawZoneLabel">Dessiner une zone</span></span>
+      <button class="dtool" data-draw="circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle></svg> <span data-i18n="drawCircle">Cercle</span></button>
+      <button class="dtool" data-draw="rectangle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"></rect></svg> <span data-i18n="drawRectangle">Rectangle</span></button>
+      <button class="dtool" data-draw="polygon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3v12h8v6h6"></path></svg> <span data-i18n="drawPolygon">Forme libre</span></button>
+      <button class="dtool danger" data-draw="clear"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"></path></svg> <span data-i18n="drawClear">Effacer la zone</span></button>
     </div>
     <div class="zone-banner" id="zone-banner">
       <span id="zone-banner-text">Zone active</span>
-      <button id="zone-clear-btn">Effacer</button>
+      <button id="zone-clear-btn" data-i18n="zoneClearBtn">Effacer</button>
     </div>
     <div class="map-right">
-      <button class="layers-btn" id="layers-btn" aria-label="Type de carte" title="Type de carte">
+      <button class="layers-btn" id="layers-btn" data-i18n-aria="layersBtnTitle" data-i18n-title="layersBtnTitle" aria-label="Type de carte" title="Type de carte">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5z"></path><path d="m2 17 10 5 10-5M2 12l10 5 10-5"></path></svg>
       </button>
     </div>
     <div class="map-bottomright">
-      <button class="locate" id="locate-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"></circle><path d="M12 2v3M12 19v3M2 12h3M19 12h3"></path><circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none"></circle></svg> Ma position</button>
+      <button class="locate" id="locate-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"></circle><path d="M12 2v3M12 19v3M2 12h3M19 12h3"></path><circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none"></circle></svg> <span data-i18n="locateBtnText">Ma position</span></button>
     </div>
     <button class="search-here-btn" id="search-here-btn">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>
-      Rechercher ici
+      <span data-i18n="searchHereBtn">Rechercher ici</span>
     </button>
     <div class="layers-panel" id="layers-panel">
-      <h4>Type de carte</h4>
+      <h4 data-i18n="layersBtnTitle">Type de carte</h4>
       <div class="style-grid">
-        <button class="style-opt" data-style="minimal"><span class="sw" style="background:linear-gradient(135deg,#f2f3f0,#dbdfd6)"></span>Minimum</button>
-        <button class="style-opt" data-style="satellite"><span class="sw" style="background:linear-gradient(135deg,#3a4a2f,#1d2a1a)"></span>Satellite</button>
+        <button class="style-opt" data-style="minimal"><span class="sw" style="background:linear-gradient(135deg,#f2f3f0,#dbdfd6)"></span><span data-i18n="mapStyleMinimal">Minimum</span></button>
+        <button class="style-opt" data-style="satellite"><span class="sw" style="background:linear-gradient(135deg,#3a4a2f,#1d2a1a)"></span><span data-i18n="mapStyleSatellite">Satellite</span></button>
       </div>
-      <h4>Détails de la carte</h4>
+      <h4 data-i18n="mapDetailsTitle">Détails de la carte</h4>
       <div class="detail-row" id="detail-fire">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c1 3-2 4-2 7a4 4 0 0 0 8 0c0-1-.5-2-1-3 1 0 2 1 2 3a7 7 0 1 1-14 0c0-5 4-6 4-10 1 1 2 2 3 3z"></path></svg>
-        <span class="dr-label">Feu de forêt</span>
+        <span class="dr-label" data-i18n="fireLayerLabel">Feu de forêt</span>
         <span class="dr-switch" id="switch-fire"></span>
       </div>
-      <div class="detail-row disabled" title="Nécessite un abonnement à un fournisseur de trafic en temps réel (non disponible gratuitement)">
+      <div class="detail-row disabled" data-i18n-title="trafficLayerTooltip" title="Nécessite un abonnement à un fournisseur de trafic en temps réel (non disponible gratuitement)">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11h18M3 15h18M7 3v4M17 3v4M7 17v4M17 17v4"></path></svg>
-        <span class="dr-label">Trafic<br><span class="dr-sub">Nécessite une clé API payante</span></span>
+        <span class="dr-label"><span data-i18n="trafficLayerLabel">Trafic</span><br><span class="dr-sub" data-i18n="trafficLayerSub">Nécessite une clé API payante</span></span>
         <span class="dr-switch"></span>
       </div>
       <div class="detail-row" id="detail-transit">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="14" rx="3"></rect><path d="M4 12h16M8 18l-2 3M16 18l2 3"></path><circle cx="8" cy="15" r="0" fill="currentColor"></circle></svg>
-        <span class="dr-label">Transport en commun</span>
+        <span class="dr-label" data-i18n="transitLayerLabel">Transport en commun</span>
         <span class="dr-switch" id="switch-transit"></span>
       </div>
-      <div class="detail-row disabled" title="Nécessite un rendu 3D (non disponible dans cette version)">
+      <div class="detail-row disabled" data-i18n-title="buildings3dTooltip" title="Nécessite un rendu 3D (non disponible dans cette version)">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10l8-5 8 5v10"></path><path d="M9 20v-7h6v7"></path></svg>
-        <span class="dr-label">Bâtiments en relief<br><span class="dr-sub">Nécessite une refonte 3D</span></span>
+        <span class="dr-label"><span data-i18n="buildings3dLabel">Bâtiments en relief</span><br><span class="dr-sub" data-i18n="buildings3dSub">Nécessite une refonte 3D</span></span>
         <span class="dr-switch"></span>
       </div>
     </div>
@@ -1459,33 +1464,33 @@ svg{display:block;}
 
 <div class="sb-top" id="search-overlay" data-mode="around">
   <div class="search-overlay-head">
-    <button class="search-overlay-back" id="search-back" aria-label="Retour"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
-    <b id="search-overlay-title">Rechercher</b>
+    <button class="search-overlay-back" id="search-back" data-i18n-aria="searchBackAria" aria-label="Retour"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
+    <b id="search-overlay-title" data-i18n="searchTitleDefault">Rechercher</b>
   </div>
   <div class="search-overlay-body">
   <div class="mode-seg" id="mode-seg">
-    <button data-mode="around" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"></circle><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"></path></svg>Autour de moi</button>
-    <button data-mode="route"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="19" r="2.5"></circle><circle cx="18" cy="5" r="2.5"></circle><path d="M8.5 19H15a3.5 3.5 0 0 0 0-7H9a3.5 3.5 0 0 1 0-7h6.5"></path></svg>Itinéraire</button>
+    <button data-mode="around" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"></circle><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"></path></svg><span data-i18n="modeAroundBtn">Autour de moi</span></button>
+    <button data-mode="route"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="19" r="2.5"></circle><circle cx="18" cy="5" r="2.5"></circle><path d="M8.5 19H15a3.5 3.5 0 0 0 0-7H9a3.5 3.5 0 0 1 0-7h6.5"></path></svg><span data-i18n="modeRouteBtn">Itinéraire</span></button>
   </div>
 
   <div id="around-panel">
     <div class="search" id="search">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>
-      <input type="text" id="search-input" placeholder="Rechercher une ville…" autocomplete="off" role="combobox" aria-expanded="false" aria-autocomplete="list">
-      <button class="search-clear" id="search-clear" aria-label="Effacer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+      <input type="text" id="search-input" data-i18n-placeholder="searchPlaceholder" placeholder="Rechercher une ville…" autocomplete="off" role="combobox" aria-expanded="false" aria-autocomplete="list">
+      <button class="search-clear" id="search-clear" data-i18n-aria="searchClearAria" aria-label="Effacer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
       <div class="suggest" id="suggest" role="listbox"></div>
     </div>
   </div>
 
   <div id="route-panel" class="route-panel">
     <div class="route-stops" id="route-stops"></div>
-    <button class="route-add" id="route-add"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>Ajouter une étape</button>
-    <button class="route-opts-btn" id="route-opts-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>Options <span class="opt-count" id="opt-count" hidden>0</span></button>
-    <button class="route-go" id="route-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"></path></svg>Calculer l'itinéraire</button>
+    <button class="route-add" id="route-add"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg><span data-i18n="routeAddStop">Ajouter une étape</span></button>
+    <button class="route-opts-btn" id="route-opts-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg><span data-i18n="routeOptsBtn">Options</span> <span class="opt-count" id="opt-count" hidden>0</span></button>
+    <button class="route-go" id="route-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"></path></svg><span data-i18n="routeGoBtn">Calculer l'itinéraire</span></button>
     <div class="route-info" id="route-info"></div>
   </div>
   <div>
-    <span class="field-label">Type de carburant</span>
+    <span class="field-label" data-i18n="fuelFieldLabel">Type de carburant</span>
     <div class="fuels" id="fuels">
       <button class="chip" data-fuel="SP95">SP95</button>
       <button class="chip" data-fuel="SP98">SP98</button>
@@ -1497,18 +1502,18 @@ svg{display:block;}
   </div>
   <div class="controls-row">
     <div>
-      <span class="field-label">Trier par</span>
+      <span class="field-label" data-i18n="sortFieldLabel">Trier par</span>
       <div class="sel-wrap">
         <select class="sel" id="sort">
-          <option value="price">Prix croissant</option>
-          <option value="distance">Distance</option>
-          <option value="name">Nom A → Z</option>
+          <option value="price" data-i18n="sortPrice">Prix croissant</option>
+          <option value="distance" data-i18n="sortDistance">Distance</option>
+          <option value="name" data-i18n="sortName">Nom A → Z</option>
         </select>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"></path></svg>
       </div>
     </div>
     <div id="radius-block">
-      <span class="field-label">Rayon</span>
+      <span class="field-label" data-i18n="radiusFieldLabel">Rayon</span>
       <div class="seg" id="radius">
         <button data-r="5">5</button>
         <button data-r="10">10</button>
@@ -1522,22 +1527,28 @@ svg{display:block;}
 <div class="modal-overlay" id="geo-primer-overlay" hidden>
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="geo-primer-title">
     <div class="modal-head">
-      <span id="geo-primer-title">Autoriser la localisation ?</span>
+      <span id="geo-primer-title" data-i18n="geoPrimerTitle">Autoriser la localisation ?</span>
     </div>
-    <p class="modal-body-text">Plein Futé s'en sert uniquement pour trouver les stations-service les moins chères <b>autour de toi</b>. Ta position n'est jamais envoyée ailleurs ni conservée.</p>
-    <button class="route-go" id="geo-primer-allow">Autoriser ma position</button>
-    <button class="modal-btn-secondary" id="geo-primer-skip">Chercher une ville plutôt</button>
+    <p class="modal-body-text" id="geo-primer-body" data-i18n="geoPrimerBody">Plein Futé s'en sert uniquement pour trouver les stations-service les moins chères autour de toi. Ta position n'est jamais envoyée ailleurs ni conservée.</p>
+    <button class="route-go" id="geo-primer-allow" data-i18n="geoPrimerAllow">Autoriser ma position</button>
+    <button class="modal-btn-secondary" id="geo-primer-skip" data-i18n="geoPrimerSkip">Chercher une ville plutôt</button>
   </div>
 </div>
 
 <div class="modal-overlay" id="settings-overlay" hidden>
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="settings-title">
     <div class="modal-head">
-      <span id="settings-title">Paramètres</span>
-      <button class="modal-close" id="settings-close" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+      <span id="settings-title" data-i18n="settingsTitle">Paramètres</span>
+      <button class="modal-close" id="settings-close" data-i18n-aria="settingsCloseAria" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
     </div>
-    <h4 class="modal-sec-title">Localisation</h4>
-    <p class="modal-body-text">Utilisée uniquement pour trouver les stations-service les moins chères autour de toi. Jamais envoyée ailleurs ni conservée.</p>
+    <h4 class="modal-sec-title" data-i18n="settingsLangSectionTitle">Langue</h4>
+    <div class="lang-grid" id="lang-grid">
+      <button class="lang-opt" data-lang="fr">Français</button>
+      <button class="lang-opt" data-lang="en">English</button>
+      <button class="lang-opt" data-lang="es">Español</button>
+    </div>
+    <h4 class="modal-sec-title" data-i18n="settingsGeoSectionTitle">Localisation</h4>
+    <p class="modal-body-text" data-i18n="settingsGeoBody">Utilisée uniquement pour trouver les stations-service les moins chères autour de toi. Jamais envoyée ailleurs ni conservée.</p>
     <div class="settings-geo-status" id="settings-geo-status"></div>
     <button class="route-go" id="settings-geo-btn">Autoriser ma position</button>
     <div class="modal-note" id="settings-geo-help" hidden></div>
@@ -1547,26 +1558,26 @@ svg{display:block;}
 <div class="modal-overlay" id="opts-overlay" hidden>
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="opts-title">
     <div class="modal-head">
-      <span id="opts-title">Options de trajet</span>
-      <button class="modal-close" id="opts-close" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+      <span id="opts-title" data-i18n="optsTitle">Options de trajet</span>
+      <button class="modal-close" id="opts-close" data-i18n-aria="optsCloseAria" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
     </div>
     <label class="opt-row">
-      <span class="opt-lbl">Éviter les péages</span>
+      <span class="opt-lbl" data-i18n="optTolls">Éviter les péages</span>
       <span class="switch"><input type="checkbox" id="opt-tolls"><i></i></span>
     </label>
     <label class="opt-row">
-      <span class="opt-lbl">Éviter les autoroutes</span>
+      <span class="opt-lbl" data-i18n="optHighways">Éviter les autoroutes</span>
       <span class="switch"><input type="checkbox" id="opt-highways"><i></i></span>
     </label>
     <label class="opt-row">
-      <span class="opt-lbl">Éviter les ferries</span>
+      <span class="opt-lbl" data-i18n="optFerries">Éviter les ferries</span>
       <span class="switch"><input type="checkbox" id="opt-ferries"><i></i></span>
     </label>
     <label class="opt-row">
-      <span class="opt-lbl">Consommation<br><span class="opt-sub">pour le coût carburant (L/100 km)</span></span>
+      <span class="opt-lbl"><span data-i18n="optConsoLabel">Consommation</span><br><span class="opt-sub" data-i18n="optConsoSub">pour le coût carburant (L/100 km)</span></span>
       <input type="number" class="opt-num" id="opt-conso" min="3" max="25" step="0.1" value="6.5">
     </label>
-    <div class="modal-note">Les options s'appliquent au prochain calcul d'itinéraire. Péages estimés (~7,7 c€/km, véhicule classe 1).</div>
+    <div class="modal-note" data-i18n="optsNote">Les options s'appliquent au prochain calcul d'itinéraire. Péages estimés (~7,7 c€/km, véhicule classe 1).</div>
     <button class="route-go" id="opts-ok">OK</button>
   </div>
 </div>
@@ -1574,12 +1585,12 @@ svg{display:block;}
 <div class="modal-overlay" id="share-overlay" hidden>
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="share-title">
     <div class="modal-head">
-      <span id="share-title">Partager la station</span>
-      <button class="modal-close" id="share-close" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+      <span id="share-title" data-i18n="shareTitle">Partager la station</span>
+      <button class="modal-close" id="share-close" data-i18n-aria="shareCloseAria" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
     </div>
     <textarea class="share-msg" id="share-msg" readonly rows="9"></textarea>
     <div class="share-actions">
-      <button class="share-btn copy" id="share-copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copier le message</button>
+      <button class="share-btn copy" id="share-copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span data-i18n="shareCopyBtn">Copier le message</span></button>
       <button class="share-btn wa" id="share-wa"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.4 14.2c-.2.6-1.2 1.2-1.7 1.2-.4.1-1 .1-1.6-.1-.4-.1-.9-.3-1.5-.6-2.6-1.1-4.3-3.8-4.4-4-.1-.2-1-1.4-1-2.7 0-1.3.6-1.9.9-2.2.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .6l-.4.6-.4.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1.1 2.2 1.4 2.5 1.5.3.1.5.1.7-.1l1-1.2c.2-.3.4-.2.7-.1l2 .9c.3.1.5.2.6.3 0 .2 0 .8-.2 1.4z"/></svg>WhatsApp</button>
     </div>
   </div>
@@ -1590,6 +1601,362 @@ svg{display:block;}
     const $ = (id) => document.getElementById(id);
     const root = document.documentElement;
     if (!root.dataset.theme) root.dataset.theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+
+    /* ---- TRADUCTIONS (FR / EN / ES) ----
+       `t(key, vars)` cherche la clé dans la langue active, retombe sur le
+       français puis sur la clé elle-même si rien n'est trouvé. Les éléments
+       statiques du HTML portent des attributs data-i18n* appliqués par
+       applyI18n() ; le contenu généré en JS (listes, pop-ups, messages de
+       statut...) appelle t() directement à chaque rendu. */
+    const I18N = {
+      fr: {
+        natlowLabel:`Moins chers en France`, loading:`Chargement…`,
+        tourBtnTitle:`Comment ça marche ?`, tourBtnAria:`Aide / visite guidée`,
+        settingsBtnAria:`Paramètres`, themeBtnAria:`Changer le thème`,
+        sheetHandleAria:`Agrandir/réduire la liste`,
+        filtersShow:`Filtres`, filtersHideTitle:`Masquer les filtres`, filtersShowTitle:`Afficher les filtres`,
+        legendLow:`Bas`, legendMid:`Moyen`, legendHigh:`Élevé`,
+        searchPillAria:`Rechercher`, searchDefaultLabel:`Autour de moi`,
+        natlowBtnTitle:`Prix les moins chers`,
+        drawZoneLabel:`Dessiner une zone`, drawCircle:`Cercle`, drawRectangle:`Rectangle`,
+        drawPolygon:`Forme libre`, drawClear:`Effacer la zone`,
+        zoneActive:`Zone « {label} » active`, zoneClearBtn:`Effacer`,
+        locateBtnText:`Ma position`, searchHereBtn:`Rechercher ici`,
+        layersBtnTitle:`Type de carte`, mapStyleMinimal:`Minimum`, mapStyleSatellite:`Satellite`,
+        mapDetailsTitle:`Détails de la carte`,
+        fireLayerLabel:`Feu de forêt`,
+        trafficLayerLabel:`Trafic`, trafficLayerSub:`Nécessite une clé API payante`,
+        trafficLayerTooltip:`Nécessite un abonnement à un fournisseur de trafic en temps réel (non disponible gratuitement)`,
+        transitLayerLabel:`Transport en commun`,
+        buildings3dLabel:`Bâtiments en relief`, buildings3dSub:`Nécessite une refonte 3D`,
+        buildings3dTooltip:`Nécessite un rendu 3D (non disponible dans cette version)`,
+        searchBackAria:`Retour`, searchTitleDefault:`Rechercher`, searchTitleRoute:`Itinéraire`,
+        modeAroundBtn:`Autour de moi`, modeRouteBtn:`Itinéraire`,
+        searchPlaceholder:`Rechercher une ville…`, searchClearAria:`Effacer`,
+        noCityFound:`Aucune ville trouvée`, noResult:`Aucun résultat`,
+        stopDeparture:`Départ…`, stopArrival:`Arrivée…`, stopWaypoint:`Étape…`,
+        routeAddStop:`Ajouter une étape`, routeOptsBtn:`Options`, routeGoBtn:`Calculer l'itinéraire`,
+        removeStopAria:`Supprimer l'étape`,
+        fuelFieldLabel:`Type de carburant`,
+        sortFieldLabel:`Trier par`, sortPrice:`Prix croissant`, sortDistance:`Distance`, sortName:`Nom A → Z`,
+        radiusFieldLabel:`Rayon`,
+        fuelGazole:`Gazole`, fuelGPL:`GPL`,
+        geoPrimerTitle:`Autoriser la localisation ?`,
+        geoPrimerBody:`Plein Futé s'en sert uniquement pour trouver les stations-service les moins chères autour de toi. Ta position n'est jamais envoyée ailleurs ni conservée.`,
+        geoPrimerAllow:`Autoriser ma position`, geoPrimerSkip:`Chercher une ville plutôt`,
+        settingsTitle:`Paramètres`, settingsCloseAria:`Fermer`,
+        settingsGeoSectionTitle:`Localisation`,
+        settingsGeoBody:`Utilisée uniquement pour trouver les stations-service les moins chères autour de toi. Jamais envoyée ailleurs ni conservée.`,
+        settingsGeoGranted:`Autorisée`, settingsGeoDenied:`Refusée`, settingsGeoUnknown:`Pas encore demandée`,
+        settingsGeoBtnGranted:`Actualiser ma position`, settingsGeoBtnDenied:`Réessayer`, settingsGeoBtnUnknown:`Autoriser ma position`,
+        settingsGeoHelp:`Ton navigateur a mémorisé ce refus : impossible de rouvrir la demande automatiquement. Pour réactiver, clique sur l'icône 🔒 (ou ⓘ) à gauche de l'adresse du site, ouvre « Localisation » (ou « Permissions du site ») et choisis « Autoriser », puis recharge la page.`,
+        settingsLangSectionTitle:`Langue`,
+        optsTitle:`Options de trajet`, optsCloseAria:`Fermer`,
+        optTolls:`Éviter les péages`, optHighways:`Éviter les autoroutes`, optFerries:`Éviter les ferries`,
+        optConsoLabel:`Consommation`, optConsoSub:`pour le coût carburant (L/100 km)`,
+        optsNote:`Les options s'appliquent au prochain calcul d'itinéraire. Péages estimés (~7,7 c€/km, véhicule classe 1).`,
+        shareTitle:`Partager la station`, shareCloseAria:`Fermer`,
+        shareCopyBtn:`Copier le message`, shareCopiedBtn:`Copié !`,
+        shareBtnTitle:`Partager cette station`, shareBtnTitleShort:`Partager`,
+        shareMsgIntro:`⛽ Voici une station essence qui pourrait t'intéresser !`,
+        shareMsgOpenGps:`Ouvre-la dans ton GPS préféré :`,
+        tour1Title:`Prix les moins chers de France`,
+        tour1Text:`Ces pastilles affichent en direct le prix le plus bas du moment pour chaque carburant, partout en France. Clique sur une pastille pour voir où se trouve la station.`,
+        tour2Title:`Deux façons de chercher`,
+        tour2Text:`Bascule entre « Autour de moi » pour chercher près d'un point, et « Itinéraire » pour planifier un trajet.`,
+        tour3Title:`Chercher une ville`,
+        tour3Text:`Tape une ville ou une adresse pour déplacer la carte ailleurs qu'à ta position actuelle.`,
+        tour4Title:`Choisir le carburant`,
+        tour4Text:`Sélectionne le carburant à comparer : SP95, SP98, Gazole, E10, E85 ou GPL.`,
+        tour5Title:`Régler le rayon`,
+        tour5Text:`Choisis jusqu'à quelle distance chercher des stations autour du point sélectionné.`,
+        tour6Title:`Dessiner une zone`,
+        tour6Text:`Pour une recherche plus précise qu'un simple rayon, dessine une zone directement sur la carte : cercle, rectangle ou forme libre.`,
+        tour7Title:`Se localiser`,
+        tour7Text:`Clique ici pour te localiser et voir tout de suite les stations autour de toi.`,
+        tour8Title:`La liste des stations`,
+        tour8Text:`Les stations sont classées par prix, avec un code couleur du moins cher (vert) au plus cher (rouge). Clique sur une carte pour la centrer sur la carte, ou partage-la.`,
+        tour9Title:`Planifier un itinéraire`,
+        tour9Text:`Renseigne un point de départ et une arrivée, et ajoute des étapes intermédiaires si besoin.`,
+        tour10Title:`Calculer le trajet`,
+        tour10Text:`Configure d'abord les options (péages, autoroutes, ferries, consommation du véhicule), puis calcule l'itinéraire : les stations les moins chères sur ton trajet s'affichent automatiquement, dans l'ordre de passage.`,
+        tour11Title:`Thème clair / sombre`,
+        tour11Text:`Bascule l'affichage entre thème clair et thème sombre.`,
+        tourCloseAria:`Fermer la visite guidée`, tourPrev:`Précédent`, tourNext:`Suivant`, tourFinish:`Terminer`,
+        apiStatusLoading:`Chargement…`, apiStatusError:`Erreur de chargement`,
+        apiStatusRouteCalc:`Itinéraire…`, apiStatusRouteNotFound:`Itinéraire introuvable`,
+        apiStatusSearchingStations:`Recherche des stations…`, apiStatusRouteMode:`Mode itinéraire`,
+        apiStatusGeoUnsupported:`Géolocalisation non supportée`, apiStatusGeoDenied:`Localisation refusée`,
+        apiStatusGeoNotShared:`Position non communiquée`, apiStatusGeoUnavailable:`Position indisponible`,
+        routeNotFoundMsg:`Itinéraire introuvable — vérifie les points.`, routeComputing:`Calcul de l'itinéraire…`,
+        routeTagNoTolls:`sans péages`, routeTagNoHighways:`sans autoroutes`, routeTagNoFerries:`sans ferries`,
+        routeFuelCost:`⛽ Carburant ≈`, routeFuelCostSub:`({fuel} moy. {avg} €, {conso} L/100)`,
+        routeTollCost:`🛣️ Péages ≈`, routeTollCostSub:`({km} km à péage, estimation)`,
+        onRouteSuffix:`sur le trajet`, distanceFromRoute:`du trajet`,
+        geoToastNotSupported:`Géolocalisation non supportée par le navigateur`,
+        geoToastLocating:`Localisation…`, geoToastFound:`Position trouvée`, geoToastFoundAcc:`Position trouvée ({acc})`,
+        geoToastDenied:`Accès à la position refusé — autorise-le dans le navigateur`,
+        geoToastTimeout:`Localisation trop longue, réessaie`, geoToastUnavailable:`Position indisponible, réessaie`,
+        geoToastStationNotFound:`Station introuvable pour {label}`,
+        emptyGeoTitleDenied:`Localisation refusée`, emptyGeoTitleDefault:`Trouve les stations près de toi`,
+        emptyGeoTextDenied:`Pas de souci : cherche une ville, ou réactive l'accès à ta position dans les Paramètres.`,
+        emptyGeoTextDefault:`Autorise ta position, ou cherche une ville pour voir les stations autour d'un autre point.`,
+        emptySearchCityBtn:`Chercher une ville`,
+        emptyGeoActionDenied:`Paramètres de localisation`, emptyGeoActionDefault:`Autoriser ma position`,
+        emptyRouteNoResultTitle:`Aucune station sur le trajet`,
+        emptyRouteNoResultText:`Aucune station avec ce carburant dans le couloir de 10&nbsp;km. Essaie un autre carburant.`,
+        emptyRoutePlanTitle:`Planifie ton trajet`,
+        emptyRoutePlanText:`Renseigne un départ et une arrivée (et des étapes), puis lance « Calculer l'itinéraire » pour voir les stations les moins chères en chemin.`,
+        emptyNoStationTitle:`Aucune station trouvée`,
+        emptyNoStationText:`Essayez d'élargir le rayon, changez de carburant ou recherchez une autre ville.`,
+        stationSingular:`station`, stationPlural:`stations`,
+        natlowLoading:`Chargement…`, natlowUnavailable:`Prix nationaux indisponibles`,
+        natlowCheapestTitle:`Voir la station la moins chère sur la carte`,
+        openBadgeH24:`24h/24`, openBadgeOpen:`Ouvert`, bestChipTitle:`Le moins cher`,
+        natPopupCheapest:`{fuel} le moins cher de France`,
+      },
+      en: {
+        natlowLabel:`Cheapest in France`, loading:`Loading…`,
+        tourBtnTitle:`How does it work?`, tourBtnAria:`Help / guided tour`,
+        settingsBtnAria:`Settings`, themeBtnAria:`Toggle theme`,
+        sheetHandleAria:`Expand/collapse the list`,
+        filtersShow:`Filters`, filtersHideTitle:`Hide filters`, filtersShowTitle:`Show filters`,
+        legendLow:`Low`, legendMid:`Medium`, legendHigh:`High`,
+        searchPillAria:`Search`, searchDefaultLabel:`Nearby`,
+        natlowBtnTitle:`Lowest prices`,
+        drawZoneLabel:`Draw an area`, drawCircle:`Circle`, drawRectangle:`Rectangle`,
+        drawPolygon:`Free shape`, drawClear:`Clear the area`,
+        zoneActive:`{label} area active`, zoneClearBtn:`Clear`,
+        locateBtnText:`My location`, searchHereBtn:`Search this area`,
+        layersBtnTitle:`Map style`, mapStyleMinimal:`Minimal`, mapStyleSatellite:`Satellite`,
+        mapDetailsTitle:`Map details`,
+        fireLayerLabel:`Wildfires`,
+        trafficLayerLabel:`Traffic`, trafficLayerSub:`Requires a paid API key`,
+        trafficLayerTooltip:`Requires a subscription to a real-time traffic provider (not available for free)`,
+        transitLayerLabel:`Public transit`,
+        buildings3dLabel:`3D buildings`, buildings3dSub:`Requires a 3D rebuild`,
+        buildings3dTooltip:`Requires 3D rendering (not available in this version)`,
+        searchBackAria:`Back`, searchTitleDefault:`Search`, searchTitleRoute:`Route`,
+        modeAroundBtn:`Nearby`, modeRouteBtn:`Route`,
+        searchPlaceholder:`Search for a city…`, searchClearAria:`Clear`,
+        noCityFound:`No city found`, noResult:`No results`,
+        stopDeparture:`Starting point…`, stopArrival:`Destination…`, stopWaypoint:`Stop…`,
+        routeAddStop:`Add a stop`, routeOptsBtn:`Options`, routeGoBtn:`Calculate route`,
+        removeStopAria:`Remove this stop`,
+        fuelFieldLabel:`Fuel type`,
+        sortFieldLabel:`Sort by`, sortPrice:`Price (low to high)`, sortDistance:`Distance`, sortName:`Name A → Z`,
+        radiusFieldLabel:`Radius`,
+        fuelGazole:`Diesel`, fuelGPL:`LPG`,
+        geoPrimerTitle:`Allow location access?`,
+        geoPrimerBody:`Plein Futé only uses it to find the cheapest fuel stations around you. Your location is never sent anywhere else or stored.`,
+        geoPrimerAllow:`Allow my location`, geoPrimerSkip:`Search for a city instead`,
+        settingsTitle:`Settings`, settingsCloseAria:`Close`,
+        settingsGeoSectionTitle:`Location`,
+        settingsGeoBody:`Only used to find the cheapest fuel stations around you. Never sent anywhere else or stored.`,
+        settingsGeoGranted:`Allowed`, settingsGeoDenied:`Denied`, settingsGeoUnknown:`Not requested yet`,
+        settingsGeoBtnGranted:`Refresh my location`, settingsGeoBtnDenied:`Try again`, settingsGeoBtnUnknown:`Allow my location`,
+        settingsGeoHelp:`Your browser remembered this refusal, so it can't reopen the request automatically. To re-enable it, click the 🔒 (or ⓘ) icon to the left of the site's address, open "Location" (or "Site permissions") and choose "Allow", then reload the page.`,
+        settingsLangSectionTitle:`Language`,
+        optsTitle:`Route options`, optsCloseAria:`Close`,
+        optTolls:`Avoid tolls`, optHighways:`Avoid highways`, optFerries:`Avoid ferries`,
+        optConsoLabel:`Fuel consumption`, optConsoSub:`for the fuel cost (L/100 km)`,
+        optsNote:`Options apply to the next route calculation. Estimated tolls (~7.7 c€/km, class 1 vehicle).`,
+        shareTitle:`Share this station`, shareCloseAria:`Close`,
+        shareCopyBtn:`Copy message`, shareCopiedBtn:`Copied!`,
+        shareBtnTitle:`Share this station`, shareBtnTitleShort:`Share`,
+        shareMsgIntro:`⛽ Here's a fuel station that might interest you!`,
+        shareMsgOpenGps:`Open it in your favorite GPS app:`,
+        tour1Title:`Cheapest prices in France`,
+        tour1Text:`These pills show, live, the current lowest price for each fuel type, anywhere in France. Click one to see where that station is.`,
+        tour2Title:`Two ways to search`,
+        tour2Text:`Switch between "Nearby" to search around a point, and "Route" to plan a trip.`,
+        tour3Title:`Search for a city`,
+        tour3Text:`Type a city or address to move the map somewhere other than your current location.`,
+        tour4Title:`Choose the fuel type`,
+        tour4Text:`Select the fuel to compare: SP95, SP98, Diesel, E10, E85 or LPG.`,
+        tour5Title:`Set the radius`,
+        tour5Text:`Choose how far to search for stations around the selected point.`,
+        tour6Title:`Draw an area`,
+        tour6Text:`For a more precise search than a simple radius, draw an area directly on the map: circle, rectangle, or free shape.`,
+        tour7Title:`Get your location`,
+        tour7Text:`Click here to locate yourself and immediately see stations around you.`,
+        tour8Title:`The station list`,
+        tour8Text:`Stations are ranked by price, color-coded from cheapest (green) to most expensive (red). Click a card to center it on the map, or share it.`,
+        tour9Title:`Plan a route`,
+        tour9Text:`Enter a starting point and a destination, and add stops along the way if needed.`,
+        tour10Title:`Calculate the route`,
+        tour10Text:`First set the options (tolls, highways, ferries, vehicle consumption), then calculate the route: the cheapest stations along your trip appear automatically, in the order you'll pass them.`,
+        tour11Title:`Light / dark theme`,
+        tour11Text:`Switch the display between light and dark theme.`,
+        tourCloseAria:`Close the guided tour`, tourPrev:`Previous`, tourNext:`Next`, tourFinish:`Done`,
+        apiStatusLoading:`Loading…`, apiStatusError:`Loading error`,
+        apiStatusRouteCalc:`Route…`, apiStatusRouteNotFound:`Route not found`,
+        apiStatusSearchingStations:`Searching for stations…`, apiStatusRouteMode:`Route mode`,
+        apiStatusGeoUnsupported:`Geolocation not supported`, apiStatusGeoDenied:`Location denied`,
+        apiStatusGeoNotShared:`Location not shared`, apiStatusGeoUnavailable:`Location unavailable`,
+        routeNotFoundMsg:`Route not found — check your points.`, routeComputing:`Calculating route…`,
+        routeTagNoTolls:`no tolls`, routeTagNoHighways:`no highways`, routeTagNoFerries:`no ferries`,
+        routeFuelCost:`⛽ Fuel ≈`, routeFuelCostSub:`({fuel} avg. {avg} €, {conso} L/100)`,
+        routeTollCost:`🛣️ Tolls ≈`, routeTollCostSub:`({km} km of tolls, estimated)`,
+        onRouteSuffix:`on the route`, distanceFromRoute:`off route`,
+        geoToastNotSupported:`Geolocation not supported by the browser`,
+        geoToastLocating:`Locating…`, geoToastFound:`Location found`, geoToastFoundAcc:`Location found ({acc})`,
+        geoToastDenied:`Location access denied — allow it in your browser`,
+        geoToastTimeout:`Location took too long, try again`, geoToastUnavailable:`Location unavailable, try again`,
+        geoToastStationNotFound:`Station not found for {label}`,
+        emptyGeoTitleDenied:`Location denied`, emptyGeoTitleDefault:`Find stations near you`,
+        emptyGeoTextDenied:`No worries: search for a city, or re-enable location access in Settings.`,
+        emptyGeoTextDefault:`Allow your location, or search for a city to see stations around another point.`,
+        emptySearchCityBtn:`Search for a city`,
+        emptyGeoActionDenied:`Location settings`, emptyGeoActionDefault:`Allow my location`,
+        emptyRouteNoResultTitle:`No stations on this route`,
+        emptyRouteNoResultText:`No stations with this fuel within 10&nbsp;km of the route. Try another fuel type.`,
+        emptyRoutePlanTitle:`Plan your trip`,
+        emptyRoutePlanText:`Enter a start and destination (and stops), then run "Calculate route" to see the cheapest stations along the way.`,
+        emptyNoStationTitle:`No stations found`,
+        emptyNoStationText:`Try widening the radius, changing the fuel type, or searching for another city.`,
+        stationSingular:`station`, stationPlural:`stations`,
+        natlowLoading:`Loading…`, natlowUnavailable:`National prices unavailable`,
+        natlowCheapestTitle:`See the cheapest station on the map`,
+        openBadgeH24:`24/7`, openBadgeOpen:`Open`, bestChipTitle:`Cheapest`,
+        natPopupCheapest:`Cheapest {fuel} in France`,
+      },
+      es: {
+        natlowLabel:`Lo más barato en Francia`, loading:`Cargando…`,
+        tourBtnTitle:`¿Cómo funciona?`, tourBtnAria:`Ayuda / visita guiada`,
+        settingsBtnAria:`Ajustes`, themeBtnAria:`Cambiar el tema`,
+        sheetHandleAria:`Ampliar/reducir la lista`,
+        filtersShow:`Filtros`, filtersHideTitle:`Ocultar filtros`, filtersShowTitle:`Mostrar filtros`,
+        legendLow:`Bajo`, legendMid:`Medio`, legendHigh:`Alto`,
+        searchPillAria:`Buscar`, searchDefaultLabel:`Cerca de mí`,
+        natlowBtnTitle:`Precios más bajos`,
+        drawZoneLabel:`Dibujar una zona`, drawCircle:`Círculo`, drawRectangle:`Rectángulo`,
+        drawPolygon:`Forma libre`, drawClear:`Borrar la zona`,
+        zoneActive:`Zona «{label}» activa`, zoneClearBtn:`Borrar`,
+        locateBtnText:`Mi ubicación`, searchHereBtn:`Buscar aquí`,
+        layersBtnTitle:`Tipo de mapa`, mapStyleMinimal:`Mínimo`, mapStyleSatellite:`Satélite`,
+        mapDetailsTitle:`Detalles del mapa`,
+        fireLayerLabel:`Incendios forestales`,
+        trafficLayerLabel:`Tráfico`, trafficLayerSub:`Requiere una clave API de pago`,
+        trafficLayerTooltip:`Requiere una suscripción a un proveedor de tráfico en tiempo real (no disponible gratis)`,
+        transitLayerLabel:`Transporte público`,
+        buildings3dLabel:`Edificios en 3D`, buildings3dSub:`Requiere un rediseño 3D`,
+        buildings3dTooltip:`Requiere renderizado 3D (no disponible en esta versión)`,
+        searchBackAria:`Atrás`, searchTitleDefault:`Buscar`, searchTitleRoute:`Ruta`,
+        modeAroundBtn:`Cerca de mí`, modeRouteBtn:`Ruta`,
+        searchPlaceholder:`Buscar una ciudad…`, searchClearAria:`Borrar`,
+        noCityFound:`Ninguna ciudad encontrada`, noResult:`Sin resultados`,
+        stopDeparture:`Punto de partida…`, stopArrival:`Destino…`, stopWaypoint:`Parada…`,
+        routeAddStop:`Añadir una parada`, routeOptsBtn:`Opciones`, routeGoBtn:`Calcular ruta`,
+        removeStopAria:`Eliminar esta parada`,
+        fuelFieldLabel:`Tipo de combustible`,
+        sortFieldLabel:`Ordenar por`, sortPrice:`Precio ascendente`, sortDistance:`Distancia`, sortName:`Nombre A → Z`,
+        radiusFieldLabel:`Radio`,
+        fuelGazole:`Gasóleo`, fuelGPL:`GLP`,
+        geoPrimerTitle:`¿Permitir el acceso a tu ubicación?`,
+        geoPrimerBody:`Plein Futé solo la usa para encontrar las gasolineras más baratas cerca de ti. Tu ubicación nunca se envía a ningún otro sitio ni se guarda.`,
+        geoPrimerAllow:`Permitir mi ubicación`, geoPrimerSkip:`Buscar una ciudad en su lugar`,
+        settingsTitle:`Ajustes`, settingsCloseAria:`Cerrar`,
+        settingsGeoSectionTitle:`Ubicación`,
+        settingsGeoBody:`Solo se usa para encontrar las gasolineras más baratas cerca de ti. Nunca se envía a ningún otro sitio ni se guarda.`,
+        settingsGeoGranted:`Permitida`, settingsGeoDenied:`Denegada`, settingsGeoUnknown:`Aún no solicitada`,
+        settingsGeoBtnGranted:`Actualizar mi ubicación`, settingsGeoBtnDenied:`Reintentar`, settingsGeoBtnUnknown:`Permitir mi ubicación`,
+        settingsGeoHelp:`Tu navegador memorizó esta negativa, así que no puede reabrir la solicitud automáticamente. Para reactivarla, haz clic en el icono 🔒 (o ⓘ) a la izquierda de la dirección del sitio, abre «Ubicación» (o «Permisos del sitio») y elige «Permitir», luego recarga la página.`,
+        settingsLangSectionTitle:`Idioma`,
+        optsTitle:`Opciones de ruta`, optsCloseAria:`Cerrar`,
+        optTolls:`Evitar peajes`, optHighways:`Evitar autopistas`, optFerries:`Evitar ferris`,
+        optConsoLabel:`Consumo`, optConsoSub:`para el coste de combustible (L/100 km)`,
+        optsNote:`Las opciones se aplican al próximo cálculo de ruta. Peajes estimados (~7,7 c€/km, vehículo clase 1).`,
+        shareTitle:`Compartir esta gasolinera`, shareCloseAria:`Cerrar`,
+        shareCopyBtn:`Copiar mensaje`, shareCopiedBtn:`¡Copiado!`,
+        shareBtnTitle:`Compartir esta gasolinera`, shareBtnTitleShort:`Compartir`,
+        shareMsgIntro:`⛽ ¡Aquí tienes una gasolinera que podría interesarte!`,
+        shareMsgOpenGps:`Ábrela en tu GPS favorito:`,
+        tour1Title:`Precios más bajos de Francia`,
+        tour1Text:`Estas pastillas muestran, en directo, el precio más bajo actual para cada combustible, en cualquier parte de Francia. Haz clic en una para ver dónde está esa gasolinera.`,
+        tour2Title:`Dos formas de buscar`,
+        tour2Text:`Cambia entre «Cerca de mí» para buscar cerca de un punto, y «Ruta» para planificar un trayecto.`,
+        tour3Title:`Buscar una ciudad`,
+        tour3Text:`Escribe una ciudad o dirección para mover el mapa a otro lugar distinto de tu ubicación actual.`,
+        tour4Title:`Elegir el combustible`,
+        tour4Text:`Selecciona el combustible a comparar: SP95, SP98, Gasóleo, E10, E85 o GLP.`,
+        tour5Title:`Ajustar el radio`,
+        tour5Text:`Elige hasta qué distancia buscar gasolineras alrededor del punto seleccionado.`,
+        tour6Title:`Dibujar una zona`,
+        tour6Text:`Para una búsqueda más precisa que un simple radio, dibuja una zona directamente en el mapa: círculo, rectángulo o forma libre.`,
+        tour7Title:`Localizarte`,
+        tour7Text:`Haz clic aquí para localizarte y ver enseguida las gasolineras cerca de ti.`,
+        tour8Title:`La lista de gasolineras`,
+        tour8Text:`Las gasolineras están ordenadas por precio, con un código de color del más barato (verde) al más caro (rojo). Haz clic en una tarjeta para centrarla en el mapa, o compártela.`,
+        tour9Title:`Planificar una ruta`,
+        tour9Text:`Indica un punto de partida y un destino, y añade paradas intermedias si lo necesitas.`,
+        tour10Title:`Calcular el trayecto`,
+        tour10Text:`Primero configura las opciones (peajes, autopistas, ferris, consumo del vehículo), luego calcula la ruta: las gasolineras más baratas en tu trayecto aparecen automáticamente, en el orden en que las encontrarás.`,
+        tour11Title:`Tema claro / oscuro`,
+        tour11Text:`Cambia la visualización entre tema claro y tema oscuro.`,
+        tourCloseAria:`Cerrar la visita guiada`, tourPrev:`Anterior`, tourNext:`Siguiente`, tourFinish:`Finalizar`,
+        apiStatusLoading:`Cargando…`, apiStatusError:`Error de carga`,
+        apiStatusRouteCalc:`Ruta…`, apiStatusRouteNotFound:`Ruta no encontrada`,
+        apiStatusSearchingStations:`Buscando gasolineras…`, apiStatusRouteMode:`Modo ruta`,
+        apiStatusGeoUnsupported:`Geolocalización no compatible`, apiStatusGeoDenied:`Ubicación denegada`,
+        apiStatusGeoNotShared:`Ubicación no compartida`, apiStatusGeoUnavailable:`Ubicación no disponible`,
+        routeNotFoundMsg:`Ruta no encontrada: comprueba los puntos.`, routeComputing:`Calculando ruta…`,
+        routeTagNoTolls:`sin peajes`, routeTagNoHighways:`sin autopistas`, routeTagNoFerries:`sin ferris`,
+        routeFuelCost:`⛽ Combustible ≈`, routeFuelCostSub:`({fuel} prom. {avg} €, {conso} L/100)`,
+        routeTollCost:`🛣️ Peajes ≈`, routeTollCostSub:`({km} km de peaje, estimación)`,
+        onRouteSuffix:`en la ruta`, distanceFromRoute:`de la ruta`,
+        geoToastNotSupported:`Geolocalización no compatible con el navegador`,
+        geoToastLocating:`Localizando…`, geoToastFound:`Ubicación encontrada`, geoToastFoundAcc:`Ubicación encontrada ({acc})`,
+        geoToastDenied:`Acceso a la ubicación denegado: permítelo en tu navegador`,
+        geoToastTimeout:`La localización tardó demasiado, inténtalo de nuevo`, geoToastUnavailable:`Ubicación no disponible, inténtalo de nuevo`,
+        geoToastStationNotFound:`Gasolinera no encontrada para {label}`,
+        emptyGeoTitleDenied:`Ubicación denegada`, emptyGeoTitleDefault:`Encuentra gasolineras cerca de ti`,
+        emptyGeoTextDenied:`No pasa nada: busca una ciudad, o reactiva el acceso a tu ubicación en Ajustes.`,
+        emptyGeoTextDefault:`Permite tu ubicación, o busca una ciudad para ver gasolineras alrededor de otro punto.`,
+        emptySearchCityBtn:`Buscar una ciudad`,
+        emptyGeoActionDenied:`Ajustes de ubicación`, emptyGeoActionDefault:`Permitir mi ubicación`,
+        emptyRouteNoResultTitle:`Ninguna gasolinera en la ruta`,
+        emptyRouteNoResultText:`Ninguna gasolinera con este combustible en un radio de 10&nbsp;km de la ruta. Prueba con otro combustible.`,
+        emptyRoutePlanTitle:`Planifica tu viaje`,
+        emptyRoutePlanText:`Indica un origen y un destino (y paradas), luego pulsa «Calcular ruta» para ver las gasolineras más baratas en el camino.`,
+        emptyNoStationTitle:`Ninguna gasolinera encontrada`,
+        emptyNoStationText:`Intenta ampliar el radio, cambiar de combustible o buscar otra ciudad.`,
+        stationSingular:`estación`, stationPlural:`estaciones`,
+        natlowLoading:`Cargando…`, natlowUnavailable:`Precios nacionales no disponibles`,
+        natlowCheapestTitle:`Ver la gasolinera más barata en el mapa`,
+        openBadgeH24:`24 h`, openBadgeOpen:`Abierto`, bestChipTitle:`La más barata`,
+        natPopupCheapest:`{fuel} más barato de Francia`,
+      },
+    };
+    const LANGS=['fr','en','es'];
+    function detectLang(){
+      try{
+        const saved=localStorage.getItem('lang');
+        if(saved && LANGS.includes(saved)) return saved;
+      }catch(e){}
+      const nav=(navigator.language||'fr').slice(0,2).toLowerCase();
+      return LANGS.includes(nav) ? nav : 'fr';
+    }
+    let lang=detectLang();
+    function t(key, vars){
+      let s=(I18N[lang] && I18N[lang][key]!=null) ? I18N[lang][key] : (I18N.fr[key]!=null ? I18N.fr[key] : key);
+      if(vars) for(const k in vars) s=s.split('{'+k+'}').join(vars[k]);
+      return s;
+    }
+    function stationWord(n){ return n===1 ? t('stationSingular') : t('stationPlural'); }
+    const FUEL_LABEL_KEYS={ Gazole:'fuelGazole', GPLc:'fuelGPL' };
+    function fuelLabel(code){ return FUEL_LABEL_KEYS[code] ? t(FUEL_LABEL_KEYS[code]) : code; }
+    function applyI18n(){
+      document.documentElement.lang=lang;
+      document.querySelectorAll('[data-i18n]').forEach(el=>{ el.textContent=t(el.dataset.i18n); });
+      document.querySelectorAll('[data-i18n-html]').forEach(el=>{ el.innerHTML=t(el.dataset.i18nHtml); });
+      document.querySelectorAll('[data-i18n-aria]').forEach(el=>el.setAttribute('aria-label', t(el.dataset.i18nAria)));
+      document.querySelectorAll('[data-i18n-title]').forEach(el=>el.setAttribute('title', t(el.dataset.i18nTitle)));
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>el.setAttribute('placeholder', t(el.dataset.i18nPlaceholder)));
+      document.querySelectorAll('.lang-opt').forEach(b=>b.classList.toggle('sel', b.dataset.lang===lang));
+      document.querySelectorAll('#fuels .chip[data-fuel]').forEach(b=>{ b.textContent=fuelLabel(b.dataset.fuel); });
+    }
+    applyI18n();
 
     const state = {
       userLat: null, userLng: null, country: 'fr', radius: 25, fuel: 'Gazole', sort: 'price',
@@ -1938,15 +2305,15 @@ svg{display:block;}
       return true; }
     map.on(L.Draw.Event.CREATED, (e) => {
       drawnItems.clearLayers(); drawnItems.addLayer(e.layer); state.zoneLayer = e.layer; cancelDraw();
-      const label = activeShapeType==='circle'?'Cercle':activeShapeType==='rectangle'?'Rectangle':'Forme';
-      $('zone-banner-text').textContent = `Zone « ${label} » active`;
+      const label = activeShapeType==='circle'?t('drawCircle'):activeShapeType==='rectangle'?t('drawRectangle'):t('drawPolygon');
+      $('zone-banner-text').textContent = t('zoneActive', {label});
       $('zone-banner').classList.add('open'); positionZoneBanner(); applyFilters();
     });
     document.querySelectorAll('.dtool[data-draw]').forEach(btn => btn.addEventListener('click', () => {
-      const t = btn.dataset.draw;
-      if (t==='clear'){ clearZone(); return; }
-      if (activeShapeType===t && activeHandler){ cancelDraw(); return; }
-      startDraw(t);
+      const dt = btn.dataset.draw;
+      if (dt==='clear'){ clearZone(); return; }
+      if (activeShapeType===dt && activeHandler){ cancelDraw(); return; }
+      startDraw(dt);
     }));
     $('zone-clear-btn').addEventListener('click', clearZone);
 
@@ -2007,7 +2374,7 @@ svg{display:block;}
     }
     function renderSugg(){
       activeIndex=-1;
-      if(!suggestions.length){ suggBox.innerHTML='<div class="sugg-empty">Aucune ville trouvée</div>'; }
+      if(!suggestions.length){ suggBox.innerHTML=`<div class="sugg-empty">${esc(t('noCityFound'))}</div>`; }
       else{
         suggBox.innerHTML=suggestions.map((s,i)=>`
           <div class="sugg-item" data-i="${i}" role="option">
@@ -2045,18 +2412,18 @@ svg{display:block;}
       if(state.userLat==null) return;
       if(state.zoneLayer){ drawnItems.clearLayers(); state.zoneLayer=null; $('zone-banner').classList.remove('open'); }
       setLoading(true);
-      $('api-status').innerHTML = '<span class="spin"></span> Chargement…';
+      $('api-status').innerHTML = `<span class="spin"></span> ${t('apiStatusLoading')}`;
       try{
         state.country = await detectCountry(state.userLat, state.userLng);
         if(state.country==='es'){
           const all=await fetchSpainStations();
           state.stations=all.map(s=>({ ...s, distance:dist(state.userLat,state.userLng,s.lat,s.lng) }))
             .filter(s=>s.distance<=FETCH_RADIUS);
-          $('api-status').innerHTML = `<span class="dot"></span> ${state.stations.length} estaciones · MITECO`;
+          $('api-status').innerHTML = `<span class="dot"></span> ${state.stations.length} ${stationWord(state.stations.length)} · MITECO`;
         } else if(state.country==='de'){
           const recs=await fetchGermanyStations(state.userLat, state.userLng, FETCH_RADIUS);
           state.stations=recs.map(s=>({ ...s, distance:dist(state.userLat,state.userLng,s.lat,s.lng) }));
-          $('api-status').innerHTML = `<span class="dot"></span> ${state.stations.length} Tankstellen · Tankerkönig`;
+          $('api-status').innerHTML = `<span class="dot"></span> ${state.stations.length} ${stationWord(state.stations.length)} · Tankerkönig`;
         } else {
           const where=`distance(geom, geom'POINT(${state.userLng} ${state.userLat})', ${FETCH_RADIUS}km)`;
           const url=`${API_BASE}?where=${encodeURIComponent(where)}&limit=100`;
@@ -2064,12 +2431,12 @@ svg{display:block;}
           const data=await res.json();
           const recs=(data.results||[]).filter(r=>r.geom&&r.geom.lat!=null);
           state.stations=recs.map(mapRecord).map(s=>({ ...s, distance:dist(state.userLat,state.userLng,s.lat,s.lng) }));
-          $('api-status').innerHTML = `<span class="dot"></span> ${state.stations.length} stations · data.gouv.fr`;
+          $('api-status').innerHTML = `<span class="dot"></span> ${state.stations.length} ${stationWord(state.stations.length)} · data.gouv.fr`;
         }
         applyFilters(); if(!opts.skipFit) fitToResults();
       }catch(e){
         state.stations=[]; applyFilters();
-        $('api-status').innerHTML = '<span class="dot" style="background:var(--tier-high)"></span> <span style="color:var(--tier-high)">Erreur de chargement</span>';
+        $('api-status').innerHTML = `<span class="dot" style="background:var(--tier-high)"></span> <span style="color:var(--tier-high)">${t('apiStatusError')}</span>`;
       }finally{ setLoading(false); }
     }
 
@@ -2090,7 +2457,7 @@ svg{display:block;}
       const wrap=$('route-stops');
       wrap.innerHTML=state.stops.map((st,i)=>{
         const badge = st.role==='start' ? 'A' : st.role==='end' ? 'B' : '';
-        const ph = st.role==='start' ? 'Départ…' : st.role==='end' ? 'Arrivée…' : 'Étape…';
+        const ph = st.role==='start' ? t('stopDeparture') : st.role==='end' ? t('stopArrival') : t('stopWaypoint');
         const val = esc(st.label||'');
         return `<div class="rstop" data-i="${i}">
           <span class="rstop-ic ${st.role}">${badge}</span>
@@ -2098,7 +2465,7 @@ svg{display:block;}
             <input class="rstop-input" type="text" autocomplete="off" placeholder="${ph}" value="${val}" data-i="${i}">
             <div class="rstop-sugg"></div>
           </div>
-          ${st.role==='via' ? `<button class="rstop-del" data-i="${i}" aria-label="Supprimer l'étape"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>` : ''}
+          ${st.role==='via' ? `<button class="rstop-del" data-i="${i}" aria-label="${esc(t('removeStopAria'))}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>` : ''}
         </div>`;
       }).join('');
       wrap.querySelectorAll('.rstop-input').forEach(inp=>attachStopAC(inp));
@@ -2127,7 +2494,7 @@ svg{display:block;}
               const sub=[a.county,a.state,a.country].filter(Boolean).join(' · ')||'';
               return {name,sub,lat:parseFloat(r.lat),lng:parseFloat(r.lon)};
             }).filter(s=>{ const k=s.name+'|'+s.sub; if(!s.name||seen.has(k))return false; seen.add(k); return true; });
-            box.innerHTML = list.length ? list.map((s,j)=>`<div class="it" data-j="${j}"><span class="pin">${PIN_SVG}</span><span style="min-width:0"><span class="nm">${esc(s.name)}</span><span class="sb">${esc(s.sub)}</span></span></div>`).join('') : '<div class="it" style="color:var(--faint)">Aucun résultat</div>';
+            box.innerHTML = list.length ? list.map((s,j)=>`<div class="it" data-j="${j}"><span class="pin">${PIN_SVG}</span><span style="min-width:0"><span class="nm">${esc(s.name)}</span><span class="sb">${esc(s.sub)}</span></span></div>`).join('') : `<div class="it" style="color:var(--faint)">${esc(t('noResult'))}</div>`;
             box.classList.add('show');
             box.querySelectorAll('.it[data-j]').forEach(el=>el.addEventListener('mousedown',(ev)=>{ ev.preventDefault();
               const s=list[+el.dataset.j]; state.stops[i]={...state.stops[i],label:s.name,lat:s.lat,lng:s.lng};
@@ -2143,7 +2510,7 @@ svg{display:block;}
       if(!state.lastRoute){ return; }
       const o=state.routeOpts; const {km,sec,tollKm}=state.lastRoute;
       const min=Math.round(sec/60), h=Math.floor(min/60);
-      const tags=[o.tolls?'sans péages':null,o.highways?'sans autoroutes':null,o.ferries?'sans ferries':null].filter(Boolean).join(' · ');
+      const tags=[o.tolls?t('routeTagNoTolls'):null,o.highways?t('routeTagNoHighways'):null,o.ferries?t('routeTagNoFerries'):null].filter(Boolean).join(' · ');
       let html=`<b>${km.toFixed(0)} km</b> · ${h?h+' h ':''}${min%60} min${tags?' <span style="color:var(--faint)">· '+tags+'</span>':''}`;
       const conso=+o.conso||6.5;
       const prices=state.filtered.map(x=>x.prices[state.fuel]).filter(v=>v!=null).map(Number);
@@ -2151,11 +2518,11 @@ svg{display:block;}
       const parts=[];
       if(avg!=null){
         const fc=km/100*conso*avg;
-        parts.push(`⛽ Carburant ≈ <b>${fc.toFixed(0)} €</b> <span style="color:var(--faint)">(${state.fuel} moy. ${fmt(avg)} €, ${conso} L/100)</span>`);
+        parts.push(`${t('routeFuelCost')} <b>${fc.toFixed(0)} €</b> <span style="color:var(--faint)">${t('routeFuelCostSub',{fuel:fuelLabel(state.fuel), avg:fmt(avg), conso})}</span>`);
       }
       if(tollKm!=null){
         const tc=tollKm*TOLL_RATE;
-        parts.push(`🛣️ Péages ≈ <b>${tc<0.5?'0':tc.toFixed(0)} €</b>${tollKm>0?` <span style="color:var(--faint)">(${tollKm.toFixed(0)} km à péage, estimation)</span>`:''}`);
+        parts.push(`${t('routeTollCost')} <b>${tc<0.5?'0':tc.toFixed(0)} €</b>${tollKm>0?` <span style="color:var(--faint)">${t('routeTollCostSub',{km:tollKm.toFixed(0)})}</span>`:''}`);
       }
       if(parts.length) html+=`<span class="route-costs">${parts.join('<br>')}</span>`;
       $('route-info').innerHTML=html;
@@ -2165,8 +2532,8 @@ svg{display:block;}
       const stops=state.stops.filter(s=>s.lat!=null);
       if(stops.length<2) return;
       $('route-go').disabled=true;
-      $('route-info').innerHTML='<span class="spin sm" style="display:inline-block;vertical-align:-3px"></span> Calcul de l’itinéraire…';
-      $('api-status').innerHTML='<span class="spin"></span> Itinéraire…';
+      $('route-info').innerHTML=`<span class="spin sm" style="display:inline-block;vertical-align:-3px"></span> ${t('routeComputing')}`;
+      $('api-status').innerHTML=`<span class="spin"></span> ${t('apiStatusRouteCalc')}`;
       try{
         const o=state.routeOpts;
         let coords, km, sec, tollKm=null;
@@ -2200,8 +2567,8 @@ svg{display:block;}
         $('search-pill').title=routeSummary; $('search-pill-label').textContent = routeSummary;
         closeSearchOverlay();
       }catch(e){
-        $('route-info').textContent='Itinéraire introuvable — vérifie les points.';
-        $('api-status').innerHTML='<span class="dot" style="background:var(--tier-high)"></span> <span style="color:var(--tier-high)">Itinéraire introuvable</span>';
+        $('route-info').textContent=t('routeNotFoundMsg');
+        $('api-status').innerHTML=`<span class="dot" style="background:var(--tier-high)"></span> <span style="color:var(--tier-high)">${t('apiStatusRouteNotFound')}</span>`;
       }finally{ updateGoState(); }
     }
 
@@ -2231,7 +2598,7 @@ svg{display:block;}
       const samples=[]; let nextAt=0;
       for(let i=0;i<coords.length;i++){ if(cum[i]>=nextAt){ samples.push(coords[i]); nextAt+=step; } }
       samples.push(coords[coords.length-1]);
-      $('api-status').innerHTML='<span class="spin"></span> Recherche des stations…';
+      $('api-status').innerHTML=`<span class="spin"></span> ${t('apiStatusSearchingStations')}`;
       const found={};
       await Promise.all(samples.map(async pt=>{
         try{
@@ -2250,7 +2617,7 @@ svg{display:block;}
         if(best<=CORRIDOR){ s.detour=best; s.progress=dsCum[bi]; s.distance=best; stations.push(s); }
       });
       state.stations=stations; applyFilters();
-      $('api-status').innerHTML=`<span class="dot"></span> ${stations.length} stations sur le trajet`;
+      $('api-status').innerHTML=`<span class="dot"></span> ${stations.length} ${stationWord(stations.length)} ${t('onRouteSuffix')}`;
     }
 
     /* mode toggle */
@@ -2261,12 +2628,12 @@ svg{display:block;}
       if(m!=='around') hideSearchHereBtn();
       $('mode-seg').querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b));
       searchOverlay.dataset.mode=m;
-      $('search-overlay-title').textContent = m==='route' ? 'Itinéraire' : 'Rechercher';
+      $('search-overlay-title').textContent = m==='route' ? t('searchTitleRoute') : t('searchTitleDefault');
       if(m==='route'){
         if(!state.stops) state.stops=defaultStops();
         renderStops();
         if(!state.routeCoords){ state.stations=[]; state.filtered=[]; renderList(); renderMarkers();
-          $('api-status').innerHTML='<span class="dot"></span> Mode itinéraire'; }
+          $('api-status').innerHTML=`<span class="dot"></span> ${t('apiStatusRouteMode')}`; }
         else applyFilters();
       }else{
         if(routeLayer){ routeLayer.remove(); routeLayer=null; }
@@ -2279,8 +2646,8 @@ svg{display:block;}
       const hidden=sbEl.classList.toggle('filters-hidden');
       const bt=$('filters-toggle');
       bt.setAttribute('aria-expanded', String(!hidden));
-      bt.title = hidden ? 'Afficher les filtres' : 'Masquer les filtres';
-      bt.querySelector('span').textContent = 'Filtres';
+      bt.title = hidden ? t('filtersShowTitle') : t('filtersHideTitle');
+      bt.querySelector('span').textContent = t('filtersShow');
       setTimeout(()=>map.invalidateSize(),150);
     });
 
@@ -2415,21 +2782,19 @@ svg{display:block;}
     /* ---- RENDER LIST ---- */
     function renderList(){
       const el=$('list');
-      $('results-count').innerHTML = `<b>${state.filtered.length}</b> station${state.filtered.length>1?'s':''}`;
+      $('results-count').innerHTML = `<b>${state.filtered.length}</b> ${stationWord(state.filtered.length)}`;
       // Pas de position connue : montrer un message dédié avec des actions (plutôt que
       // "aucune station trouvée, essaie un autre rayon" qui est trompeur dans ce cas).
       if(state.mode==='around' && state.userLat==null){
         const denied = geoStatus==='denied';
-        const title = denied ? 'Localisation refusée' : 'Trouve les stations près de toi';
-        const text = denied
-          ? "Pas de souci : cherche une ville, ou réactive l'accès à ta position dans les Paramètres."
-          : "Autorise ta position, ou cherche une ville pour voir les stations autour d'un autre point.";
+        const title = denied ? t('emptyGeoTitleDenied') : t('emptyGeoTitleDefault');
+        const text = denied ? t('emptyGeoTextDenied') : t('emptyGeoTextDefault');
         el.innerHTML = `<div class="empty">
           <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="10" r="3"></circle><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"></path></svg></div>
-          <h3>${title}</h3><p>${text}</p>
+          <h3>${esc(title)}</h3><p>${esc(text)}</p>
           <div class="empty-actions">
-            <button class="route-opts-btn" id="empty-search-city">Chercher une ville</button>
-            <button class="route-opts-btn" id="empty-geo-action">${denied ? 'Paramètres de localisation' : 'Autoriser ma position'}</button>
+            <button class="route-opts-btn" id="empty-search-city">${esc(t('emptySearchCityBtn'))}</button>
+            <button class="route-opts-btn" id="empty-geo-action">${esc(denied ? t('emptyGeoActionDenied') : t('emptyGeoActionDefault'))}</button>
           </div>
         </div>`;
         $('empty-search-city').addEventListener('click', ()=>openSearchOverlay());
@@ -2439,9 +2804,9 @@ svg{display:block;}
       if(state.filtered.length===0){
         const body = state.mode==='route'
           ? (state.routeCoords
-              ? `<h3>Aucune station sur le trajet</h3><p>Aucune station avec ce carburant dans le couloir de 10&nbsp;km. Essaie un autre carburant.</p>`
-              : `<h3>Planifie ton trajet</h3><p>Renseigne un départ et une arrivée (et des étapes), puis lance « Calculer l'itinéraire » pour voir les stations les moins chères en chemin.</p>`)
-          : `<h3>Aucune station trouvée</h3><p>Essayez d'élargir le rayon, changez de carburant ou recherchez une autre ville.</p>`;
+              ? `<h3>${esc(t('emptyRouteNoResultTitle'))}</h3><p>${t('emptyRouteNoResultText')}</p>`
+              : `<h3>${esc(t('emptyRoutePlanTitle'))}</h3><p>${esc(t('emptyRoutePlanText'))}</p>`)
+          : `<h3>${esc(t('emptyNoStationTitle'))}</h3><p>${esc(t('emptyNoStationText'))}</p>`;
         el.innerHTML = `<div class="empty"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 11h-3.5a2.5 2.5 0 0 0 0 5H14"/><circle cx="11" cy="13.5" r="9"/></svg></div>${body}</div>`;
         return;
       }
@@ -2453,10 +2818,10 @@ svg{display:block;}
         const logo=s.brandColor ? s.brandName.replace(/[^A-Za-zÀ-ÿ]/g,'').charAt(0).toUpperCase()
           : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 11h-3.5a2.5 2.5 0 0 0 0 5H14"/><path d="M4 20V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v15"/><path d="M3 20h12"/></svg>';
         const distLabel = state.mode==='route'
-          ? ('+' + (s.detour<1 ? Math.round(s.detour*1000)+' m' : s.detour.toFixed(1).replace('.',',')+' km') + ' du trajet')
+          ? ('+' + (s.detour<1 ? Math.round(s.detour*1000)+' m' : s.detour.toFixed(1).replace('.',',')+' km') + ' ' + t('distanceFromRoute'))
           : (s.distance<1 ? Math.round(s.distance*1000)+' m' : s.distance.toFixed(1).replace('.',',')+' km');
-        const openBadge = s.open==='h24' ? '<span class="obadge h24">24h/24</span>' : '<span class="obadge open"><span class="d"></span>Ouvert</span>';
-        const rankBadge = best ? '<span class="bestchip" title="Le moins cher"><svg class="star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.3 6.9.7-5.2 4.7 1.5 6.8L12 17.8 5.9 21.3l1.5-6.8L2.2 9.7l6.9-.7z"/></svg></span>' : `<span class="rankchip">#${i+1}</span>`;
+        const openBadge = s.open==='h24' ? `<span class="obadge h24">${esc(t('openBadgeH24'))}</span>` : `<span class="obadge open"><span class="d"></span>${esc(t('openBadgeOpen'))}</span>`;
+        const rankBadge = best ? `<span class="bestchip" title="${esc(t('bestChipTitle'))}"><svg class="star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.3 6.9.7-5.2 4.7 1.5 6.8L12 17.8 5.9 21.3l1.5-6.8L2.2 9.7l6.9-.7z"/></svg></span>` : `<span class="rankchip">#${i+1}</span>`;
         const gmaps=`https://www.google.com/maps/dir/?api=1&destination=${s.lat},${s.lng}`;
         const waze=`https://waze.com/ul?ll=${s.lat},${s.lng}&navigate=yes`;
         const arrow='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>';
@@ -2468,14 +2833,14 @@ svg{display:block;}
           </span>
           <span class="scard__price">
             <span class="scard__price-val">${fmt(price)}<span class="scard__cur">€</span></span>
-            <span class="scard__price-unit">${state.fuel} · /L</span>
+            <span class="scard__price-unit">${esc(fuelLabel(state.fuel))} · /L</span>
           </span>
           <span class="scard__footer">
             <span class="scard__tags">${openBadge}${rankBadge}</span>
             <span class="scard__routes">
               <a class="rbtn gmaps" href="${gmaps}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">${arrow}Maps</a>
               <a class="rbtn waze" href="${waze}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">${arrow}Waze</a>
-              <button class="rbtn share-ic" title="Partager cette station" onclick="event.stopPropagation();window.__shareStation('${s.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg></button>
+              <button class="rbtn share-ic" title="${esc(t('shareBtnTitle'))}" onclick="event.stopPropagation();window.__shareStation('${s.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg></button>
             </span>
           </span>
         </div>`;
@@ -2505,11 +2870,11 @@ svg{display:block;}
         const arrow='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>';
         m.bindPopup(`<div class="pop-name">${esc(s.brandName)}</div>
           <div class="pop-addr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${esc(s.address||s.city)}</div>
-          <div class="pop-prices">${Object.entries(s.prices).map(([f,p])=>`<span class="pop-tag ${f===state.fuel?'hl':''}">${f} <b>${fmt(p)} €</b></span>`).join('')}</div>
+          <div class="pop-prices">${Object.entries(s.prices).map(([f,p])=>`<span class="pop-tag ${f===state.fuel?'hl':''}">${esc(fuelLabel(f))} <b>${fmt(p)} €</b></span>`).join('')}</div>
           <div class="pop-routes">
             <a class="rbtn gmaps" href="${gmaps}" target="_blank" rel="noopener noreferrer">${arrow}Maps</a>
             <a class="rbtn waze" href="${waze}" target="_blank" rel="noopener noreferrer">${arrow}Waze</a>
-            <button class="rbtn share-ic" title="Partager" onclick="window.__shareStation('${s.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg></button>
+            <button class="rbtn share-ic" title="${esc(t('shareBtnTitleShort'))}" onclick="window.__shareStation('${s.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg></button>
           </div>`);
         markers[s.id]=m;
         if(rank) topGroup.addLayer(m); else clusterGroup.addLayer(m);
@@ -2520,12 +2885,12 @@ svg{display:block;}
     function shareStation(id){
       const s=state.stations.find(x=>String(x.id)===String(id)); if(!s) return;
       const price=s.prices[state.fuel];
-      const priceLine = price!=null ? `${state.fuel} : ${fmt(price)} €/L` :
-        Object.entries(s.prices).map(([f,v])=>`${f} : ${fmt(v)} €/L`).join(' · ');
-      shareText = `⛽ Voici une station essence qui pourrait t'intéresser !\n`
+      const priceLine = price!=null ? `${fuelLabel(state.fuel)} : ${fmt(price)} €/L` :
+        Object.entries(s.prices).map(([f,v])=>`${fuelLabel(f)} : ${fmt(v)} €/L`).join(' · ');
+      shareText = `${t('shareMsgIntro')}\n`
         + `${s.brandName} — ${s.address ? s.address+', ' : ''}${s.city}\n`
         + `${priceLine}\n\n`
-        + `Ouvre-la dans ton GPS préféré :\n`
+        + `${t('shareMsgOpenGps')}\n`
         + `📍 Google Maps : https://www.google.com/maps/search/?api=1&query=${s.lat},${s.lng}\n`
         + `🗺️ OpenStreetMap : https://www.openstreetmap.org/?mlat=${s.lat}&mlon=${s.lng}#map=17/${s.lat}/${s.lng}\n`
         + `🚗 Waze : https://waze.com/ul?ll=${s.lat},${s.lng}&navigate=yes`;
@@ -2541,7 +2906,7 @@ svg{display:block;}
     $('share-copy').addEventListener('click',async ()=>{
       try{ await navigator.clipboard.writeText(shareText); }
       catch(e){ const ta=$('share-msg'); ta.focus(); ta.select(); document.execCommand('copy'); }
-      $('share-copy').innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Copié !';
+      $('share-copy').innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>${esc(t('shareCopiedBtn'))}`;
       setTimeout(()=>{ $('share-copy').innerHTML=SHARE_COPY_HTML; },1800);
     });
     $('share-wa').addEventListener('click',()=>{ window.open('https://wa.me/?text='+encodeURIComponent(shareText),'_blank','noopener'); });
@@ -2580,10 +2945,10 @@ svg{display:block;}
     const locateBtn = $('locate-btn');
     const locateHTML = locateBtn.innerHTML;
     function geoToast(msg, kind){
-      let t = document.getElementById('geo-toast');
-      if(!t){ t=document.createElement('div'); t.id='geo-toast'; t.className='geo-toast'; document.querySelector('.map-area').appendChild(t); }
-      t.textContent = msg; t.className = 'geo-toast show ' + (kind||'');
-      clearTimeout(t._h); t._h = setTimeout(()=>{ t.className='geo-toast'; }, 4200);
+      let el = document.getElementById('geo-toast');
+      if(!el){ el=document.createElement('div'); el.id='geo-toast'; el.className='geo-toast'; document.querySelector('.map-area').appendChild(el); }
+      el.textContent = msg; el.className = 'geo-toast show ' + (kind||'');
+      clearTimeout(el._h); el._h = setTimeout(()=>{ el.className='geo-toast'; }, 4200);
     }
 
     /* ---- LOCALISATION : transparence + récupération après un refus ----
@@ -2613,17 +2978,17 @@ svg{display:block;}
     async function initialLocate(){
       if(!navigator.geolocation){
         setGeoStatus('unsupported');
-        $('api-status').innerHTML = '<span class="dot" style="background:var(--tier-high)"></span> <span style="color:var(--tier-high)">Géolocalisation non supportée</span>';
+        $('api-status').innerHTML = `<span class="dot" style="background:var(--tier-high)"></span> <span style="color:var(--tier-high)">${t('apiStatusGeoUnsupported')}</span>`;
         return;
       }
       const perm=await geoPermissionState();
       if(perm==='granted'){ setGeoStatus('granted'); locateMe(false); return; }
       if(perm==='denied'){
         setGeoStatus('denied');
-        $('api-status').innerHTML = '<span class="dot" style="background:var(--tier-high)"></span> <span style="color:var(--tier-high)">Localisation refusée</span>';
+        $('api-status').innerHTML = `<span class="dot" style="background:var(--tier-high)"></span> <span style="color:var(--tier-high)">${t('apiStatusGeoDenied')}</span>`;
         return;
       }
-      $('api-status').innerHTML = '<span class="dot" style="background:var(--faint)"></span> Position non communiquée';
+      $('api-status').innerHTML = `<span class="dot" style="background:var(--faint)"></span> ${t('apiStatusGeoNotShared')}`;
       showGeoPrimer();
     }
     function showGeoPrimer(){ $('geo-primer-overlay').hidden=false; }
@@ -2635,9 +3000,9 @@ svg{display:block;}
 
     locateBtn.addEventListener('click',()=>locateMe(true));
     function locateMe(fromClick){
-      if(!navigator.geolocation){ geoToast("Géolocalisation non supportée par le navigateur", 'err'); return; }
+      if(!navigator.geolocation){ geoToast(t('geoToastNotSupported'), 'err'); return; }
       locateBtn.classList.add('loading'); locateBtn.disabled = true;
-      locateBtn.innerHTML = '<span class="spin sm"></span> Localisation…';
+      locateBtn.innerHTML = `<span class="spin sm"></span> ${t('geoToastLocating')}`;
       navigator.geolocation.getCurrentPosition(
         (pos)=>{
           locateBtn.classList.remove('loading'); locateBtn.disabled=false; locateBtn.innerHTML = locateHTML;
@@ -2648,20 +3013,20 @@ svg{display:block;}
           const z = acc>3000?12 : acc>1200?13 : acc>400?14 : acc>120?15 : 16;
           withMapSuppressed(()=>map.setView([state.userLat, state.userLng], z, { animate:true }));
           const accTxt = acc ? (acc<1000 ? `±${Math.round(acc)} m` : `±${(acc/1000).toFixed(1)} km`) : '';
-          geoToast(`Position trouvée${accTxt? ' ('+accTxt+')':''}`, 'ok');
+          geoToast(accTxt ? t('geoToastFoundAcc',{acc:accTxt}) : t('geoToastFound'), 'ok');
           fetchStations();
         },
         (err)=>{
           locateBtn.classList.remove('loading'); locateBtn.disabled=false; locateBtn.innerHTML = locateHTML;
-          const msg = err.code===1 ? "Accès à la position refusé — autorise-le dans le navigateur"
-                    : err.code===3 ? "Localisation trop longue, réessaie"
-                    : "Position indisponible, réessaie";
+          const msg = err.code===1 ? t('geoToastDenied')
+                    : err.code===3 ? t('geoToastTimeout')
+                    : t('geoToastUnavailable');
           geoToast(msg, 'err');
           if(err.code===1){
             setGeoStatus('denied');
-            $('api-status').innerHTML = '<span class="dot" style="background:var(--tier-high)"></span> <span style="color:var(--tier-high)">Localisation refusée</span>';
+            $('api-status').innerHTML = `<span class="dot" style="background:var(--tier-high)"></span> <span style="color:var(--tier-high)">${t('apiStatusGeoDenied')}</span>`;
           } else if(!fromClick){
-            $('api-status').innerHTML = '<span class="dot" style="background:var(--tier-high)"></span> <span style="color:var(--tier-high)">Position indisponible</span>';
+            $('api-status').innerHTML = `<span class="dot" style="background:var(--tier-high)"></span> <span style="color:var(--tier-high)">${t('apiStatusGeoUnavailable')}</span>`;
             renderList();
           }
         },
@@ -2675,16 +3040,16 @@ svg{display:block;}
     function refreshSettingsGeoUI(){
       const statusEl=$('settings-geo-status'), btnEl=$('settings-geo-btn'), helpEl=$('settings-geo-help');
       if(geoStatus==='granted'){
-        statusEl.innerHTML='<span class="dot"></span> Autorisée';
-        btnEl.textContent='Actualiser ma position'; helpEl.hidden=true;
+        statusEl.innerHTML=`<span class="dot"></span> ${t('settingsGeoGranted')}`;
+        btnEl.textContent=t('settingsGeoBtnGranted'); helpEl.hidden=true;
       } else if(geoStatus==='denied'){
-        statusEl.innerHTML='<span class="dot" style="background:var(--tier-high)"></span> <span style="color:var(--tier-high)">Refusée</span>';
-        btnEl.textContent='Réessayer';
+        statusEl.innerHTML=`<span class="dot" style="background:var(--tier-high)"></span> <span style="color:var(--tier-high)">${t('settingsGeoDenied')}</span>`;
+        btnEl.textContent=t('settingsGeoBtnDenied');
         helpEl.hidden=false;
-        helpEl.innerHTML="Ton navigateur a mémorisé ce refus : impossible de rouvrir la demande automatiquement. Pour réactiver, clique sur l'icône 🔒 (ou ⓘ) à gauche de l'adresse du site, ouvre « Localisation » (ou « Permissions du site ») et choisis « Autoriser », puis recharge la page.";
+        helpEl.innerHTML=t('settingsGeoHelp');
       } else {
-        statusEl.innerHTML='<span class="dot" style="background:var(--faint)"></span> Pas encore demandée';
-        btnEl.textContent='Autoriser ma position'; helpEl.hidden=true;
+        statusEl.innerHTML=`<span class="dot" style="background:var(--faint)"></span> ${t('settingsGeoUnknown')}`;
+        btnEl.textContent=t('settingsGeoBtnUnknown'); helpEl.hidden=true;
       }
     }
     function openSettingsPanel(){ refreshSettingsGeoUI(); settingsOverlay.hidden=false; }
@@ -2696,6 +3061,25 @@ svg{display:block;}
     document.addEventListener('keydown',(e)=>{
       if(e.key==='Escape' && !settingsOverlay.hidden) closeSettingsPanel();
     });
+
+    /* ---- LANGUE ----
+       Change juste l'affichage, aucun rechargement de page : on ré-applique
+       les data-i18n statiques et on régénère le contenu déjà construit en
+       JS (liste, visite guidée si ouverte, prix nationaux, infos trajet...)
+       avec les textes de la nouvelle langue, sans refaire les requêtes. */
+    function setLang(l){
+      if(!LANGS.includes(l) || l===lang) return;
+      lang=l;
+      try{ localStorage.setItem('lang', l); }catch(e){}
+      applyI18n();
+      $('search-overlay-title').textContent = state.mode==='route' ? t('searchTitleRoute') : t('searchTitleDefault');
+      applyFilters();
+      renderNatlowPills();
+      if(state.lastRoute) renderRouteInfo();
+      if(!settingsOverlay.hidden) refreshSettingsGeoUI();
+      if(tourStep>=0) renderTourStep();
+    }
+    document.querySelectorAll('.lang-opt').forEach(b=>b.addEventListener('click', ()=>setLang(b.dataset.lang)));
 
     /* ---- THEME ---- */
     const themeBtn=$('theme-btn');
@@ -2710,17 +3094,17 @@ svg{display:block;}
 
     /* ---- GUIDED TOUR ---- */
     const TOUR_STEPS = [
-      { target:'#natlow-pills', mode:null, title:'Prix les moins chers de France', text:'Ces pastilles affichent en direct le prix le plus bas du moment pour chaque carburant, partout en France. Clique sur une pastille pour voir où se trouve la station.' },
-      { target:'#mode-seg', mode:null, title:'Deux façons de chercher', text:'Bascule entre « Autour de moi » pour chercher près d’un point, et « Itinéraire » pour planifier un trajet.' },
-      { target:'#search', mode:'around', title:'Chercher une ville', text:'Tape une ville ou une adresse pour déplacer la carte ailleurs qu’à ta position actuelle.' },
-      { target:'#fuels', mode:'around', title:'Choisir le carburant', text:'Sélectionne le carburant à comparer : SP95, SP98, Gazole, E10, E85 ou GPL.' },
-      { target:'#radius-block', mode:'around', title:'Régler le rayon', text:'Choisis jusqu’à quelle distance chercher des stations autour du point sélectionné.' },
-      { target:'#draw-toolbar', mode:'around', title:'Dessiner une zone', text:'Pour une recherche plus précise qu’un simple rayon, dessine une zone directement sur la carte : cercle, rectangle ou forme libre.' },
-      { target:'#locate-btn', mode:'around', title:'Se localiser', text:'Clique ici pour te localiser et voir tout de suite les stations autour de toi.' },
-      { target:'#list', mode:'around', title:'La liste des stations', text:'Les stations sont classées par prix, avec un code couleur du moins cher (vert) au plus cher (rouge). Clique sur une carte pour la centrer sur la carte, ou partage-la.' },
-      { target:'#route-panel', mode:'route', title:'Planifier un itinéraire', text:'Renseigne un point de départ et une arrivée, et ajoute des étapes intermédiaires si besoin.' },
-      { target:'#route-go', mode:'route', title:'Calculer le trajet', text:'Configure d’abord les options (péages, autoroutes, ferries, consommation du véhicule), puis calcule l’itinéraire : les stations les moins chères sur ton trajet s’affichent automatiquement, dans l’ordre de passage.' },
-      { target:'#theme-btn', mode:null, title:'Thème clair / sombre', text:'Bascule l’affichage entre thème clair et thème sombre.' },
+      { target:'#natlow-pills', mode:null, titleKey:'tour1Title', textKey:'tour1Text' },
+      { target:'#mode-seg', mode:null, titleKey:'tour2Title', textKey:'tour2Text' },
+      { target:'#search', mode:'around', titleKey:'tour3Title', textKey:'tour3Text' },
+      { target:'#fuels', mode:'around', titleKey:'tour4Title', textKey:'tour4Text' },
+      { target:'#radius-block', mode:'around', titleKey:'tour5Title', textKey:'tour5Text' },
+      { target:'#draw-toolbar', mode:'around', titleKey:'tour6Title', textKey:'tour6Text' },
+      { target:'#locate-btn', mode:'around', titleKey:'tour7Title', textKey:'tour7Text' },
+      { target:'#list', mode:'around', titleKey:'tour8Title', textKey:'tour8Text' },
+      { target:'#route-panel', mode:'route', titleKey:'tour9Title', textKey:'tour9Text' },
+      { target:'#route-go', mode:'route', titleKey:'tour10Title', textKey:'tour10Text' },
+      { target:'#theme-btn', mode:null, titleKey:'tour11Title', textKey:'tour11Text' },
     ];
     let tourStep=-1, tourPrevMode=null, tourPrevSheet=null, tourPrevOverlayOpen=false, tourResizeHandler=null;
     let activeTourSteps=TOUR_STEPS;
@@ -2730,14 +3114,14 @@ svg{display:block;}
         ov=document.createElement('div'); ov.id='tour-overlay'; ov.className='tour-overlay';
         ov.innerHTML=`<div class="tour-block" id="tour-block"></div><div class="tour-spot" id="tour-spot"></div>
           <div class="tour-bubble" id="tour-bubble">
-            <button class="tour-close" id="tour-close" aria-label="Fermer la visite guidée"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+            <button class="tour-close" id="tour-close" aria-label="${esc(t('tourCloseAria'))}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
             <h4><span class="n" id="tour-n">1</span><span id="tour-title"></span></h4>
             <p id="tour-text"></p>
             <div class="tour-nav">
               <span class="tour-dots" id="tour-dots"></span>
               <div class="tour-btns">
-                <button class="tour-btn-prev" id="tour-prev">Précédent</button>
-                <button class="tour-btn-next" id="tour-next">Suivant</button>
+                <button class="tour-btn-prev" id="tour-prev">${esc(t('tourPrev'))}</button>
+                <button class="tour-btn-next" id="tour-next">${esc(t('tourNext'))}</button>
               </div>
             </div>
           </div>`;
@@ -2788,11 +3172,12 @@ svg{display:block;}
         sbEl.dataset.sheet = (targetEl && sbEl.contains(targetEl)) ? 'full' : 'peek';
       }
       $('tour-n').textContent=tourStep+1;
-      $('tour-title').textContent=step.title;
-      $('tour-text').textContent=step.text;
+      $('tour-title').textContent=t(step.titleKey);
+      $('tour-text').textContent=t(step.textKey);
       $('tour-dots').textContent=`${tourStep+1} / ${activeTourSteps.length}`;
       $('tour-prev').style.visibility = tourStep===0 ? 'hidden' : 'visible';
-      $('tour-next').textContent = tourStep===activeTourSteps.length-1 ? 'Terminer' : 'Suivant';
+      $('tour-prev').textContent = t('tourPrev');
+      $('tour-next').textContent = tourStep===activeTourSteps.length-1 ? t('tourFinish') : t('tourNext');
       requestAnimationFrame(()=>requestAnimationFrame(positionTour));
     }
     function positionTour(){
@@ -2816,7 +3201,7 @@ svg{display:block;}
     $('tour-btn').addEventListener('click', startTour);
 
     /* ---- NATIONAL LOW ---- */
-    const NAT=[['Gazole','gazole_prix'],['SP95','sp95_prix'],['SP98','sp98_prix'],['E10','e10_prix'],['E85','e85_prix'],['GPL','gplc_prix']];
+    const NAT=[['Gazole','gazole_prix'],['SP95','sp95_prix'],['SP98','sp98_prix'],['E10','e10_prix'],['E85','e85_prix'],['GPLc','gplc_prix']];
     const natlowBtn=$('natlow-btn'), natlowBurst=$('natlow-burst');
     let natlowEntries=[];
     function closeNatlowBurst(){
@@ -2863,35 +3248,41 @@ svg{display:block;}
     function renderNatlowBurst(entries){
       natlowEntries=entries;
       natlowBurst.innerHTML=entries.map(({label,value,high})=>
-        `<button class="natlow-bubble" title="Voir la station la moins chère sur la carte"><span class="f">${label}</span><span class="p">${priceRangeTxt(value,high)}</span></button>`
+        `<button class="natlow-bubble" title="${esc(t('natlowCheapestTitle'))}"><span class="f">${esc(label)}</span><span class="p">${priceRangeTxt(value,high)}</span></button>`
       ).join('');
       natlowBurst.querySelectorAll('.natlow-bubble').forEach((el,i)=>{
         el.addEventListener('click',()=>{ showNatLow(entries[i].natIndex, el); closeNatlowBurst(); });
       });
     }
-    (async function natLow(){
+    let natlowLastRow=null;
+    function renderNatlowPills(){
       const box=$('natlow-pills');
+      if(!natlowLastRow){ box.innerHTML=`<span class="natlow-loading">${t('natlowLoading')}</span>`; return; }
+      const row=natlowLastRow;
+      const html=NAT.map(([code],i)=>{ const v=row['m'+i]; if(v==null) return '';
+        return `<button class="np" data-nat="${i}" title="${esc(t('natlowCheapestTitle'))}"><span class="f">${esc(fuelLabel(code))}</span><span class="p">${priceRangeTxt(v,row['x'+i])}</span></button>`; }).join('');
+      box.innerHTML=html;
+      box.querySelectorAll('.np[data-nat]').forEach(btn=>btn.addEventListener('click',()=>showNatLow(+btn.dataset.nat, btn)));
+      const entries=NAT.map(([code],i)=>({label:fuelLabel(code), value:row['m'+i], high:row['x'+i], natIndex:i})).filter(e=>e.value!=null);
+      if(entries.length) renderNatlowBurst(entries);
+      else natlowBurst.innerHTML='';
+    }
+    (async function fetchNatLow(){
       try{
         const select=NAT.map(([_,f],i)=>`min(${f}) as m${i},max(${f}) as x${i}`).join(',');
         const url=`${API_BASE}?select=${encodeURIComponent(select)}&limit=1`;
         const data=await (await fetch(url)).json();
-        const row=(data.results&&data.results[0])||{};
-        const html=NAT.map(([label],i)=>{ const v=row['m'+i]; if(v==null) return '';
-          return `<button class="np" data-nat="${i}" title="Voir la station la moins chère sur la carte"><span class="f">${label}</span><span class="p">${priceRangeTxt(v,row['x'+i])}</span></button>`; }).join('');
-        box.innerHTML=html;
-        box.querySelectorAll('.np[data-nat]').forEach(btn=>btn.addEventListener('click',()=>showNatLow(+btn.dataset.nat, btn)));
-        const entries=NAT.map(([label],i)=>({label, value:row['m'+i], high:row['x'+i], natIndex:i})).filter(e=>e.value!=null);
-        if(entries.length) renderNatlowBurst(entries);
-        else natlowBurst.innerHTML='';
+        natlowLastRow=(data.results&&data.results[0])||{};
+        renderNatlowPills();
       }catch(e){
-        const msg='<span class="natlow-loading">Prix nationaux indisponibles</span>';
-        box.innerHTML=msg;
+        natlowLastRow=null;
+        $('natlow-pills').innerHTML=`<span class="natlow-loading">${t('natlowUnavailable')}</span>`;
       }
     })();
 
     let natMarker=null;
     async function showNatLow(i, btn){
-      const [label, field]=NAT[i];
+      const [code, field]=NAT[i];
       if(btn){ btn.classList.add('loading'); btn.disabled=true; }
       try{
         const url=`${API_BASE}?where=${encodeURIComponent(field+' is not null')}&order_by=${encodeURIComponent(field)}&limit=1`;
@@ -2906,16 +3297,16 @@ svg{display:block;}
         const gmaps=`https://www.google.com/maps/dir/?api=1&destination=${st.lat},${st.lng}`;
         const waze=`https://waze.com/ul?ll=${st.lat},${st.lng}&navigate=yes`;
         const arrow='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>';
-        natMarker.bindPopup(`<div class="pop-name">${esc(st.brandName)} — ${label} le moins cher de France</div>
+        natMarker.bindPopup(`<div class="pop-name">${esc(st.brandName)} — ${esc(t('natPopupCheapest',{fuel:fuelLabel(code)}))}</div>
           <div class="pop-addr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${esc(st.address||st.city)}, ${esc(st.city)}</div>
-          <div class="pop-prices">${Object.entries(st.prices).map(([f,pv])=>`<span class="pop-tag ${FUEL_FIELDS[f]===field?'hl':''}">${f} <b>${fmt(pv)} €</b></span>`).join('')}</div>
+          <div class="pop-prices">${Object.entries(st.prices).map(([f,pv])=>`<span class="pop-tag ${FUEL_FIELDS[f]===field?'hl':''}">${esc(fuelLabel(f))} <b>${fmt(pv)} €</b></span>`).join('')}</div>
           <div class="pop-routes">
             <a class="rbtn gmaps" href="${gmaps}" target="_blank" rel="noopener noreferrer">${arrow}Maps</a>
             <a class="rbtn waze" href="${waze}" target="_blank" rel="noopener noreferrer">${arrow}Waze</a>
           </div>`);
         withMapSuppressed(()=>map.flyTo([st.lat, st.lng], 14, { animate:true, duration:1.1 }));
         map.once('moveend', ()=>natMarker&&natMarker.openPopup());
-      }catch(e){ geoToast('Station introuvable pour '+label, 'err'); }
+      }catch(e){ geoToast(t('geoToastStationNotFound',{label:fuelLabel(code)}), 'err'); }
       finally{ if(btn){ btn.classList.remove('loading'); btn.disabled=false; } }
     }
 

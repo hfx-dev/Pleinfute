@@ -6,6 +6,9 @@ Application 100% statique (un seul fichier `index.html`, aucun backend, aucune d
 
 ## Fonctionnalités
 
+### Langue
+- **Interface disponible en français, anglais et espagnol** — détectée automatiquement à partir de la langue du navigateur au premier lancement, modifiable à tout moment dans Paramètres (⚙️) → Langue. Le choix est mémorisé et s'applique immédiatement, sans recharger la page.
+
 ### Données et prix
 - **Prix en temps réel** — données issues de l'API officielle du gouvernement français (`data.economie.gouv.fr`, prix des carburants en flux instantané) : Gazole (sélectionné par défaut), SP95, SP98, E10, E85, GPLc.
 - **Espagne** — détection automatique du pays via la position : en Espagne, les stations viennent de l'API officielle du MITECO (gouvernement espagnol). E10/E85 n'existent pas sur le marché espagnol et n'apparaissent donc pas pour ces stations.
