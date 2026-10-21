@@ -992,7 +992,7 @@ svg{display:block;}
 .dtool.danger svg{color:var(--tier-high);}
 .dtool.danger:hover{background:var(--tier-high-soft);}
 
-.map-right{position:absolute;top:16px;right:16px;z-index:600;display:flex;flex-direction:column;gap:9px;align-items:flex-end;}
+.map-right{position:absolute;top:calc(var(--header-bottom, 76px) + 16px);right:16px;z-index:600;display:flex;flex-direction:column;gap:9px;align-items:flex-end;}
 .locate{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);
   border-radius:12px;padding:10px 14px;box-shadow:var(--shadow-md);font-size:13.5px;font-weight:700;color:var(--text);}
 .locate svg{width:16px;height:16px;color:var(--primary);}
@@ -1197,8 +1197,17 @@ svg{display:block;}
 .route-info b{color:var(--text);}
 .routeline-pane{}
 
-/* ---- Maps-style floating search: always on, at every viewport width ---- */
-.topbar{display:flex;gap:8px;position:absolute;top:12px;left:12px;right:12px;z-index:650;max-width:440px;}
+/* ---- Maps-style floating search: always on, at every viewport width ----
+   Les 3 lignes (recherche, filtres, prix nationaux) sont empilées dans un
+   conteneur flex-column unique : chacune prend la hauteur qu'elle rend
+   réellement (texte qui passerait sur 2 lignes, police différente selon
+   l'appareil, etc.) au lieu d'un décalage en pixels deviné à l'avance, qui
+   casse dès qu'un écran est un peu plus étroit que celui utilisé pour régler
+   ce chiffre. #map-right et .map-tools suivent via --header-bottom, mesuré
+   en JS (ResizeObserver) à partir de la hauteur réellement rendue. */
+.map-header-stack{position:absolute;top:12px;left:12px;right:12px;z-index:650;max-width:440px;
+  display:flex;flex-direction:column;gap:8px;}
+.topbar{display:flex;gap:8px;}
 .search-pill{flex:1;display:flex;align-items:center;gap:10px;background:var(--surface);
   border:1px solid var(--border);border-radius:999px;padding:13px 16px;box-shadow:var(--shadow-md);
   color:var(--muted);font-size:14px;font-weight:600;text-align:left;min-width:0;}
@@ -1210,13 +1219,12 @@ svg{display:block;}
   justify-content:center;color:var(--primary);}
 .route-toggle-btn.active{background:var(--primary);color:#fff;}
 .route-toggle-btn svg{width:19px;height:19px;}
-.chip-row-mobile{display:flex;gap:7px;position:absolute;top:70px;left:12px;right:12px;z-index:640;
-  max-width:440px;overflow-x:auto;padding-bottom:2px;}
+.chip-row-mobile{display:flex;gap:7px;overflow-x:auto;padding-bottom:2px;}
 .chip-row-mobile::-webkit-scrollbar{display:none;}
 .chip-row-mobile .chip{flex-shrink:0;box-shadow:var(--shadow-sm);}
 .chip-row-mobile .chip:not(.active){background:var(--surface);}
 .natlow-row-mobile{display:none;}
-.map-tools{top:124px;}
+.map-tools{top:calc(var(--header-bottom, 76px) + 16px);}
 
 /* Full-page search/filters takeover, opened by the search pill or the route button.
    Top-level sibling of .app (not nested in .sidebar) so its position:fixed is never
@@ -1279,11 +1287,10 @@ svg{display:block;}
   .rbtn{padding:0 9px;font-size:11.5px;}
 
   .map-tools{display:none;}
-  .map-right{right:12px;gap:7px;top:164px;}
+  .map-right{right:12px;gap:7px;}
   .locate{padding:9px 12px;font-size:12.5px;}
 
-  .natlow-row-mobile{display:flex;position:absolute;top:112px;left:12px;right:12px;z-index:630;
-    max-width:440px;gap:6px;overflow-x:auto;padding-bottom:2px;}
+  .natlow-row-mobile{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;}
   .natlow-row-mobile::-webkit-scrollbar{display:none;}
   .natlow-row-mobile .np{flex-shrink:0;background:var(--surface);box-shadow:var(--shadow-sm);
     padding:4px 10px;}
@@ -1347,24 +1354,26 @@ svg{display:block;}
   </aside>
 
   <div class="map-area">
-    <div class="topbar">
-      <button class="search-pill" id="search-pill">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>
-        <span id="search-pill-label">Autour de moi</span>
-      </button>
-      <button class="route-toggle-btn" id="route-toggle-btn" aria-label="Itinéraire" title="Itinéraire">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="19" r="2.5"></circle><circle cx="18" cy="5" r="2.5"></circle><path d="M8.5 19H15a3.5 3.5 0 0 0 0-7H9a3.5 3.5 0 0 1 0-7h6.5"></path></svg>
-      </button>
+    <div class="map-header-stack" id="map-header-stack">
+      <div class="topbar">
+        <button class="search-pill" id="search-pill">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>
+          <span id="search-pill-label">Autour de moi</span>
+        </button>
+        <button class="route-toggle-btn" id="route-toggle-btn" aria-label="Itinéraire" title="Itinéraire">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="19" r="2.5"></circle><circle cx="18" cy="5" r="2.5"></circle><path d="M8.5 19H15a3.5 3.5 0 0 0 0-7H9a3.5 3.5 0 0 1 0-7h6.5"></path></svg>
+        </button>
+      </div>
+      <div class="chip-row-mobile" id="chip-row-mobile">
+        <button class="chip" data-fuel="SP95">SP95</button>
+        <button class="chip" data-fuel="SP98">SP98</button>
+        <button class="chip active" data-fuel="Gazole">Gazole</button>
+        <button class="chip" data-fuel="E10">E10</button>
+        <button class="chip" data-fuel="E85">E85</button>
+        <button class="chip" data-fuel="GPLc">GPL</button>
+      </div>
+      <div class="natlow-row-mobile" id="natlow-row-mobile"><span class="natlow-loading">Chargement…</span></div>
     </div>
-    <div class="chip-row-mobile" id="chip-row-mobile">
-      <button class="chip" data-fuel="SP95">SP95</button>
-      <button class="chip" data-fuel="SP98">SP98</button>
-      <button class="chip active" data-fuel="Gazole">Gazole</button>
-      <button class="chip" data-fuel="E10">E10</button>
-      <button class="chip" data-fuel="E85">E85</button>
-      <button class="chip" data-fuel="GPLc">GPL</button>
-    </div>
-    <div class="natlow-row-mobile" id="natlow-row-mobile"><span class="natlow-loading">Chargement…</span></div>
     <div id="map"></div>
     <div class="map-tools" id="draw-toolbar">
       <span class="t"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><path d="M2 2l7.586 7.586"></path></svg> Dessiner une zone</span>
@@ -1671,6 +1680,22 @@ svg{display:block;}
     const map = L.map('map', { zoomControl:true, attributionControl:true, preferCanvas:true }).setView([25, 10], 3);
     map.zoomControl.setPosition('bottomright');
     L.control.scale({ imperial:false, position:'bottomleft' }).addTo(map);
+
+    /* ---- HEADER STACK HEIGHT ----
+       .map-right / .map-tools se calent sous la pile recherche+filtres+prix
+       nationaux via --header-bottom, mesuré en vrai (pas deviné en px) : ça
+       s'adapte à n'importe quelle largeur d'écran, police ou contenu. */
+    const headerStack=$('map-header-stack'), mapAreaEl=document.querySelector('.map-area');
+    function updateHeaderOffset(){
+      if(!headerStack || !mapAreaEl) return;
+      const r=headerStack.getBoundingClientRect(), m=mapAreaEl.getBoundingClientRect();
+      mapAreaEl.style.setProperty('--header-bottom', Math.round(r.bottom-m.top)+'px');
+    }
+    if(headerStack && mapAreaEl){
+      if(window.ResizeObserver) new ResizeObserver(updateHeaderOffset).observe(headerStack);
+      window.addEventListener('resize', updateHeaderOffset);
+      updateHeaderOffset();
+    }
     /* ---- MAP STYLES (base) + DETAIL OVERLAYS ---- */
     // Clé gratuite à créer sur https://www.thunderforest.com/ (compte gratuit, 150k tuiles/mois),
     // puis à restreindre par domaine dans le dashboard Thunderforest pour éviter tout abus.
