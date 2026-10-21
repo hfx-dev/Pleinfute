@@ -1208,17 +1208,17 @@ svg{display:block;}
 .map-header-stack{position:absolute;top:12px;left:12px;right:12px;z-index:650;max-width:440px;
   display:flex;flex-direction:column;gap:8px;}
 .topbar{display:flex;gap:8px;}
-.search-pill{flex:1;display:flex;align-items:center;gap:10px;background:var(--surface);
-  border:1px solid var(--border);border-radius:999px;padding:13px 16px;box-shadow:var(--shadow-md);
-  color:var(--muted);font-size:14px;font-weight:600;text-align:left;min-width:0;}
-.search-pill.has-value{color:var(--text);}
-.search-pill svg{width:18px;height:18px;flex-shrink:0;color:var(--primary);}
-.search-pill span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.route-toggle-btn{flex-shrink:0;width:48px;height:48px;border-radius:50%;background:var(--surface);
-  border:1px solid var(--border);box-shadow:var(--shadow-md);display:flex;align-items:center;
-  justify-content:center;color:var(--primary);}
-.route-toggle-btn.active{background:var(--primary);color:#fff;}
-.route-toggle-btn svg{width:19px;height:19px;}
+/* Bouton de recherche compact (option secondaire) : la barre pleine largeur
+   d'origine est remplacée par un simple rond, pour libérer de l'espace sur
+   la carte. Le mode Itinéraire reste accessible via les onglets une fois
+   le panneau ouvert. */
+.search-pill{flex-shrink:0;width:48px;height:48px;border-radius:50%;display:flex;
+  align-items:center;justify-content:center;background:var(--surface);border:1px solid var(--border);
+  box-shadow:var(--shadow-md);color:var(--muted);}
+.search-pill.has-value{color:var(--primary);border-color:var(--primary);}
+.search-pill svg{width:19px;height:19px;flex-shrink:0;}
+.search-pill span{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+  clip:rect(0,0,0,0);white-space:nowrap;border:0;}
 .chip-row-mobile{display:flex;gap:7px;overflow-x:auto;padding-bottom:2px;}
 .chip-row-mobile::-webkit-scrollbar{display:none;}
 .chip-row-mobile .chip{flex-shrink:0;box-shadow:var(--shadow-sm);}
@@ -1356,12 +1356,9 @@ svg{display:block;}
   <div class="map-area">
     <div class="map-header-stack" id="map-header-stack">
       <div class="topbar">
-        <button class="search-pill" id="search-pill">
+        <button class="search-pill" id="search-pill" aria-label="Rechercher">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>
           <span id="search-pill-label">Autour de moi</span>
-        </button>
-        <button class="route-toggle-btn" id="route-toggle-btn" aria-label="Itinéraire" title="Itinéraire">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="19" r="2.5"></circle><circle cx="18" cy="5" r="2.5"></circle><path d="M8.5 19H15a3.5 3.5 0 0 0 0-7H9a3.5 3.5 0 0 1 0-7h6.5"></path></svg>
         </button>
       </div>
       <div class="chip-row-mobile" id="chip-row-mobile">
@@ -1920,7 +1917,7 @@ svg{display:block;}
     function hideSugg(){ suggBox.classList.remove('open'); suggBox.innerHTML=''; searchInput.setAttribute('aria-expanded','false'); activeIndex=-1; }
     function choosePlace(p){ if(!p)return; searchInput.value=p.name; searchWrap.classList.add('has-text'); hideSugg();
       state.userLat=p.lat; state.userLng=p.lon; setUser(p.lat,p.lon); map.setView([p.lat,p.lon],13); fetchStations();
-      $('search-pill').classList.add('has-value'); $('search-pill-label').textContent=p.name;
+      $('search-pill').classList.add('has-value'); $('search-pill').title=p.name; $('search-pill-label').textContent=p.name;
       closeSearchOverlay(); }
     searchInput.addEventListener('keydown',(e)=>{ const items=suggBox.querySelectorAll('.sugg-item');
       if(e.key==='ArrowDown'&&items.length){ e.preventDefault(); activeIndex=Math.min(activeIndex+1,items.length-1); updActive(items); }
@@ -2095,7 +2092,8 @@ svg{display:block;}
         const start=stops[0].label, end=stops[stops.length-1].label;
         const h=Math.floor(sec/3600), min=Math.round((sec%3600)/60);
         $('search-pill').classList.add('has-value');
-        $('search-pill-label').textContent = `${start} → ${end} · ${h?h+' h ':''}${min} min`;
+        const routeSummary = `${start} → ${end} · ${h?h+' h ':''}${min} min`;
+        $('search-pill').title=routeSummary; $('search-pill-label').textContent = routeSummary;
         closeSearchOverlay();
       }catch(e){
         $('route-info').textContent='Itinéraire introuvable — vérifie les points.';
@@ -2159,7 +2157,6 @@ svg{display:block;}
       $('mode-seg').querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b));
       searchOverlay.dataset.mode=m;
       $('search-overlay-title').textContent = m==='route' ? 'Itinéraire' : 'Rechercher';
-      $('route-toggle-btn').classList.toggle('active', m==='route');
       if(m==='route'){
         if(!state.stops) state.stops=defaultStops();
         renderStops();
@@ -2250,8 +2247,7 @@ svg{display:block;}
       searchOverlay.classList.remove('open');
       if(isMobile()) sbEl.dataset.sheet='peek';
     }
-    $('search-pill').addEventListener('click',()=>openSearchOverlay('around'));
-    $('route-toggle-btn').addEventListener('click',()=>openSearchOverlay('route'));
+    $('search-pill').addEventListener('click',()=>openSearchOverlay());
     $('search-back').addEventListener('click',closeSearchOverlay);
 
     /* options de trajet */
