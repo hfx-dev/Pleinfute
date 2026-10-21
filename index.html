@@ -1549,9 +1549,23 @@ svg{display:block;}
     </div>
     <h4 class="modal-sec-title" data-i18n="settingsGeoSectionTitle">Localisation</h4>
     <p class="modal-body-text" data-i18n="settingsGeoBody">Utilisée uniquement pour trouver les stations-service les moins chères autour de toi. Jamais envoyée ailleurs ni conservée.</p>
+    <div class="detail-row" id="settings-geo-row">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      <span class="dr-label" data-i18n="settingsGeoToggleLabel">Utiliser ma position</span>
+      <span class="dr-switch" id="settings-geo-switch"></span>
+    </div>
     <div class="settings-geo-status" id="settings-geo-status"></div>
-    <button class="route-go" id="settings-geo-btn">Autoriser ma position</button>
     <div class="modal-note" id="settings-geo-help" hidden></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="privacy-overlay" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="privacy-title">
+    <div class="modal-head">
+      <span id="privacy-title" data-i18n="privacyTitle">🔒 Confidentialité</span>
+      <button class="modal-close" id="privacy-close" data-i18n-aria="settingsCloseAria" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+    </div>
+    <p class="modal-body-text" data-i18n="privacyBody">Plein Futé ne conserve aucune donnée.</p>
   </div>
 </div>
 
@@ -1650,7 +1664,13 @@ svg{display:block;}
         settingsGeoGranted:`Autorisée`, settingsGeoDenied:`Refusée`, settingsGeoUnknown:`Pas encore demandée`,
         settingsGeoBtnGranted:`Actualiser ma position`, settingsGeoBtnDenied:`Réessayer`, settingsGeoBtnUnknown:`Autoriser ma position`,
         settingsGeoHelp:`Ton navigateur a mémorisé ce refus : impossible de rouvrir la demande automatiquement. Pour réactiver, clique sur l'icône 🔒 (ou ⓘ) à gauche de l'adresse du site, ouvre « Localisation » (ou « Permissions du site ») et choisis « Autoriser », puis recharge la page.`,
+        settingsGeoToggleLabel:`Utiliser ma position`, settingsGeoOff:`Désactivée`,
         settingsLangSectionTitle:`Langue`,
+        apiStatusGeoOff:`Localisation désactivée`,
+        emptyGeoTitleOff:`Localisation désactivée`,
+        emptyGeoTextOff:`Tu as choisi de ne pas partager ta position. Active-la dans les Paramètres, ou cherche une ville.`,
+        privacyTitle:`🔒 Confidentialité`,
+        privacyBody:`Plein Futé ne conserve aucune donnée : pas de compte, pas de suivi, pas de serveur. Ta position sert uniquement, dans ton navigateur, à calculer les distances — elle n'est jamais envoyée à qui que ce soit d'autre que les API officielles des prix (data.gouv.fr, etc.), directement depuis ton appareil.`,
         optsTitle:`Options de trajet`, optsCloseAria:`Fermer`,
         optTolls:`Éviter les péages`, optHighways:`Éviter les autoroutes`, optFerries:`Éviter les ferries`,
         optConsoLabel:`Consommation`, optConsoSub:`pour le coût carburant (L/100 km)`,
@@ -1756,7 +1776,13 @@ svg{display:block;}
         settingsGeoGranted:`Allowed`, settingsGeoDenied:`Denied`, settingsGeoUnknown:`Not requested yet`,
         settingsGeoBtnGranted:`Refresh my location`, settingsGeoBtnDenied:`Try again`, settingsGeoBtnUnknown:`Allow my location`,
         settingsGeoHelp:`Your browser remembered this refusal, so it can't reopen the request automatically. To re-enable it, click the 🔒 (or ⓘ) icon to the left of the site's address, open "Location" (or "Site permissions") and choose "Allow", then reload the page.`,
+        settingsGeoToggleLabel:`Use my location`, settingsGeoOff:`Disabled`,
         settingsLangSectionTitle:`Language`,
+        apiStatusGeoOff:`Location disabled`,
+        emptyGeoTitleOff:`Location disabled`,
+        emptyGeoTextOff:`You chose not to share your location. Turn it back on in Settings, or search for a city.`,
+        privacyTitle:`🔒 Privacy`,
+        privacyBody:`Plein Futé doesn't store any data: no account, no tracking, no server. Your location is only used, locally in your browser, to calculate distances — it's never sent to anyone other than the official price APIs (data.gouv.fr, etc.), directly from your device.`,
         optsTitle:`Route options`, optsCloseAria:`Close`,
         optTolls:`Avoid tolls`, optHighways:`Avoid highways`, optFerries:`Avoid ferries`,
         optConsoLabel:`Fuel consumption`, optConsoSub:`for the fuel cost (L/100 km)`,
@@ -1862,7 +1888,13 @@ svg{display:block;}
         settingsGeoGranted:`Permitida`, settingsGeoDenied:`Denegada`, settingsGeoUnknown:`Aún no solicitada`,
         settingsGeoBtnGranted:`Actualizar mi ubicación`, settingsGeoBtnDenied:`Reintentar`, settingsGeoBtnUnknown:`Permitir mi ubicación`,
         settingsGeoHelp:`Tu navegador memorizó esta negativa, así que no puede reabrir la solicitud automáticamente. Para reactivarla, haz clic en el icono 🔒 (o ⓘ) a la izquierda de la dirección del sitio, abre «Ubicación» (o «Permisos del sitio») y elige «Permitir», luego recarga la página.`,
+        settingsGeoToggleLabel:`Usar mi ubicación`, settingsGeoOff:`Desactivada`,
         settingsLangSectionTitle:`Idioma`,
+        apiStatusGeoOff:`Ubicación desactivada`,
+        emptyGeoTitleOff:`Ubicación desactivada`,
+        emptyGeoTextOff:`Elegiste no compartir tu ubicación. Actívala de nuevo en Ajustes, o busca una ciudad.`,
+        privacyTitle:`🔒 Privacidad`,
+        privacyBody:`Plein Futé no guarda ningún dato: sin cuenta, sin seguimiento, sin servidor. Tu ubicación solo se usa, localmente en tu navegador, para calcular distancias — nunca se envía a nadie más que a las API oficiales de precios (data.gouv.fr, etc.), directamente desde tu dispositivo.`,
         optsTitle:`Opciones de ruta`, optsCloseAria:`Cerrar`,
         optTolls:`Evitar peajes`, optHighways:`Evitar autopistas`, optFerries:`Evitar ferris`,
         optConsoLabel:`Consumo`, optConsoSub:`para el coste de combustible (L/100 km)`,
@@ -2409,7 +2441,7 @@ svg{display:block;}
 
     /* ---- FETCH STATIONS ---- */
     async function fetchStations(opts={}){
-      if(state.userLat==null) return;
+      if(state.userLat==null){ state.stations=[]; applyFilters(); return; }
       if(state.zoneLayer){ drawnItems.clearLayers(); state.zoneLayer=null; $('zone-banner').classList.remove('open'); }
       setLoading(true);
       $('api-status').innerHTML = `<span class="spin"></span> ${t('apiStatusLoading')}`;
@@ -2786,19 +2818,19 @@ svg{display:block;}
       // Pas de position connue : montrer un message dédié avec des actions (plutôt que
       // "aucune station trouvée, essaie un autre rayon" qui est trompeur dans ce cas).
       if(state.mode==='around' && state.userLat==null){
-        const denied = geoStatus==='denied';
-        const title = denied ? t('emptyGeoTitleDenied') : t('emptyGeoTitleDefault');
-        const text = denied ? t('emptyGeoTextDenied') : t('emptyGeoTextDefault');
+        const blocked = geoStatus==='denied' || geoStatus==='off';
+        const title = geoStatus==='denied' ? t('emptyGeoTitleDenied') : geoStatus==='off' ? t('emptyGeoTitleOff') : t('emptyGeoTitleDefault');
+        const text = geoStatus==='denied' ? t('emptyGeoTextDenied') : geoStatus==='off' ? t('emptyGeoTextOff') : t('emptyGeoTextDefault');
         el.innerHTML = `<div class="empty">
           <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="10" r="3"></circle><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"></path></svg></div>
           <h3>${esc(title)}</h3><p>${esc(text)}</p>
           <div class="empty-actions">
             <button class="route-opts-btn" id="empty-search-city">${esc(t('emptySearchCityBtn'))}</button>
-            <button class="route-opts-btn" id="empty-geo-action">${esc(denied ? t('emptyGeoActionDenied') : t('emptyGeoActionDefault'))}</button>
+            <button class="route-opts-btn" id="empty-geo-action">${esc(blocked ? t('emptyGeoActionDenied') : t('emptyGeoActionDefault'))}</button>
           </div>
         </div>`;
         $('empty-search-city').addEventListener('click', ()=>openSearchOverlay());
-        $('empty-geo-action').addEventListener('click', ()=> denied ? openSettingsPanel() : locateMe(true));
+        $('empty-geo-action').addEventListener('click', ()=> blocked ? openSettingsPanel() : locateMe(true));
         return;
       }
       if(state.filtered.length===0){
@@ -2954,13 +2986,17 @@ svg{display:block;}
     /* ---- LOCALISATION : transparence + récupération après un refus ----
        Avant la toute première demande (automatique au chargement), on
        explique en une phrase pourquoi l'app a besoin de la position, pour
-       ne pas surprendre quelqu'un qui découvre l'app. Si le refus est déjà
-       mémorisé par le navigateur, on ne redemande jamais automatiquement
-       (ça afficherait juste une erreur à chaque chargement) : à la place,
-       l'app reste utilisable (recherche de ville, prix nationaux) et les
-       Paramètres expliquent comment réactiver l'accès manuellement, le
-       seul moyen possible une fois le refus mémorisé par le navigateur. */
-    let geoStatus='unknown'; // 'unknown' | 'granted' | 'denied' | 'skipped' | 'unsupported'
+       ne pas surprendre quelqu'un qui découvre l'app. Le choix (oui/non)
+       est mémorisé dans locPref, indépendamment de la permission réelle du
+       navigateur : un "non" explicite n'est jamais redemandé tout seul.
+       Si le refus est mémorisé par le navigateur lui-même, impossible de
+       rouvrir la demande automatiquement (ça afficherait juste une erreur
+       à chaque chargement) : l'app reste utilisable (recherche de ville,
+       prix nationaux) et les Paramètres expliquent comment réactiver
+       l'accès manuellement, le seul moyen possible dans ce cas. */
+    let geoStatus='unknown'; // 'unknown' | 'granted' | 'denied' | 'off' | 'unsupported'
+    function getLocPref(){ try{ return localStorage.getItem('locPref'); }catch(e){ return null; } } // 'on' | 'off' | null
+    function setLocPref(v){ try{ localStorage.setItem('locPref', v); }catch(e){} }
     function setGeoStatus(s){
       geoStatus=s;
       if(!$('settings-overlay').hidden) refreshSettingsGeoUI();
@@ -2981,6 +3017,11 @@ svg{display:block;}
         $('api-status').innerHTML = `<span class="dot" style="background:var(--tier-high)"></span> <span style="color:var(--tier-high)">${t('apiStatusGeoUnsupported')}</span>`;
         return;
       }
+      if(getLocPref()==='off'){
+        setGeoStatus('off');
+        $('api-status').innerHTML = `<span class="dot" style="background:var(--faint)"></span> ${t('apiStatusGeoOff')}`;
+        return;
+      }
       const perm=await geoPermissionState();
       if(perm==='granted'){ setGeoStatus('granted'); locateMe(false); return; }
       if(perm==='denied'){
@@ -2988,17 +3029,41 @@ svg{display:block;}
         $('api-status').innerHTML = `<span class="dot" style="background:var(--tier-high)"></span> <span style="color:var(--tier-high)">${t('apiStatusGeoDenied')}</span>`;
         return;
       }
+      if(getLocPref()==='on'){ locateMe(false); return; } // déjà accepté avant (ex. données du site effacées depuis)
       $('api-status').innerHTML = `<span class="dot" style="background:var(--faint)"></span> ${t('apiStatusGeoNotShared')}`;
       showGeoPrimer();
     }
     function showGeoPrimer(){ $('geo-primer-overlay').hidden=false; }
     function hideGeoPrimer(){ $('geo-primer-overlay').hidden=true; }
-    $('geo-primer-allow').addEventListener('click',()=>{ hideGeoPrimer(); locateMe(false); });
+    $('geo-primer-allow').addEventListener('click',()=>{ hideGeoPrimer(); setLocPref('on'); locateMe(false); });
     $('geo-primer-skip').addEventListener('click',()=>{
-      hideGeoPrimer(); setGeoStatus('skipped'); openSearchOverlay();
+      hideGeoPrimer(); setLocPref('off'); setGeoStatus('off');
+      $('api-status').innerHTML = `<span class="dot" style="background:var(--faint)"></span> ${t('apiStatusGeoOff')}`;
+      openSearchOverlay();
     });
 
-    locateBtn.addEventListener('click',()=>locateMe(true));
+    /* ---- Fonctionnalité cachée : appui long (5s) sur "Ma position" ----
+       Affiche un rappel de confidentialité (aucune donnée conservée),
+       pour rassurer sans l'imposer à tout le monde dans l'interface. */
+    let longPressTimer=null, longPressFired=false;
+    function startLongPress(){
+      longPressFired=false;
+      clearTimeout(longPressTimer);
+      longPressTimer=setTimeout(()=>{ longPressFired=true; $('privacy-overlay').hidden=false; }, 5000);
+    }
+    function cancelLongPress(){ clearTimeout(longPressTimer); }
+    locateBtn.addEventListener('pointerdown', startLongPress);
+    locateBtn.addEventListener('pointerup', cancelLongPress);
+    locateBtn.addEventListener('pointerleave', cancelLongPress);
+    locateBtn.addEventListener('pointercancel', cancelLongPress);
+    $('privacy-close').addEventListener('click', ()=>{ $('privacy-overlay').hidden=true; });
+    $('privacy-overlay').addEventListener('click',(e)=>{ if(e.target===$('privacy-overlay')) $('privacy-overlay').hidden=true; });
+    document.addEventListener('keydown',(e)=>{ if(e.key==='Escape' && !$('privacy-overlay').hidden) $('privacy-overlay').hidden=true; });
+
+    locateBtn.addEventListener('click',(e)=>{
+      if(longPressFired){ longPressFired=false; e.preventDefault(); e.stopPropagation(); return; }
+      locateMe(true);
+    });
     function locateMe(fromClick){
       if(!navigator.geolocation){ geoToast(t('geoToastNotSupported'), 'err'); return; }
       locateBtn.classList.add('loading'); locateBtn.disabled = true;
@@ -3006,7 +3071,7 @@ svg{display:block;}
       navigator.geolocation.getCurrentPosition(
         (pos)=>{
           locateBtn.classList.remove('loading'); locateBtn.disabled=false; locateBtn.innerHTML = locateHTML;
-          setGeoStatus('granted');
+          setLocPref('on'); setGeoStatus('granted');
           state.userLat = pos.coords.latitude; state.userLng = pos.coords.longitude;
           const acc = pos.coords.accuracy || 0;
           setUser(state.userLat, state.userLng, acc);
@@ -3038,18 +3103,18 @@ svg{display:block;}
     /* ---- PARAMÈTRES ---- */
     const settingsOverlay=$('settings-overlay');
     function refreshSettingsGeoUI(){
-      const statusEl=$('settings-geo-status'), btnEl=$('settings-geo-btn'), helpEl=$('settings-geo-help');
+      const statusEl=$('settings-geo-status'), swEl=$('settings-geo-switch'), helpEl=$('settings-geo-help');
+      swEl.classList.toggle('on', getLocPref()==='on');
       if(geoStatus==='granted'){
-        statusEl.innerHTML=`<span class="dot"></span> ${t('settingsGeoGranted')}`;
-        btnEl.textContent=t('settingsGeoBtnGranted'); helpEl.hidden=true;
+        statusEl.innerHTML=`<span class="dot"></span> ${t('settingsGeoGranted')}`; helpEl.hidden=true;
       } else if(geoStatus==='denied'){
         statusEl.innerHTML=`<span class="dot" style="background:var(--tier-high)"></span> <span style="color:var(--tier-high)">${t('settingsGeoDenied')}</span>`;
-        btnEl.textContent=t('settingsGeoBtnDenied');
         helpEl.hidden=false;
         helpEl.innerHTML=t('settingsGeoHelp');
+      } else if(geoStatus==='off'){
+        statusEl.innerHTML=`<span class="dot" style="background:var(--faint)"></span> ${t('settingsGeoOff')}`; helpEl.hidden=true;
       } else {
-        statusEl.innerHTML=`<span class="dot" style="background:var(--faint)"></span> ${t('settingsGeoUnknown')}`;
-        btnEl.textContent=t('settingsGeoBtnUnknown'); helpEl.hidden=true;
+        statusEl.innerHTML=`<span class="dot" style="background:var(--faint)"></span> ${t('settingsGeoUnknown')}`; helpEl.hidden=true;
       }
     }
     function openSettingsPanel(){ refreshSettingsGeoUI(); settingsOverlay.hidden=false; }
@@ -3057,7 +3122,16 @@ svg{display:block;}
     $('settings-btn').addEventListener('click', openSettingsPanel);
     $('settings-close').addEventListener('click', closeSettingsPanel);
     settingsOverlay.addEventListener('click',(e)=>{ if(e.target===settingsOverlay) closeSettingsPanel(); });
-    $('settings-geo-btn').addEventListener('click', ()=>locateMe(true));
+    $('settings-geo-switch').addEventListener('click', ()=>{
+      const turningOn = !$('settings-geo-switch').classList.contains('on');
+      if(turningOn){ setLocPref('on'); locateMe(true); }
+      else{
+        setLocPref('off'); state.userLat=null; state.userLng=null; state.stations=[];
+        setGeoStatus('off'); applyFilters();
+        $('api-status').innerHTML = `<span class="dot" style="background:var(--faint)"></span> ${t('apiStatusGeoOff')}`;
+      }
+      refreshSettingsGeoUI();
+    });
     document.addEventListener('keydown',(e)=>{
       if(e.key==='Escape' && !settingsOverlay.hidden) closeSettingsPanel();
     });
