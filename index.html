@@ -1219,10 +1219,6 @@ svg{display:block;}
 .search-pill svg{width:19px;height:19px;flex-shrink:0;}
 .search-pill span{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
   clip:rect(0,0,0,0);white-space:nowrap;border:0;}
-.chip-row-mobile{display:flex;gap:7px;overflow-x:auto;padding-bottom:2px;}
-.chip-row-mobile::-webkit-scrollbar{display:none;}
-.chip-row-mobile .chip{flex-shrink:0;box-shadow:var(--shadow-sm);}
-.chip-row-mobile .chip:not(.active){background:var(--surface);}
 .natlow-row-mobile{display:none;}
 .map-tools{top:calc(var(--header-bottom, 76px) + 16px);}
 
@@ -1360,14 +1356,6 @@ svg{display:block;}
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>
           <span id="search-pill-label">Autour de moi</span>
         </button>
-      </div>
-      <div class="chip-row-mobile" id="chip-row-mobile">
-        <button class="chip" data-fuel="SP95">SP95</button>
-        <button class="chip" data-fuel="SP98">SP98</button>
-        <button class="chip active" data-fuel="Gazole">Gazole</button>
-        <button class="chip" data-fuel="E10">E10</button>
-        <button class="chip" data-fuel="E85">E85</button>
-        <button class="chip" data-fuel="GPLc">GPL</button>
       </div>
       <div class="natlow-row-mobile" id="natlow-row-mobile"><span class="natlow-loading">Chargement…</span></div>
     </div>
