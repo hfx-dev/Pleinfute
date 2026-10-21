@@ -997,7 +997,8 @@ svg{display:block;}
 .map-right{position:absolute;top:12px;right:16px;z-index:600;display:flex;flex-direction:column;gap:9px;align-items:flex-end;}
 .map-bottomright{position:absolute;bottom:20px;right:16px;z-index:600;display:flex;flex-direction:column;gap:9px;align-items:flex-end;}
 .locate{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);
-  border-radius:12px;padding:10px 14px;box-shadow:var(--shadow-md);font-size:13.5px;font-weight:700;color:var(--text);}
+  border-radius:12px;padding:10px 14px;box-shadow:var(--shadow-md);font-size:13.5px;font-weight:700;color:var(--text);
+  touch-action:manipulation;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;}
 .locate svg{width:16px;height:16px;color:var(--primary);}
 .locate:hover{background:var(--primary);color:#fff;}
 .locate:hover svg{color:#fff;}
@@ -3062,6 +3063,7 @@ svg{display:block;}
     locateBtn.addEventListener('pointerup', cancelLongPress);
     locateBtn.addEventListener('pointerleave', cancelLongPress);
     locateBtn.addEventListener('pointercancel', cancelLongPress);
+    locateBtn.addEventListener('contextmenu', e=>e.preventDefault()); // évite qu'un menu natif interrompe l'appui long sur mobile
     $('privacy-close').addEventListener('click', ()=>{ $('privacy-overlay').hidden=true; });
     $('privacy-overlay').addEventListener('click',(e)=>{ if(e.target===$('privacy-overlay')) $('privacy-overlay').hidden=true; });
     document.addEventListener('keydown',(e)=>{ if(e.key==='Escape' && !$('privacy-overlay').hidden) $('privacy-overlay').hidden=true; });
