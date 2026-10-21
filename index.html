@@ -2620,36 +2620,15 @@ svg{display:block;}
     function closeNatlowBurst(){
       natlowBtn.classList.remove('open'); natlowBurst.classList.remove('open');
     }
-    /* Calcule des positions (bx,by) sans chevauchement ni sortie d'écran, en
-       plaçant chaque bulle sur le premier angle/rayon libre le long d'un arc
-       bas-droite (le bouton est près du bord gauche : un arc symétrique
-       ferait sortir sa moitié gauche hors champ). Recalculé à chaque
-       ouverture pour s'adapter à la largeur d'écran réelle. */
+    /* Les bulles sortent en ligne droite, alignées verticalement les unes
+       au-dessus des autres, décalées sur la droite du bouton. Recalculé à
+       chaque ouverture pour rester dans l'écran quelle que soit sa largeur. */
     function solveBurstLayout(n, bx0, vw){
-      const hw=44, hh=26;
-      const rectOf=(bx,by)=>[bx-hw,bx+hw,by-hh,by+hh];
-      const overlaps=(a,b)=>a[0]<b[1]&&a[1]>b[0]&&a[2]<b[3]&&a[3]>b[2];
-      const placedRects=[], out=[];
-      for(let i=0;i<n;i++){
-        const targetFrac = n>1 ? i/(n-1) : 0.5;
-        const targetAngle = 118-(118-(-16))*targetFrac;
-        const angles=[]; for(let a=-16;a<=118;a+=4) angles.push(a);
-        angles.sort((a,b)=>Math.abs(targetAngle-a)-Math.abs(targetAngle-b));
-        let found=null;
-        for(const ang of angles){
-          const rad=ang*Math.PI/180;
-          for(let r=85;r<=180;r+=3){
-            const bx=r*Math.cos(rad), by=r*Math.sin(rad);
-            const rc=rectOf(bx,by);
-            if(bx0+rc[0]<4 || bx0+rc[1]>vw-4 || rc[2]<-70) continue;
-            if(placedRects.some(p=>overlaps(rc,p))) continue;
-            found={bx,by,rc}; break;
-          }
-          if(found) break;
-        }
-        if(!found){ const rad=targetAngle*Math.PI/180, r=190; const bx=r*Math.cos(rad), by=r*Math.sin(rad); found={bx,by,rc:rectOf(bx,by)}; }
-        placedRects.push(found.rc); out.push({bx:found.bx, by:found.by});
-      }
+      const bw=86, stepY=47, offsetX=64;
+      let x=offsetX;
+      if(bx0+x+bw/2 > vw-6) x = vw-6-bw/2-bx0;
+      const out=[];
+      for(let i=0;i<n;i++) out.push({bx:x, by:i*stepY});
       return out;
     }
     function openNatlowBurst(){
