@@ -1682,6 +1682,39 @@ svg{display:block;}
     map.zoomControl.setPosition('bottomright');
     L.control.scale({ imperial:false, position:'bottomleft' }).addTo(map);
 
+    /* ---- ACTUALISATION AUTOMATIQUE EN SE DÉPLAÇANT SUR LA CARTE ----
+       En mode "Autour de moi", si on déplace/zoome la carte à partir d'un
+       certain niveau de zoom (ville/quartier), on relance la recherche
+       centrée sur le nouveau centre visible, sans recentrer la carte
+       (pour ne pas annuler le déplacement qu'on vient de faire). Les
+       déplacements programmatiques (clic sur une station, recherche d'une
+       ville, etc.) sont ignorés via suppressAutoRefresh pour ne pas
+       déclencher une double recherche inutile. */
+    const AUTO_REFRESH_MIN_ZOOM=11, AUTO_REFRESH_DEBOUNCE=700;
+    let suppressAutoRefresh=false, suppressAutoRefreshTimer=null, autoRefreshTimer=null;
+    function withMapSuppressed(fn){
+      suppressAutoRefresh=true;
+      fn();
+      clearTimeout(suppressAutoRefreshTimer);
+      suppressAutoRefreshTimer=setTimeout(()=>{ suppressAutoRefresh=false; }, 1400);
+    }
+    map.on('moveend', ()=>{
+      if(suppressAutoRefresh) return;
+      if(state.mode!=='around') return;
+      if(state.zoneLayer) return; // une zone dessinée à la main prime sur le recentrage auto
+      if(map.getZoom()<AUTO_REFRESH_MIN_ZOOM) return;
+      clearTimeout(autoRefreshTimer);
+      autoRefreshTimer=setTimeout(()=>{
+        // re-vérifié ici car le mode/la zone peuvent changer pendant le délai
+        if(suppressAutoRefresh) return;
+        if(state.mode!=='around') return;
+        if(state.zoneLayer) return;
+        const c=map.getCenter();
+        state.userLat=c.lat; state.userLng=c.lng;
+        fetchStations({skipFit:true});
+      }, AUTO_REFRESH_DEBOUNCE);
+    });
+
     /* ---- HEADER STACK HEIGHT ----
        .map-right / .map-tools se calent sous la pile recherche+filtres+prix
        nationaux via --header-bottom, mesuré en vrai (pas deviné en px) : ça
@@ -1852,7 +1885,7 @@ svg{display:block;}
 
     function fitToResults(){ if (state.zoneLayer) return;
       const pts = state.filtered.map(s => [s.lat,s.lng]); if(state.userLat!=null) pts.push([state.userLat,state.userLng]);
-      if (pts.length > 1) map.fitBounds(L.latLngBounds(pts).pad(0.15), { maxZoom:13, animate:true }); }
+      if (pts.length > 1) withMapSuppressed(()=>map.fitBounds(L.latLngBounds(pts).pad(0.15), { maxZoom:13, animate:true })); }
 
     /* ---- SEARCH / AUTOCOMPLETE ---- */
     const searchInput=$('search-input'), searchWrap=$('search'), suggBox=$('suggest'), searchClear=$('search-clear');
@@ -1920,7 +1953,7 @@ svg{display:block;}
     }
     function hideSugg(){ suggBox.classList.remove('open'); suggBox.innerHTML=''; searchInput.setAttribute('aria-expanded','false'); activeIndex=-1; }
     function choosePlace(p){ if(!p)return; searchInput.value=p.name; searchWrap.classList.add('has-text'); hideSugg();
-      state.userLat=p.lat; state.userLng=p.lon; setUser(p.lat,p.lon); map.setView([p.lat,p.lon],13); fetchStations();
+      state.userLat=p.lat; state.userLng=p.lon; setUser(p.lat,p.lon); withMapSuppressed(()=>map.setView([p.lat,p.lon],13)); fetchStations();
       $('search-pill').classList.add('has-value'); $('search-pill').title=p.name; $('search-pill-label').textContent=p.name;
       closeSearchOverlay(); }
     searchInput.addEventListener('keydown',(e)=>{ const items=suggBox.querySelectorAll('.sugg-item');
@@ -1936,12 +1969,12 @@ svg{display:block;}
       try{ setLoading(true);
         const url=`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q+', France')}&format=json&limit=1`;
         const data=await (await fetch(url,{headers:{'Accept-Language':'fr'}})).json();
-        if(data&&data[0]){ state.userLat=parseFloat(data[0].lat); state.userLng=parseFloat(data[0].lon); setUser(state.userLat,state.userLng); map.setView([state.userLat,state.userLng],13); fetchStations(); }
+        if(data&&data[0]){ state.userLat=parseFloat(data[0].lat); state.userLng=parseFloat(data[0].lon); setUser(state.userLat,state.userLng); withMapSuppressed(()=>map.setView([state.userLat,state.userLng],13)); fetchStations(); }
         else setLoading(false);
       }catch(e){ setLoading(false); } }
 
     /* ---- FETCH STATIONS ---- */
-    async function fetchStations(){
+    async function fetchStations(opts={}){
       if(state.userLat==null) return;
       if(state.zoneLayer){ drawnItems.clearLayers(); state.zoneLayer=null; $('zone-banner').classList.remove('open'); }
       setLoading(true);
@@ -1966,7 +1999,7 @@ svg{display:block;}
           state.stations=recs.map(mapRecord).map(s=>({ ...s, distance:dist(state.userLat,state.userLng,s.lat,s.lng) }));
           $('api-status').innerHTML = `<span class="dot"></span> ${state.stations.length} stations · data.gouv.fr`;
         }
-        applyFilters(); fitToResults();
+        applyFilters(); if(!opts.skipFit) fitToResults();
       }catch(e){
         state.stations=[]; applyFilters();
         $('api-status').innerHTML = '<span class="dot" style="background:var(--tier-high)"></span> <span style="color:var(--tier-high)">Erreur de chargement</span>';
@@ -2119,7 +2152,7 @@ svg{display:block;}
         const ic=L.divIcon({html:`<div class="rmk ${cls}">${label}</div>`,className:'',iconAnchor:[15,15]});
         L.marker([s.lat,s.lng],{icon:ic,zIndexOffset:1100}).addTo(routeMarkers);
       });
-      map.fitBounds(L.latLngBounds(coords).pad(0.12),{animate:true});
+      withMapSuppressed(()=>map.fitBounds(L.latLngBounds(coords).pad(0.12),{animate:true}));
     }
 
     async function findStationsAlongRoute(coords){
@@ -2432,8 +2465,10 @@ svg{display:block;}
       renderMarkers();
       const m=markers[id];
       if(m){
-        if(clusterGroup.hasLayer(m)) clusterGroup.zoomToShowLayer(m, ()=>{ m.openPopup(); });
-        else { map.setView([s.lat,s.lng], Math.max(map.getZoom(),14), {animate:true}); m.openPopup(); }
+        withMapSuppressed(()=>{
+          if(clusterGroup.hasLayer(m)) clusterGroup.zoomToShowLayer(m, ()=>{ m.openPopup(); });
+          else { map.setView([s.lat,s.lng], Math.max(map.getZoom(),14), {animate:true}); m.openPopup(); }
+        });
       }
       const card=document.querySelector(`.scard[data-id="${id}"]`);
       const list=$('list');
@@ -2474,7 +2509,7 @@ svg{display:block;}
           const acc = pos.coords.accuracy || 0;
           setUser(state.userLat, state.userLng, acc);
           const z = acc>3000?12 : acc>1200?13 : acc>400?14 : acc>120?15 : 16;
-          map.setView([state.userLat, state.userLng], z, { animate:true });
+          withMapSuppressed(()=>map.setView([state.userLat, state.userLng], z, { animate:true }));
           const accTxt = acc ? (acc<1000 ? `±${Math.round(acc)} m` : `±${(acc/1000).toFixed(1)} km`) : '';
           geoToast(`Position trouvée${accTxt? ' ('+accTxt+')':''}`, 'ok');
           fetchStations();
@@ -2706,7 +2741,7 @@ svg{display:block;}
             <a class="rbtn gmaps" href="${gmaps}" target="_blank" rel="noopener noreferrer">${arrow}Maps</a>
             <a class="rbtn waze" href="${waze}" target="_blank" rel="noopener noreferrer">${arrow}Waze</a>
           </div>`);
-        map.flyTo([st.lat, st.lng], 14, { animate:true, duration:1.1 });
+        withMapSuppressed(()=>map.flyTo([st.lat, st.lng], 14, { animate:true, duration:1.1 }));
         map.once('moveend', ()=>natMarker&&natMarker.openPopup());
       }catch(e){ geoToast('Station introuvable pour '+label, 'err'); }
       finally{ if(btn){ btn.classList.remove('loading'); btn.disabled=false; } }
