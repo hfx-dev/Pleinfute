@@ -789,7 +789,7 @@ svg{display:block;}
 
 .header-right{display:flex;align-items:center;gap:12px;flex-shrink:0;}
 .status{display:none;}
-.status .dot{width:8px;height:8px;border-radius:50%;background:var(--tier-low);}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--tier-low);display:inline-block;flex-shrink:0;}
 .badge-od{display:flex;align-items:center;gap:5px;background:var(--primary-soft);color:var(--primary);
   font-size:11px;font-weight:700;padding:5px 11px;border-radius:999px;letter-spacing:.02em;}
 .icon-btn{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;
@@ -940,6 +940,8 @@ svg{display:block;}
 .empty .ic svg{width:26px;height:26px;}
 .empty h3{font-family:var(--font-display);font-size:16px;color:var(--text);margin-bottom:6px;}
 .empty p{font-size:13.5px;max-width:30ch;line-height:1.5;}
+.empty-actions{display:flex;flex-direction:column;gap:8px;width:100%;max-width:260px;margin-top:18px;}
+.empty-actions .route-opts-btn{width:100%;justify-content:center;align-self:stretch;}
 
 /* ---- MAP ---- */
 .map-area{grid-area:map;position:relative;overflow:hidden;}
@@ -1177,6 +1179,13 @@ svg{display:block;}
 .switch input:checked + i{background:var(--primary);border-color:var(--primary);}
 .switch input:checked + i::after{left:20px;}
 .modal-note{font-size:12px;color:var(--faint);padding:8px 2px 4px;}
+.modal-body-text{font-size:13.5px;color:var(--text);line-height:1.5;margin:4px 2px 16px;}
+.modal-sec-title{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--faint);margin:0 0 8px;}
+.modal-btn-secondary{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;height:42px;
+  margin-top:8px;background:transparent;border:1px solid var(--border-strong);color:var(--muted);
+  font-size:13.5px;font-weight:700;border-radius:12px;cursor:pointer;font-family:inherit;transition:all .15s;}
+.modal-btn-secondary:hover{border-color:var(--primary);color:var(--primary);}
+.settings-geo-status{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;margin:2px 2px 16px;}
 .opt-sub{font-size:11.5px;color:var(--faint);font-weight:600;}
 .opt-num{width:76px;height:36px;text-align:center;background:var(--surface-2);border:1.5px solid var(--border);
   border-radius:10px;font-size:14px;font-weight:700;color:var(--text);font-family:inherit;}
@@ -1347,6 +1356,9 @@ svg{display:block;}
       <button class="icon-btn" id="tour-btn" aria-label="Aide / visite guidée" title="Comment ça marche ?">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 1.5-1.5 2-2.25 2.75S12 13.5 12 14.5"></path><circle cx="12" cy="17.6" r=".6" fill="currentColor" stroke="none"></circle></svg>
       </button>
+      <button class="icon-btn" id="settings-btn" aria-label="Paramètres" title="Paramètres">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+      </button>
       <button class="icon-btn" id="theme-btn" aria-label="Changer le thème">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"></path></svg>
       </button>
@@ -1504,6 +1516,31 @@ svg{display:block;}
       </div>
     </div>
   </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="geo-primer-overlay" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="geo-primer-title">
+    <div class="modal-head">
+      <span id="geo-primer-title">Autoriser la localisation ?</span>
+    </div>
+    <p class="modal-body-text">Plein Futé s'en sert uniquement pour trouver les stations-service les moins chères <b>autour de toi</b>. Ta position n'est jamais envoyée ailleurs ni conservée.</p>
+    <button class="route-go" id="geo-primer-allow">Autoriser ma position</button>
+    <button class="modal-btn-secondary" id="geo-primer-skip">Chercher une ville plutôt</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="settings-overlay" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+    <div class="modal-head">
+      <span id="settings-title">Paramètres</span>
+      <button class="modal-close" id="settings-close" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+    </div>
+    <h4 class="modal-sec-title">Localisation</h4>
+    <p class="modal-body-text">Utilisée uniquement pour trouver les stations-service les moins chères autour de toi. Jamais envoyée ailleurs ni conservée.</p>
+    <div class="settings-geo-status" id="settings-geo-status"></div>
+    <button class="route-go" id="settings-geo-btn">Autoriser ma position</button>
+    <div class="modal-note" id="settings-geo-help" hidden></div>
   </div>
 </div>
 
@@ -2379,6 +2416,26 @@ svg{display:block;}
     function renderList(){
       const el=$('list');
       $('results-count').innerHTML = `<b>${state.filtered.length}</b> station${state.filtered.length>1?'s':''}`;
+      // Pas de position connue : montrer un message dédié avec des actions (plutôt que
+      // "aucune station trouvée, essaie un autre rayon" qui est trompeur dans ce cas).
+      if(state.mode==='around' && state.userLat==null){
+        const denied = geoStatus==='denied';
+        const title = denied ? 'Localisation refusée' : 'Trouve les stations près de toi';
+        const text = denied
+          ? "Pas de souci : cherche une ville, ou réactive l'accès à ta position dans les Paramètres."
+          : "Autorise ta position, ou cherche une ville pour voir les stations autour d'un autre point.";
+        el.innerHTML = `<div class="empty">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="10" r="3"></circle><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"></path></svg></div>
+          <h3>${title}</h3><p>${text}</p>
+          <div class="empty-actions">
+            <button class="route-opts-btn" id="empty-search-city">Chercher une ville</button>
+            <button class="route-opts-btn" id="empty-geo-action">${denied ? 'Paramètres de localisation' : 'Autoriser ma position'}</button>
+          </div>
+        </div>`;
+        $('empty-search-city').addEventListener('click', ()=>openSearchOverlay());
+        $('empty-geo-action').addEventListener('click', ()=> denied ? openSettingsPanel() : locateMe(true));
+        return;
+      }
       if(state.filtered.length===0){
         const body = state.mode==='route'
           ? (state.routeCoords
@@ -2528,6 +2585,54 @@ svg{display:block;}
       t.textContent = msg; t.className = 'geo-toast show ' + (kind||'');
       clearTimeout(t._h); t._h = setTimeout(()=>{ t.className='geo-toast'; }, 4200);
     }
+
+    /* ---- LOCALISATION : transparence + récupération après un refus ----
+       Avant la toute première demande (automatique au chargement), on
+       explique en une phrase pourquoi l'app a besoin de la position, pour
+       ne pas surprendre quelqu'un qui découvre l'app. Si le refus est déjà
+       mémorisé par le navigateur, on ne redemande jamais automatiquement
+       (ça afficherait juste une erreur à chaque chargement) : à la place,
+       l'app reste utilisable (recherche de ville, prix nationaux) et les
+       Paramètres expliquent comment réactiver l'accès manuellement, le
+       seul moyen possible une fois le refus mémorisé par le navigateur. */
+    let geoStatus='unknown'; // 'unknown' | 'granted' | 'denied' | 'skipped' | 'unsupported'
+    function setGeoStatus(s){
+      geoStatus=s;
+      if(!$('settings-overlay').hidden) refreshSettingsGeoUI();
+      if(state.mode==='around' && state.userLat==null) renderList();
+    }
+    async function geoPermissionState(){
+      try{
+        if(navigator.permissions && navigator.permissions.query){
+          const st=await navigator.permissions.query({name:'geolocation'});
+          return st.state; // 'granted' | 'denied' | 'prompt'
+        }
+      }catch(e){}
+      return 'unknown'; // API indisponible (ex. anciens Safari) : on ne peut pas savoir à l'avance
+    }
+    async function initialLocate(){
+      if(!navigator.geolocation){
+        setGeoStatus('unsupported');
+        $('api-status').innerHTML = '<span class="dot" style="background:var(--tier-high)"></span> <span style="color:var(--tier-high)">Géolocalisation non supportée</span>';
+        return;
+      }
+      const perm=await geoPermissionState();
+      if(perm==='granted'){ setGeoStatus('granted'); locateMe(false); return; }
+      if(perm==='denied'){
+        setGeoStatus('denied');
+        $('api-status').innerHTML = '<span class="dot" style="background:var(--tier-high)"></span> <span style="color:var(--tier-high)">Localisation refusée</span>';
+        return;
+      }
+      $('api-status').innerHTML = '<span class="dot" style="background:var(--faint)"></span> Position non communiquée';
+      showGeoPrimer();
+    }
+    function showGeoPrimer(){ $('geo-primer-overlay').hidden=false; }
+    function hideGeoPrimer(){ $('geo-primer-overlay').hidden=true; }
+    $('geo-primer-allow').addEventListener('click',()=>{ hideGeoPrimer(); locateMe(false); });
+    $('geo-primer-skip').addEventListener('click',()=>{
+      hideGeoPrimer(); setGeoStatus('skipped'); openSearchOverlay();
+    });
+
     locateBtn.addEventListener('click',()=>locateMe(true));
     function locateMe(fromClick){
       if(!navigator.geolocation){ geoToast("Géolocalisation non supportée par le navigateur", 'err'); return; }
@@ -2536,6 +2641,7 @@ svg{display:block;}
       navigator.geolocation.getCurrentPosition(
         (pos)=>{
           locateBtn.classList.remove('loading'); locateBtn.disabled=false; locateBtn.innerHTML = locateHTML;
+          setGeoStatus('granted');
           state.userLat = pos.coords.latitude; state.userLng = pos.coords.longitude;
           const acc = pos.coords.accuracy || 0;
           setUser(state.userLat, state.userLng, acc);
@@ -2551,15 +2657,45 @@ svg{display:block;}
                     : err.code===3 ? "Localisation trop longue, réessaie"
                     : "Position indisponible, réessaie";
           geoToast(msg, 'err');
-          if(!fromClick){
-            $('api-status').innerHTML = '<span class="dot" style="background:var(--tier-high)"></span> <span style="color:var(--tier-high)">Position requise</span>';
-            state.stations=[]; applyFilters();
+          if(err.code===1){
+            setGeoStatus('denied');
+            $('api-status').innerHTML = '<span class="dot" style="background:var(--tier-high)"></span> <span style="color:var(--tier-high)">Localisation refusée</span>';
+          } else if(!fromClick){
+            $('api-status').innerHTML = '<span class="dot" style="background:var(--tier-high)"></span> <span style="color:var(--tier-high)">Position indisponible</span>';
+            renderList();
           }
         },
         { enableHighAccuracy:true, timeout:10000, maximumAge:0 }
       );
     }
     function setLoading(v){ /* status pill handles spinner */ }
+
+    /* ---- PARAMÈTRES ---- */
+    const settingsOverlay=$('settings-overlay');
+    function refreshSettingsGeoUI(){
+      const statusEl=$('settings-geo-status'), btnEl=$('settings-geo-btn'), helpEl=$('settings-geo-help');
+      if(geoStatus==='granted'){
+        statusEl.innerHTML='<span class="dot"></span> Autorisée';
+        btnEl.textContent='Actualiser ma position'; helpEl.hidden=true;
+      } else if(geoStatus==='denied'){
+        statusEl.innerHTML='<span class="dot" style="background:var(--tier-high)"></span> <span style="color:var(--tier-high)">Refusée</span>';
+        btnEl.textContent='Réessayer';
+        helpEl.hidden=false;
+        helpEl.innerHTML="Ton navigateur a mémorisé ce refus : impossible de rouvrir la demande automatiquement. Pour réactiver, clique sur l'icône 🔒 (ou ⓘ) à gauche de l'adresse du site, ouvre « Localisation » (ou « Permissions du site ») et choisis « Autoriser », puis recharge la page.";
+      } else {
+        statusEl.innerHTML='<span class="dot" style="background:var(--faint)"></span> Pas encore demandée';
+        btnEl.textContent='Autoriser ma position'; helpEl.hidden=true;
+      }
+    }
+    function openSettingsPanel(){ refreshSettingsGeoUI(); settingsOverlay.hidden=false; }
+    function closeSettingsPanel(){ settingsOverlay.hidden=true; }
+    $('settings-btn').addEventListener('click', openSettingsPanel);
+    $('settings-close').addEventListener('click', closeSettingsPanel);
+    settingsOverlay.addEventListener('click',(e)=>{ if(e.target===settingsOverlay) closeSettingsPanel(); });
+    $('settings-geo-btn').addEventListener('click', ()=>locateMe(true));
+    document.addEventListener('keydown',(e)=>{
+      if(e.key==='Escape' && !settingsOverlay.hidden) closeSettingsPanel();
+    });
 
     /* ---- THEME ---- */
     const themeBtn=$('theme-btn');
@@ -2783,7 +2919,7 @@ svg{display:block;}
       finally{ if(btn){ btn.classList.remove('loading'); btn.disabled=false; } }
     }
 
-    locateMe(false);}
+    initialLocate();}
   function ready(){ return window.L && L.markerClusterGroup && L.Draw && L.Draw.Circle; }
   function start(){ if(ready()) init(); else setTimeout(start, 60); }
   if(document.readyState!=='loading') start();

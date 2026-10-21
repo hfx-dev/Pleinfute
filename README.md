@@ -15,7 +15,8 @@ Application 100% statique (un seul fichier `index.html`, aucun backend, aucune d
 - **Détection de marque** — reconnaissance automatique de l'enseigne (TotalEnergies, Leclerc, Intermarché, Carrefour, Shell, BP, etc.) à partir de l'adresse.
 
 ### Localisation et recherche
-- **Géolocalisation automatique** au chargement de la page (pas de ville par défaut câblée en dur) : la position est demandée immédiatement, avec indicateur de précision (cercle sur la carte). Si elle est refusée ou indisponible, un message clair invite à cliquer sur « Ma position » ou à chercher une ville — jamais de blocage silencieux.
+- **Géolocalisation transparente** : avant la toute première demande, une courte pop-up explique pourquoi l'app a besoin de la position (trouver les stations les moins chères autour de toi, jamais envoyée ailleurs ni conservée), pour ne pas surprendre quelqu'un qui découvre l'app. Si la position est déjà autorisée, elle est utilisée directement sans repasser par cette étape.
+- **Récupération après un refus** : si l'accès a été refusé, l'app reste pleinement utilisable (recherche de ville, prix les moins chers de France) au lieu de rester bloquée sans résultat. Une page **Paramètres** (icône ⚙️ dans l'en-tête) explique comment réactiver l'accès à la position dans les réglages du navigateur — la seule méthode possible une fois le refus mémorisé, le site ne pouvant pas rouvrir la demande automatiquement.
 - **Recherche de ville par préfixe** sur la base officielle des communes de France (`geo.api.gouv.fr`, Etalab) : couvre les ~35 000 communes, y compris les plus petits villages, avec Nominatim (OpenStreetMap) en repli automatique si besoin.
 
 ### Recherche « Autour de moi »
@@ -48,10 +49,11 @@ Application 100% statique (un seul fichier `index.html`, aucun backend, aucune d
 - **Installable comme une vraie app** (PWA) : icône sur l'écran d'accueil, ouverture en plein écran sans barre de navigateur, fonctionne même hors ligne pour la coquille de l'app.
 - Visite guidée interactive (bouton « ? ») qui explique chaque fonctionnalité.
 
-### Sécurité
+### Sécurité et transparence
 - Échappement systématique des données externes avant affichage (protection XSS).
 - Content-Security-Policy restreignant les scripts, styles, images et requêtes réseau aux seuls domaines utilisés par l'app.
 - Liens externes en `rel="noopener noreferrer"`.
+- Localisation : explication préalable avant la première demande d'accès, et app pleinement utilisable sans position (voir « Localisation et recherche » ci-dessus).
 
 ## Utiliser l'application
 
