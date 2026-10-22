@@ -1163,6 +1163,10 @@ svg{display:block;}
 .rstop-sugg .it:hover,.rstop-sugg .it.act{background:var(--primary-soft);}
 .rstop-sugg .nm{font-weight:600;font-size:13px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .rstop-sugg .sb{font-size:11.5px;color:var(--muted);}
+.rstop-sugg .pin{width:28px;height:28px;flex-shrink:0;border-radius:8px;display:flex;align-items:center;
+  justify-content:center;background:var(--surface-2);color:var(--muted);}
+.rstop-sugg .pin svg{width:15px;height:15px;}
+.rstop-sugg .pin.fav-pin{background:var(--tier-mid-soft);color:var(--tier-mid);}
 .route-add{display:flex;align-items:center;gap:7px;align-self:flex-start;background:transparent;border:1px dashed var(--border-strong);
   color:var(--muted);border-radius:10px;padding:8px 12px;font-size:12.5px;font-weight:700;cursor:pointer;}
 .route-add:hover{border-color:var(--primary);color:var(--primary);}
@@ -1226,6 +1230,11 @@ svg{display:block;}
 .share-btn.wa{background:#25D366;color:#fff;}
 .share-btn.wa:hover{background:#1ebe5b;}
 .rbtn.share-ic{padding:0 10px;}
+.rbtn.fav-ic{padding:0 10px;}
+.route-share-gmaps{align-self:stretch;justify-content:center;margin-top:8px;}
+.rbtn.fav-ic svg{fill:none;}
+.rbtn.fav-ic.is-fav{color:var(--tier-mid);border-color:var(--tier-mid);}
+.rbtn.fav-ic.is-fav svg{fill:currentColor;}
 .route-info{font-size:12.5px;color:var(--muted);font-weight:600;text-align:center;min-height:16px;}
 .route-info b{color:var(--text);}
 .routeline-pane{}
@@ -1487,6 +1496,10 @@ svg{display:block;}
     <button class="route-opts-btn" id="route-opts-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg><span data-i18n="routeOptsBtn">Options</span> <span class="opt-count" id="opt-count" hidden>0</span></button>
     <button class="route-go" id="route-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"></path></svg><span data-i18n="routeGoBtn">Calculer l'itinéraire</span></button>
     <div class="route-info" id="route-info"></div>
+    <button class="route-opts-btn route-share-gmaps" id="route-share-gmaps" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v13"/></svg>
+      <span data-i18n="shareRouteGmapsBtn">Partager vers Google Maps</span>
+    </button>
   </div>
   <div>
     <span class="field-label" data-i18n="fuelFieldLabel">Type de carburant</span>
@@ -1677,6 +1690,8 @@ svg{display:block;}
         shareTitle:`Partager la station`, shareCloseAria:`Fermer`,
         shareCopyBtn:`Copier le message`, shareCopiedBtn:`Copié !`,
         shareBtnTitle:`Partager cette station`, shareBtnTitleShort:`Partager`,
+        favoriteBtnTitle:`Ajouter aux favoris`, unfavoriteBtnTitle:`Retirer des favoris`,
+        shareRouteGmapsBtn:`Partager vers Google Maps`, shareRouteGmapsTitle:`Itinéraire Plein Futé`,
         shareMsgIntro:`⛽ Voici une station essence qui pourrait t'intéresser !`,
         shareMsgOpenGps:`Ouvre-la dans ton GPS préféré :`,
         tour1Title:`Prix les moins chers de France`,
@@ -1789,6 +1804,8 @@ svg{display:block;}
         shareTitle:`Share this station`, shareCloseAria:`Close`,
         shareCopyBtn:`Copy message`, shareCopiedBtn:`Copied!`,
         shareBtnTitle:`Share this station`, shareBtnTitleShort:`Share`,
+        favoriteBtnTitle:`Add to favorites`, unfavoriteBtnTitle:`Remove from favorites`,
+        shareRouteGmapsBtn:`Share to Google Maps`, shareRouteGmapsTitle:`Plein Futé route`,
         shareMsgIntro:`⛽ Here's a fuel station that might interest you!`,
         shareMsgOpenGps:`Open it in your favorite GPS app:`,
         tour1Title:`Cheapest prices in France`,
@@ -1901,6 +1918,8 @@ svg{display:block;}
         shareTitle:`Compartir esta gasolinera`, shareCloseAria:`Cerrar`,
         shareCopyBtn:`Copiar mensaje`, shareCopiedBtn:`¡Copiado!`,
         shareBtnTitle:`Compartir esta gasolinera`, shareBtnTitleShort:`Compartir`,
+        favoriteBtnTitle:`Añadir a favoritos`, unfavoriteBtnTitle:`Quitar de favoritos`,
+        shareRouteGmapsBtn:`Compartir en Google Maps`, shareRouteGmapsTitle:`Ruta de Plein Futé`,
         shareMsgIntro:`⛽ ¡Aquí tienes una gasolinera que podría interesarte!`,
         shareMsgOpenGps:`Ábrela en tu GPS favorito:`,
         tour1Title:`Precios más bajos de Francia`,
@@ -1989,11 +2008,15 @@ svg{display:block;}
     }
     applyI18n();
 
+    function loadFavorites(){ try{ return JSON.parse(localStorage.getItem('favorites')||'[]'); }catch(e){ return []; } }
+    function saveFavorites(){ try{ localStorage.setItem('favorites', JSON.stringify(state.favorites)); }catch(e){} }
+
     const state = {
       userLat: null, userLng: null, country: 'fr', radius: 25, fuel: 'Gazole', sort: 'price',
       stations: [], filtered: [], zoneLayer: null, selectedId: null, priceLow: 0, priceHigh: 0,
       mode: 'around', stops: null, routeCoords: null,
-      routeOpts: { tolls:false, highways:false, ferries:false, conso:6.5 }, lastRoute:null
+      routeOpts: { tolls:false, highways:false, ferries:false, conso:6.5 }, lastRoute:null,
+      favorites: loadFavorites()
     };
 
     const API_BASE = 'https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/prix-des-carburants-en-france-flux-instantane-v2/records';
@@ -2488,6 +2511,7 @@ svg{display:block;}
       lng+=(res&1)?~(res>>1):(res>>1); out.push([lat/1e6,lng/1e6]); } return out; }
     let routeLayer=null, routeMarkers=null;
     const PIN_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>';
+    const STAR_SVG='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.3 6.9.7-5.2 4.7 1.5 6.8L12 17.8 5.9 21.3l1.5-6.8L2.2 9.7l6.9-.7z"/></svg>';
 
     function defaultStops(){ return [ {role:'start',label:'',lat:null,lng:null}, {role:'end',label:'',lat:null,lng:null} ]; }
 
@@ -2516,28 +2540,54 @@ svg{display:block;}
     }
     function addStop(){ state.stops.splice(state.stops.length-1,0,{role:'via',label:'',lat:null,lng:null}); renderStops(); }
 
+    // Stations favorites dont le nom/la ville correspond à la requête (vide = toutes),
+    // affichées en premier dans la liste, pour les retrouver sans retaper leur adresse.
+    function matchingFavorites(q){
+      const ql=q.trim().toLowerCase();
+      return state.favorites.filter(f=>!ql || `${f.brandName} ${f.cityShort}`.toLowerCase().includes(ql))
+        .map(f=>({ name:`${f.brandName} — ${f.cityShort}`, sub:f.address||'', lat:f.lat, lng:f.lng, isFav:true }));
+    }
+    function renderStopSugg(box, list){
+      box.innerHTML = list.map((s,j)=>`<div class="it" data-j="${j}"><span class="pin${s.isFav?' fav-pin':''}">${s.isFav?STAR_SVG:PIN_SVG}</span><span style="min-width:0"><span class="nm">${esc(s.name)}</span><span class="sb">${esc(s.sub)}</span></span></div>`).join('');
+      box.classList.toggle('show', list.length>0);
+    }
     function attachStopAC(inp){
       const i=+inp.dataset.i; const box=inp.parentElement.querySelector('.rstop-sugg'); let to=null, list=[];
+      function selectFromList(j){
+        const s=list[j]; state.stops[i]={...state.stops[i],label:s.name,lat:s.lat,lng:s.lng};
+        inp.value=s.name; box.classList.remove('show'); box.innerHTML=''; updateGoState();
+      }
+      function bindClicks(){
+        box.querySelectorAll('.it[data-j]').forEach(el=>el.addEventListener('mousedown',(ev)=>{ ev.preventDefault(); selectFromList(+el.dataset.j); }));
+      }
+      inp.addEventListener('focus',()=>{
+        if(inp.value.trim()) return; // la recherche normale prend le relais dès qu'on tape
+        list=matchingFavorites('');
+        if(list.length){ renderStopSugg(box, list); bindClicks(); }
+      });
       inp.addEventListener('input',()=>{
         state.stops[i].label=inp.value; state.stops[i].lat=null; state.stops[i].lng=null; updateGoState();
         clearTimeout(to); const q=inp.value.trim();
-        if(q.length<2){ box.classList.remove('show'); box.innerHTML=''; return; }
+        const favMatches=matchingFavorites(q);
+        if(q.length<2){ list=favMatches; renderStopSugg(box, list); bindClicks(); return; }
         to=setTimeout(async ()=>{
           try{
             const url=`https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=6&accept-language=fr&q=${encodeURIComponent(q)}`;
             const data=await (await fetch(url,{headers:{'Accept-Language':'fr'}})).json();
-            const seen=new Set();
-            list=(data||[]).map(r=>{ const a=r.address||{};
+            const seen=new Set(favMatches.map(f=>f.lat+','+f.lng));
+            const cityResults=(data||[]).map(r=>{ const a=r.address||{};
               const name=a.city||a.town||a.village||a.municipality||r.name||(r.display_name||'').split(',')[0];
               const sub=[a.county,a.state,a.country].filter(Boolean).join(' · ')||'';
               return {name,sub,lat:parseFloat(r.lat),lng:parseFloat(r.lon)};
             }).filter(s=>{ const k=s.name+'|'+s.sub; if(!s.name||seen.has(k))return false; seen.add(k); return true; });
-            box.innerHTML = list.length ? list.map((s,j)=>`<div class="it" data-j="${j}"><span class="pin">${PIN_SVG}</span><span style="min-width:0"><span class="nm">${esc(s.name)}</span><span class="sb">${esc(s.sub)}</span></span></div>`).join('') : `<div class="it" style="color:var(--faint)">${esc(t('noResult'))}</div>`;
-            box.classList.add('show');
-            box.querySelectorAll('.it[data-j]').forEach(el=>el.addEventListener('mousedown',(ev)=>{ ev.preventDefault();
-              const s=list[+el.dataset.j]; state.stops[i]={...state.stops[i],label:s.name,lat:s.lat,lng:s.lng};
-              inp.value=s.name; box.classList.remove('show'); box.innerHTML=''; updateGoState(); }));
-          }catch(e){ box.classList.remove('show'); }
+            list=[...favMatches, ...cityResults];
+            if(list.length) renderStopSugg(box, list);
+            else box.innerHTML = `<div class="it" style="color:var(--faint)">${esc(t('noResult'))}</div>`, box.classList.add('show');
+            bindClicks();
+          }catch(e){
+            list=favMatches;
+            if(list.length){ renderStopSugg(box, list); bindClicks(); } else box.classList.remove('show');
+          }
         },240);
       });
       inp.addEventListener('blur',()=>setTimeout(()=>box.classList.remove('show'),160));
@@ -2545,6 +2595,7 @@ svg{display:block;}
 
     const TOLL_RATE=0.077; /* €/km — moyenne autoroutes FR classe 1 (estimation) */
     function renderRouteInfo(){
+      $('route-share-gmaps').hidden=!state.lastRoute;
       if(!state.lastRoute){ return; }
       const o=state.routeOpts; const {km,sec,tollKm}=state.lastRoute;
       const min=Math.round(sec/60), h=Math.floor(min/60);
@@ -2565,6 +2616,27 @@ svg{display:block;}
       if(parts.length) html+=`<span class="route-costs">${parts.join('<br>')}</span>`;
       $('route-info').innerHTML=html;
     }
+
+    // Construit un lien Google Maps avec les étapes exactement telles que configurées
+    // dans le planificateur (départ, étapes — y compris les stations choisies comme
+    // étape —, arrivée), pour terminer la navigation réelle dans Google Maps.
+    function buildGoogleMapsUrl(){
+      const stops=state.stops.filter(s=>s.lat!=null);
+      if(stops.length<2) return null;
+      const origin=stops[0], destination=stops[stops.length-1], waypoints=stops.slice(1,-1);
+      let url=`https://www.google.com/maps/dir/?api=1&origin=${origin.lat},${origin.lng}&destination=${destination.lat},${destination.lng}&travelmode=driving`;
+      if(waypoints.length) url+=`&waypoints=${waypoints.map(w=>`${w.lat},${w.lng}`).join('|')}`;
+      return url;
+    }
+    async function shareRouteToGoogleMaps(){
+      const url=buildGoogleMapsUrl(); if(!url) return;
+      if(navigator.share){
+        try{ await navigator.share({ url, title:t('shareRouteGmapsTitle') }); return; }
+        catch(e){ if(e && e.name==='AbortError') return; /* sinon : repli sur l'ouverture directe */ }
+      }
+      window.open(url, '_blank', 'noopener');
+    }
+    $('route-share-gmaps').addEventListener('click', shareRouteToGoogleMaps);
 
     async function computeRoute(){
       const stops=state.stops.filter(s=>s.lat!=null);
@@ -2878,6 +2950,7 @@ svg{display:block;}
             <span class="scard__routes">
               <a class="rbtn gmaps" href="${gmaps}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">${arrow}Maps</a>
               <a class="rbtn waze" href="${waze}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">${arrow}Waze</a>
+              <button class="rbtn fav-ic ${isFavorite(s.id)?'is-fav':''}" data-fav-id="${s.id}" title="${esc(t(isFavorite(s.id)?'unfavoriteBtnTitle':'favoriteBtnTitle'))}" onclick="event.stopPropagation();window.__toggleFavorite('${s.id}')"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 2l2.9 6.3 6.9.7-5.2 4.7 1.5 6.8L12 17.8 5.9 21.3l1.5-6.8L2.2 9.7l6.9-.7z"/></svg></button>
               <button class="rbtn share-ic" title="${esc(t('shareBtnTitle'))}" onclick="event.stopPropagation();window.__shareStation('${s.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg></button>
             </span>
           </span>
@@ -2913,6 +2986,7 @@ svg{display:block;}
           <div class="pop-routes">
             <a class="rbtn gmaps" href="${gmaps}" target="_blank" rel="noopener noreferrer">${arrow}Maps</a>
             <a class="rbtn waze" href="${waze}" target="_blank" rel="noopener noreferrer">${arrow}Waze</a>
+            <button class="rbtn fav-ic ${isFavorite(s.id)?'is-fav':''}" data-fav-id="${s.id}" title="${esc(t(isFavorite(s.id)?'unfavoriteBtnTitle':'favoriteBtnTitle'))}" onclick="window.__toggleFavorite('${s.id}')"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 2l2.9 6.3 6.9.7-5.2 4.7 1.5 6.8L12 17.8 5.9 21.3l1.5-6.8L2.2 9.7l6.9-.7z"/></svg></button>
             <button class="rbtn share-ic" title="${esc(t('shareBtnTitleShort'))}" onclick="window.__shareStation('${s.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg></button>
           </div>`);
         markers[s.id]=m;
@@ -2938,6 +3012,29 @@ svg{display:block;}
       $('share-overlay').hidden=false;
     }
     window.__shareStation=shareStation;
+
+    /* ---- FAVORIS ----
+       Un instantané complet de la station est stocké (pas juste son id) :
+       les favoris doivent rester utilisables (ex. comme étape d'itinéraire)
+       même si la station n'est plus dans les résultats affichés. */
+    function isFavorite(id){ return state.favorites.some(f=>String(f.id)===String(id)); }
+    function toggleFavorite(id){
+      const idx=state.favorites.findIndex(f=>String(f.id)===String(id));
+      let nowFav;
+      if(idx>=0){ state.favorites.splice(idx,1); nowFav=false; }
+      else{
+        const s=state.stations.find(x=>String(x.id)===String(id)); if(!s) return;
+        state.favorites.push({ id:s.id, brandName:s.brandName, brandColor:s.brandColor,
+          address:s.address, city:s.city, cityShort:s.cityShort, lat:s.lat, lng:s.lng, prices:s.prices });
+        nowFav=true;
+      }
+      saveFavorites();
+      document.querySelectorAll(`[data-fav-id="${CSS.escape(String(id))}"]`).forEach(b=>{
+        b.classList.toggle('is-fav', nowFav);
+        b.title=t(nowFav?'unfavoriteBtnTitle':'favoriteBtnTitle');
+      });
+    }
+    window.__toggleFavorite=toggleFavorite;
     const SHARE_COPY_HTML=document.getElementById('share-copy').innerHTML;
     $('share-close').addEventListener('click',()=>{ $('share-overlay').hidden=true; });
     $('share-overlay').addEventListener('click',(e)=>{ if(e.target===$('share-overlay')) $('share-overlay').hidden=true; });

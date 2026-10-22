@@ -32,10 +32,14 @@ Application 100% statique (un seul fichier `index.html`, aucun backend, aucune d
 - Classement des stations par niveau de prix (pas cher / prix moyen / cher) avec code couleur, et badge « moins cher » sur la meilleure offre.
 
 ### Mode Itinéraire
-- Planification d'un trajet avec **étapes multiples** (départ, arrivée, arrêts intermédiaires), avec autocomplétion d'adresse sur chaque étape.
+- Planification d'un trajet avec **étapes multiples** (départ, arrivée, arrêts intermédiaires), avec autocomplétion d'adresse sur chaque étape — y compris en choisissant directement une **station mise en favori** (voir ci-dessous) comme étape.
 - Calcul du trajet via **OSRM** (avec **Valhalla** en option), affichage de la distance et de la durée.
 - **Options avancées** : éviter les péages, les autoroutes, les ferries ; consommation du véhicule personnalisable pour estimer le **coût carburant + péages** du trajet.
 - Recherche automatique des **stations les moins chères sur le trajet** (couloir de ~10 km autour de l'itinéraire), triées dans l'ordre de passage du départ à l'arrivée.
+- **Partage vers Google Maps** : une fois l'itinéraire calculé, un bouton envoie le trajet complet (départ, étapes — y compris les stations choisies — et arrivée) vers Google Maps pour la navigation réelle, via le partage natif du téléphone si disponible.
+
+### Favoris
+- **Mettre une station en favori** (icône étoile sur sa fiche ou son info-bulle sur la carte) pour la retrouver facilement, y compris lors de la planification d'un itinéraire : en ajoutant une étape, les favoris correspondant à la recherche apparaissent en premier, repérables par leur icône étoile. Les favoris sont mémorisés sur l'appareil (aucune donnée envoyée).
 
 ### Carte
 - **Sélecteur de type de carte** (haut à droite) : style Minimum (moderne et épuré, noms de villages à tous les zooms, numéros d'autoroute/départementales) ou Satellite, mémorisé d'une visite à l'autre.
