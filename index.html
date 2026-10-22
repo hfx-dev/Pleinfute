@@ -826,7 +826,11 @@ svg{display:block;}
   border-bottom:1px solid var(--border);}
 .sugg-item:last-child{border-bottom:none;}
 .sugg-item:hover,.sugg-item.active{background:var(--primary-soft);}
-.sugg-item .pin{width:32px;height:32px;flex-shrink:0;border-radius:9px;display:flex;align-items:center;
+/* .pin est aussi le nom de la grosse bulle de prix sur la carte (non scopée) :
+   on neutralise ici tout ce qu'elle impose en position/bordure/fond pour que
+   cette simple icône de suggestion s'affiche dans le flux normal. */
+.sugg-item .pin{position:static;left:auto;top:auto;transform:none;border:none;box-shadow:none;padding:0;
+  width:32px;height:32px;flex-shrink:0;border-radius:9px;display:flex;align-items:center;
   justify-content:center;background:var(--surface-3);color:var(--primary);}
 .sugg-item .pin svg{width:17px;height:17px;}
 .sugg-name{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -1163,7 +1167,10 @@ svg{display:block;}
 .rstop-sugg .it:hover,.rstop-sugg .it.act{background:var(--primary-soft);}
 .rstop-sugg .nm{font-weight:600;font-size:13px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .rstop-sugg .sb{font-size:11.5px;color:var(--muted);}
-.rstop-sugg .pin{width:28px;height:28px;flex-shrink:0;border-radius:8px;display:flex;align-items:center;
+/* .pin est aussi le nom de la bulle de prix sur la carte (non scopée) : on
+   neutralise sa position/bordure/fond pour afficher cette icône normalement. */
+.rstop-sugg .pin{position:static;left:auto;top:auto;transform:none;border:none;box-shadow:none;padding:0;
+  width:28px;height:28px;flex-shrink:0;border-radius:8px;display:flex;align-items:center;
   justify-content:center;background:var(--surface-2);color:var(--muted);}
 .rstop-sugg .pin svg{width:15px;height:15px;}
 .rstop-sugg .pin.fav-pin{background:var(--tier-mid-soft);color:var(--tier-mid);}
