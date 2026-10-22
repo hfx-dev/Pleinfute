@@ -41,7 +41,7 @@ Application 100% statique (un seul fichier `index.html`, aucun backend, aucune d
 - **Sélecteur de type de carte** (haut à droite) : style Minimum (moderne et épuré, noms de villages à tous les zooms, numéros d'autoroute/départementales) ou Satellite, mémorisé d'une visite à l'autre.
 - **Bouton « Ma position »** placé en bas à droite, à l'emplacement désormais standard sur les applications de cartographie mobiles.
 - **Détails superposables** : calque feu de forêt (données satellite NASA GIBS/MODIS) et calque transport en commun (OpenRailwayMap), chacun activable/désactivable indépendamment.
-- Carte interactive (Leaflet) avec regroupement des marqueurs (clustering) et popups détaillées.
+- Carte interactive (Leaflet) avec regroupement des marqueurs (clustering) et popups détaillées. Chaque groupe de stations est coloré selon le prix le moins cher qu'il contient (vert pas cher, orange prix moyen, rouge cher), avec la fourchette de prix du groupe affichée à côté (ex. « 1,654–1,892 € »).
 - Thème clair/sombre.
 
 ### Sur chaque station

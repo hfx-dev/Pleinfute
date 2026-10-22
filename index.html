@@ -1088,9 +1088,25 @@ svg{display:block;}
 .rmk.end{background:var(--tier-high);}
 .rmk.via{background:var(--tier-mid);font-size:12px;}
 .cluster-icon{}
-.cluster{display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--primary);
-  color:var(--on-primary);font-family:var(--font-display);font-weight:700;font-size:14px;
+/* Un cluster = plusieurs stations regroupées : coloré selon le prix le
+   moins cher du groupe (comme le "pin" individuel), avec une pastille
+   affichant la fourchette de prix du groupe à côté, pour voir d'un coup
+   d'œil si la zone est plutôt chère ou pas cher avant de zoomer dessus. */
+.cluster-wrap{position:absolute;left:0;top:0;transform:translate(-50%,-50%);
+  display:flex;align-items:center;gap:6px;cursor:pointer;}
+.cluster{display:flex;align-items:center;justify-content:center;border-radius:50%;
+  color:#fff;font-family:var(--font-display);font-weight:700;font-size:14px;flex-shrink:0;
   border:3px solid var(--surface);box-shadow:var(--shadow-md);}
+.cluster.low{background:var(--tier-low);}
+.cluster.mid{background:var(--tier-mid);}
+.cluster.high{background:var(--tier-high);}
+.cluster-price{display:flex;align-items:center;gap:3px;padding:5px 11px;border-radius:999px;
+  color:#fff;font-weight:700;font-size:12px;white-space:nowrap;box-shadow:var(--shadow-md);
+  font-variant-numeric:tabular-nums;}
+.cluster-price .eur{font-size:10px;font-weight:700;opacity:.85;}
+.cluster-price.low{background:var(--tier-low);}
+.cluster-price.mid{background:var(--tier-mid);}
+.cluster-price.high{background:var(--tier-high);}
 
 .leaflet-popup-content-wrapper{border-radius:14px !important;box-shadow:var(--shadow-lg) !important;
   background:var(--surface) !important;color:var(--text) !important;border:1px solid var(--border);padding:4px;}
@@ -1352,11 +1368,11 @@ svg{display:block;}
       <button class="icon-btn" id="tour-btn" data-i18n-aria="tourBtnAria" data-i18n-title="tourBtnTitle" aria-label="Aide / visite guidée" title="Comment ça marche ?">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 1.5-1.5 2-2.25 2.75S12 13.5 12 14.5"></path><circle cx="12" cy="17.6" r=".6" fill="currentColor" stroke="none"></circle></svg>
       </button>
-      <button class="icon-btn" id="settings-btn" data-i18n-aria="settingsBtnAria" data-i18n-title="settingsBtnAria" aria-label="Paramètres" title="Paramètres">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-      </button>
       <button class="icon-btn" id="theme-btn" data-i18n-aria="themeBtnAria" aria-label="Changer le thème">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"></path></svg>
+      </button>
+      <button class="icon-btn" id="settings-btn" data-i18n-aria="settingsBtnAria" data-i18n-title="settingsBtnAria" aria-label="Paramètres" title="Paramètres">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
       </button>
     </div>
   </header>
@@ -2270,8 +2286,20 @@ svg{display:block;}
 
     const clusterGroup = L.markerClusterGroup({
       maxClusterRadius: 56, disableClusteringAtZoom: 15, showCoverageOnHover: false, spiderfyOnMaxZoom: true,
-      iconCreateFunction: (cl) => { const n = cl.getChildCount(); const s = n<10?40:n<30?48:58;
-        return L.divIcon({ html:`<div class="cluster" style="width:${s}px;height:${s}px;">${n}</div>`, className:'cluster-icon', iconSize:[s,s] }); }
+      iconCreateFunction: (cl) => {
+        const n = cl.getChildCount(); const s = n<10?40:n<30?48:58;
+        const prices = cl.getAllChildMarkers().map(m => m.stationPrice).filter(v => v != null);
+        const lo = Math.min(...prices), hi = Math.max(...prices);
+        const tier = tierOf(lo);
+        const rangeTxt = hi > lo ? `${fmt2(lo)}–${fmt2(hi)}` : fmt2(lo);
+        return L.divIcon({
+          html: `<div class="cluster-wrap">
+              <div class="cluster ${tier}" style="width:${s}px;height:${s}px;">${n}</div>
+              <div class="cluster-price ${tier}"><span class="eur">€</span>${rangeTxt}</div>
+            </div>`,
+          className:'cluster-icon', iconSize:[0,0], iconAnchor:[0,0]
+        });
+      }
     });
     map.addLayer(clusterGroup);
     const topGroup = L.layerGroup().addTo(map);
@@ -2871,6 +2899,7 @@ svg{display:block;}
                    : rank ? `<span class="rk">${rank}</span>` : '';
         const icon=L.divIcon({ html:`<div class="pin ${tier} ${best?'best':''} ${rank>1?'top':''} ${sel?'is-sel':''}">${star}${fmt2(price)}</div>`, className:'pin-icon', iconSize:[0,0], iconAnchor:[0,0] });
         const m=L.marker([s.lat,s.lng],{icon, zIndexOffset: rank?1100-rank*10:0}).on('click',()=>selectStation(s.id));
+        m.stationPrice=price; // lu par iconCreateFunction du cluster pour colorer/afficher la fourchette du groupe
         const gmaps=`https://www.google.com/maps/dir/?api=1&destination=${s.lat},${s.lng}`;
         const waze=`https://waze.com/ul?ll=${s.lat},${s.lng}&navigate=yes`;
         const arrow='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>';
