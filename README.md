@@ -40,6 +40,8 @@ Application 100% statique (un seul fichier `index.html`, aucun backend, aucune d
 
 ### Favoris
 - **Mettre une station en favori** (icône étoile sur sa fiche ou son info-bulle sur la carte) pour la retrouver facilement, y compris lors de la planification d'un itinéraire : en ajoutant une étape, les favoris correspondant à la recherche apparaissent en premier, repérables par leur icône étoile. Les favoris sont mémorisés sur l'appareil (aucune donnée envoyée).
+- **Gestion des favoris dans Paramètres** (⚙️) : une section dédiée liste toutes les stations mises en favori (enseigne, ville, prix actuels), avec possibilité de les retirer directement depuis cette liste.
+- **Alertes de prix** (optionnel, désactivé par défaut) : un interrupteur dans cette même section vérifie, pendant que l'app est ouverte, si le prix d'une station favorite a changé, et affiche un badge visuel (ancien prix → nouveau prix, coloré selon hausse/baisse) directement dans la liste. Purement visuel dans l'app — aucune notification système, aucune demande d'autorisation au navigateur.
 
 ### Carte
 - **Sélecteur de type de carte** (haut à droite) : style Minimum (moderne et épuré, noms de villages à tous les zooms, numéros d'autoroute/départementales) ou Satellite, mémorisé d'une visite à l'autre.
