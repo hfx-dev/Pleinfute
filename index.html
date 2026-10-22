@@ -1388,7 +1388,7 @@ svg{display:block;}
       Plein Futé
     </div>
     <div class="natlow">
-      <span class="natlow-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 17l5 0 0 -5"></path><path d="M21 17l-7.5 -7.5l-4 4l-6 -6"></path></svg> <span data-i18n="natlowLabel">Moins chers en France</span></span>
+      <span class="natlow-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 17l5 0 0 -5"></path><path d="M21 17l-7.5 -7.5l-4 4l-6 -6"></path></svg> <span id="natlow-label-text">Moins chers en France</span></span>
       <div class="natlow-pills" id="natlow-pills"><span class="natlow-loading" data-i18n="natlowLoading">Chargement…</span></div>
     </div>
     <div class="header-right">
@@ -1670,7 +1670,7 @@ svg{display:block;}
        statut...) appelle t() directement à chaque rendu. */
     const I18N = {
       fr: {
-        natlowLabel:`Moins chers en France`, loading:`Chargement…`,
+        natlowLabel:`Moins chers en France`, natlowLabelEs:`Moins chers en Espagne`, loading:`Chargement…`,
         tourBtnTitle:`Comment ça marche ?`, tourBtnAria:`Aide / visite guidée`,
         settingsBtnAria:`Paramètres`, themeBtnAria:`Changer le thème`,
         sheetHandleAria:`Agrandir/réduire la liste`,
@@ -1788,7 +1788,7 @@ svg{display:block;}
         natPopupCheapest:`{fuel} le moins cher de France`,
       },
       en: {
-        natlowLabel:`Cheapest in France`, loading:`Loading…`,
+        natlowLabel:`Cheapest in France`, natlowLabelEs:`Cheapest in Spain`, loading:`Loading…`,
         tourBtnTitle:`How does it work?`, tourBtnAria:`Help / guided tour`,
         settingsBtnAria:`Settings`, themeBtnAria:`Toggle theme`,
         sheetHandleAria:`Expand/collapse the list`,
@@ -1906,7 +1906,7 @@ svg{display:block;}
         natPopupCheapest:`Cheapest {fuel} in France`,
       },
       es: {
-        natlowLabel:`Lo más barato en Francia`, loading:`Cargando…`,
+        natlowLabel:`Lo más barato en Francia`, natlowLabelEs:`Lo más barato en España`, loading:`Cargando…`,
         tourBtnTitle:`¿Cómo funciona?`, tourBtnAria:`Ayuda / visita guiada`,
         settingsBtnAria:`Ajustes`, themeBtnAria:`Cambiar el tema`,
         sheetHandleAria:`Ampliar/reducir la lista`,
@@ -2188,6 +2188,7 @@ svg{display:block;}
 
     /* Détecte le pays à partir d'une position : géocodage inverse Nominatim en priorité,
        repli sur une zone géographique approximative si ça échoue. */
+    function inSpainBbox(lat,lng){ return lat<43.0 && lat>35.9 && lng>-9.5 && lng<3.4; }
     async function detectCountry(lat,lng){
       try{
         const url=`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=jsonv2&zoom=3`;
@@ -2197,7 +2198,7 @@ svg{display:block;}
         if(cc==='de' && hasTankerkoenigKey()) return 'de';
         if(cc==='fr') return 'fr';
       }catch(e){}
-      if(lat<43.0 && lat>35.9 && lng>-9.5 && lng<3.4) return 'es';
+      if(inSpainBbox(lat,lng)) return 'es';
       if(hasTankerkoenigKey() && lat>47.2 && lat<55.1 && lng>5.8 && lng<15.1) return 'de';
       return 'fr';
     }
@@ -2522,6 +2523,7 @@ svg{display:block;}
       $('api-status').innerHTML = `<span class="spin"></span> ${t('apiStatusLoading')}`;
       try{
         state.country = await detectCountry(state.userLat, state.userLng);
+        updateNatlowForCountry(state.country);
         if(state.country==='es'){
           const all=await fetchSpainStations();
           state.stations=all.map(s=>({ ...s, distance:dist(state.userLat,state.userLng,s.lat,s.lng) }))
@@ -2763,15 +2765,28 @@ svg{display:block;}
           (data.results||[]).forEach(r=>{ if(r.geom&&r.geom.lat!=null) found[r.id]=r; });
         }catch(e){}
       }));
+      // L'API française ne couvre que la France : pour les tronçons du trajet qui
+      // traversent l'Espagne, on complète avec la liste nationale MITECO (déjà en
+      // cache), filtrée autour de ces échantillons du couloir.
+      let esNearRoute=[];
+      const esSamples=samples.filter(pt=>inSpainBbox(pt[0],pt[1]));
+      if(esSamples.length){
+        try{
+          const allEs=await fetchSpainStations();
+          esNearRoute=allEs.filter(s=>esSamples.some(pt=>dist(s.lat,s.lng,pt[0],pt[1])<=radius));
+        }catch(e){}
+      }
       const stepIdx=Math.max(1,Math.floor(coords.length/800));
       const ds=[], dsCum=[];
       for(let i=0;i<coords.length;i+=stepIdx){ ds.push(coords[i]); dsCum.push(cum[i]); }
       const stations=[];
-      Object.values(found).forEach(r=>{
-        const s=mapRecord(r,0); let best=1e9,bi=0;
+      const keepIfOnCorridor=(s)=>{
+        let best=1e9,bi=0;
         for(let i=0;i<ds.length;i++){ const d=dist(s.lat,s.lng,ds[i][0],ds[i][1]); if(d<best){best=d;bi=i;} }
         if(best<=CORRIDOR){ s.detour=best; s.progress=dsCum[bi]; s.distance=best; stations.push(s); }
-      });
+      };
+      Object.values(found).forEach(r=>keepIfOnCorridor(mapRecord(r,0)));
+      esNearRoute.forEach(s=>keepIfOnCorridor({...s}));
       state.stations=stations; applyFilters();
       $('api-status').innerHTML=`<span class="dot"></span> ${stations.length} ${stationWord(stations.length)} ${t('onRouteSuffix')}`;
     }
@@ -3391,6 +3406,7 @@ svg{display:block;}
       lang=l;
       try{ localStorage.setItem('lang', l); }catch(e){}
       applyI18n();
+      refreshNatlowLabel();
       $('search-overlay-title').textContent = state.mode==='route' ? t('searchTitleRoute') : t('searchTitleDefault');
       applyFilters();
       renderNatlowPills();
@@ -3558,32 +3574,66 @@ svg{display:block;}
       overlayBox.innerHTML=html || `<span class="natlow-loading">${t('natlowUnavailable')}</span>`;
       overlayBox.querySelectorAll('.np[data-nat]').forEach(btn=>btn.addEventListener('click',()=>{ showNatLow(+btn.dataset.nat, btn); closeNatlowOverlay(); }));
     }
-    (async function fetchNatLow(){
+    // Le panneau "moins chers" ne gère que France/Espagne : il bascule sur
+    // l'Espagne dès que la position de l'utilisateur y est détectée (fetchStations),
+    // en recalculant min/max à partir de la liste nationale MITECO déjà en cache.
+    let natlowCountry='fr';
+    function refreshNatlowLabel(){
+      $('natlow-label-text').textContent = natlowCountry==='es' ? t('natlowLabelEs') : t('natlowLabel');
+    }
+    function updateNatlowForCountry(country){
+      const c = country==='es' ? 'es' : 'fr';
+      if(c===natlowCountry) return;
+      natlowCountry=c;
+      refreshNatlowLabel();
+      natlowLastRow=null; renderNatlowPills();
+      fetchNatLow();
+    }
+    async function fetchNatLow(){
       try{
-        const select=NAT.map(([_,f],i)=>`min(${f}) as m${i},max(${f}) as x${i}`).join(',');
-        const url=`${API_BASE}?select=${encodeURIComponent(select)}&limit=1`;
-        const data=await (await fetch(url)).json();
-        natlowLastRow=(data.results&&data.results[0])||{};
+        if(natlowCountry==='es'){
+          const list=await fetchSpainStations();
+          const row={};
+          NAT.forEach(([code],i)=>{
+            const vals=list.map(s=>s.prices[code]).filter(v=>v!=null);
+            if(vals.length){ row['m'+i]=Math.min(...vals); row['x'+i]=Math.max(...vals); }
+          });
+          natlowLastRow=row;
+        } else {
+          const select=NAT.map(([_,f],i)=>`min(${f}) as m${i},max(${f}) as x${i}`).join(',');
+          const url=`${API_BASE}?select=${encodeURIComponent(select)}&limit=1`;
+          const data=await (await fetch(url)).json();
+          natlowLastRow=(data.results&&data.results[0])||{};
+        }
         renderNatlowPills();
       }catch(e){
         natlowLastRow=null;
         const msg=`<span class="natlow-loading">${t('natlowUnavailable')}</span>`;
         $('natlow-pills').innerHTML=msg; $('natlow-overlay-pills').innerHTML=msg;
       }
-    })();
+    }
+    fetchNatLow();
 
     let natMarker=null;
     async function showNatLow(i, btn){
       const [code, field]=NAT[i];
       if(btn){ btn.classList.add('loading'); btn.disabled=true; }
       try{
-        const url=`${API_BASE}?where=${encodeURIComponent(field+' is not null')}&order_by=${encodeURIComponent(field)}&limit=1`;
-        const data=await (await fetch(url)).json();
-        const rec=(data.results&&data.results[0]);
-        if(!rec||!rec.geom||rec.geom.lat==null) throw new Error('no station');
-        const st=mapRecord(rec, 'nat');
+        let st, price;
+        if(natlowCountry==='es'){
+          const list=await fetchSpainStations();
+          let best=null;
+          list.forEach(s=>{ const v=s.prices[code]; if(v!=null && (best==null || v<best.prices[code])) best=s; });
+          if(!best) throw new Error('no station');
+          st=best; price=best.prices[code];
+        } else {
+          const url=`${API_BASE}?where=${encodeURIComponent(field+' is not null')}&order_by=${encodeURIComponent(field)}&limit=1`;
+          const data=await (await fetch(url)).json();
+          const rec=(data.results&&data.results[0]);
+          if(!rec||!rec.geom||rec.geom.lat==null) throw new Error('no station');
+          st=mapRecord(rec, 'nat'); price=rec[field];
+        }
         if(natMarker){ natMarker.remove(); natMarker=null; }
-        const price=rec[field];
         const icon=L.divIcon({ html:`<div class="pin low best"><svg class="bolt" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 3 14h7l-1 8 11-13h-7l1-7z"/></svg>${fmt2(price)}</div>`, className:'pin-icon', iconSize:[0,0], iconAnchor:[0,0] });
         natMarker=L.marker([st.lat, st.lng], { icon, zIndexOffset:1500 }).addTo(map);
         const gmaps=`https://www.google.com/maps/dir/?api=1&destination=${st.lat},${st.lng}`;
@@ -3591,7 +3641,7 @@ svg{display:block;}
         const arrow='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>';
         natMarker.bindPopup(`<div class="pop-name">${esc(st.brandName)} — ${esc(t('natPopupCheapest',{fuel:fuelLabel(code)}))}</div>
           <div class="pop-addr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${esc(st.address||st.city)}, ${esc(st.city)}</div>
-          <div class="pop-prices">${Object.entries(st.prices).map(([f,pv])=>`<span class="pop-tag ${FUEL_FIELDS[f]===field?'hl':''}">${esc(fuelLabel(f))} <b>${fmt(pv)} €</b></span>`).join('')}</div>
+          <div class="pop-prices">${Object.entries(st.prices).map(([f,pv])=>`<span class="pop-tag ${(natlowCountry==='es'?f===code:FUEL_FIELDS[f]===field)?'hl':''}">${esc(fuelLabel(f))} <b>${fmt(pv)} €</b></span>`).join('')}</div>
           <div class="pop-routes">
             <a class="rbtn gmaps" href="${gmaps}" target="_blank" rel="noopener noreferrer">${arrow}Maps</a>
             <a class="rbtn waze" href="${waze}" target="_blank" rel="noopener noreferrer">${arrow}Waze</a>

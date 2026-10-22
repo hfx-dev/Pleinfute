@@ -11,10 +11,10 @@ Application 100% statique (un seul fichier `index.html`, aucun backend, aucune d
 
 ### Données et prix
 - **Prix en temps réel** — données issues de l'API officielle du gouvernement français (`data.economie.gouv.fr`, prix des carburants en flux instantané) : Gazole (sélectionné par défaut), SP95, SP98, E10, E85, GPLc.
-- **Espagne** — détection automatique du pays via la position : en Espagne, les stations viennent de l'API officielle du MITECO (gouvernement espagnol). E10/E85 n'existent pas sur le marché espagnol et n'apparaissent donc pas pour ces stations.
+- **Espagne** — détection automatique du pays via la position : en Espagne, les stations viennent de l'API officielle du MITECO (gouvernement espagnol), couvrant l'intégralité du pays. E10/E85 n'existent pas sur le marché espagnol et n'apparaissent donc pas pour ces stations.
 - **Allemagne** — stations issues de [Tankerkönig](https://creativecommons.tankerkoenig.de/) (nécessite une clé API gratuite). SP98/E85/GPLc ne sont pas couverts par cette API et n'apparaissent donc pas pour ces stations.
-- Le mode Itinéraire et les prix nationaux les moins chers restent pour l'instant limités à la France.
-- **Prix les moins chers de France** — pour chaque carburant, la fourchette de prix nationale (du moins cher au plus cher, ex. « 1,654–1,892 € »), affichée en continu dans l'en-tête sur desktop, et accessible via le bouton dédié dans la barre du haut sur mobile (ouvre un panneau superposé à la carte juste sous l'en-tête) ; cliquer sur un prix centre la carte sur la station correspondante, où qu'elle soit en France.
+- **Prix les moins chers (France ou Espagne)** — pour chaque carburant, la fourchette de prix nationale (du moins cher au plus cher, ex. « 1,654–1,892 € »), affichée en continu dans l'en-tête sur desktop, et accessible via le bouton dédié dans la barre du haut sur mobile (ouvre un panneau superposé à la carte juste sous l'en-tête) ; cliquer sur un prix centre la carte sur la station correspondante. Le panneau bascule automatiquement sur l'Espagne dès que la position détectée s'y trouve.
+- **Mode Itinéraire en Espagne** — un trajet qui traverse l'Espagne y recherche aussi les stations les moins chères le long du couloir (couplé à la recherche habituelle côté France), pas seulement au départ/à l'arrivée.
 - **Détection de marque** — reconnaissance automatique de l'enseigne (TotalEnergies, Leclerc, Intermarché, Carrefour, Shell, BP, etc.) à partir de l'adresse.
 
 ### Localisation et recherche
