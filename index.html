@@ -1088,25 +1088,26 @@ svg{display:block;}
 .rmk.end{background:var(--tier-high);}
 .rmk.via{background:var(--tier-mid);font-size:12px;}
 .cluster-icon{}
-/* Un cluster = plusieurs stations regroupées : coloré selon le prix le
-   moins cher du groupe (comme le "pin" individuel), avec une pastille
-   affichant la fourchette de prix du groupe à côté, pour voir d'un coup
-   d'œil si la zone est plutôt chère ou pas cher avant de zoomer dessus. */
-.cluster-wrap{position:absolute;left:0;top:0;transform:translate(-50%,-50%);
-  display:flex;align-items:center;gap:6px;cursor:pointer;}
-.cluster{display:flex;align-items:center;justify-content:center;border-radius:50%;
-  color:#fff;font-family:var(--font-display);font-weight:700;font-size:14px;flex-shrink:0;
-  border:3px solid var(--surface);box-shadow:var(--shadow-md);}
-.cluster.low{background:var(--tier-low);}
-.cluster.mid{background:var(--tier-mid);}
-.cluster.high{background:var(--tier-high);}
-.cluster-price{display:flex;align-items:center;gap:3px;padding:5px 11px;border-radius:999px;
-  color:#fff;font-weight:700;font-size:12px;white-space:nowrap;box-shadow:var(--shadow-md);
-  font-variant-numeric:tabular-nums;}
-.cluster-price .eur{font-size:10px;font-weight:700;opacity:.85;}
-.cluster-price.low{background:var(--tier-low);}
-.cluster-price.mid{background:var(--tier-mid);}
-.cluster-price.high{background:var(--tier-high);}
+/* Un cluster = plusieurs stations regroupées : une seule pastille capsule,
+   fond clair et bordure colorée selon le prix le moins cher du groupe
+   (vert pas cher, orange moyen, rouge cher), avec le nombre de stations
+   dans un rond à gauche et le prix (+ fourchette si elle existe) à droite. */
+.cluster-pill{position:absolute;left:0;top:0;transform:translate(-50%,-50%);
+  display:flex;align-items:center;gap:8px;background:var(--surface);
+  border:2.5px solid var(--tier-mid);border-radius:999px;padding:4px 14px 4px 4px;
+  box-shadow:var(--shadow-md);cursor:pointer;}
+.cluster-pill.low{border-color:var(--tier-low);}
+.cluster-pill.mid{border-color:var(--tier-mid);}
+.cluster-pill.high{border-color:var(--tier-high);}
+.cluster-count{display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  width:34px;height:34px;border-radius:50%;background:var(--primary);color:#fff;
+  font-family:var(--font-display);font-weight:700;font-size:13px;}
+.cluster-pill-text{display:flex;flex-direction:column;line-height:1.2;}
+.cluster-pill-price{font-weight:800;font-size:14px;color:var(--text);font-variant-numeric:tabular-nums;white-space:nowrap;}
+.cluster-pill-range{font-size:10.5px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap;}
+.cluster-pill.low .cluster-pill-range{color:var(--tier-low);}
+.cluster-pill.mid .cluster-pill-range{color:var(--tier-mid);}
+.cluster-pill.high .cluster-pill-range{color:var(--tier-high);}
 
 .leaflet-popup-content-wrapper{border-radius:14px !important;box-shadow:var(--shadow-lg) !important;
   background:var(--surface) !important;color:var(--text) !important;border:1px solid var(--border);padding:4px;}
@@ -2287,15 +2288,18 @@ svg{display:block;}
     const clusterGroup = L.markerClusterGroup({
       maxClusterRadius: 56, disableClusteringAtZoom: 15, showCoverageOnHover: false, spiderfyOnMaxZoom: true,
       iconCreateFunction: (cl) => {
-        const n = cl.getChildCount(); const s = n<10?40:n<30?48:58;
+        const n = cl.getChildCount();
         const prices = cl.getAllChildMarkers().map(m => m.stationPrice).filter(v => v != null);
         const lo = Math.min(...prices), hi = Math.max(...prices);
         const tier = tierOf(lo);
-        const rangeTxt = hi > lo ? `${fmt2(lo)}–${fmt2(hi)}` : fmt2(lo);
+        const rangeHtml = hi > lo ? `<span class="cluster-pill-range">${fmt2(lo)}–${fmt2(hi)} €</span>` : '';
         return L.divIcon({
-          html: `<div class="cluster-wrap">
-              <div class="cluster ${tier}" style="width:${s}px;height:${s}px;">${n}</div>
-              <div class="cluster-price ${tier}"><span class="eur">€</span>${rangeTxt}</div>
+          html: `<div class="cluster-pill ${tier}">
+              <span class="cluster-count">${n}</span>
+              <span class="cluster-pill-text">
+                <span class="cluster-pill-price">${fmt2(lo)} €</span>
+                ${rangeHtml}
+              </span>
             </div>`,
           className:'cluster-icon', iconSize:[0,0], iconAnchor:[0,0]
         });
