@@ -25,7 +25,7 @@ Application 100% statique (un seul fichier `index.html`, aucun backend, aucune d
 - **Recherche de ville par préfixe** sur la base officielle des communes de France (`geo.api.gouv.fr`, Etalab) : couvre les ~35 000 communes, y compris les plus petits villages, avec Nominatim (OpenStreetMap) en repli automatique si besoin.
 
 ### Recherche « Autour de moi »
-- **Actualisation automatique en se déplaçant sur la carte** : à partir d'un certain niveau de zoom (ville/quartier), déplacer ou zoomer la carte relance la recherche autour du nouveau centre visible, sans recentrer la carte ni interrompre une zone dessinée à la main. Un bouton « Rechercher ici » (façon Park4night) apparaît pendant le déplacement pour forcer la recherche immédiatement sans attendre.
+- **Actualisation automatique en se déplaçant sur la carte** : à partir d'un certain niveau de zoom (ville/quartier), déplacer ou zoomer la carte relance la recherche autour du nouveau centre visible, sans recentrer la carte ni interrompre une zone dessinée à la main. Un bouton « Rechercher ici » (façon Park4night) apparaît pendant le déplacement pour forcer la recherche immédiatement sans attendre — il affiche un état de chargement explicite pendant la requête, ignore les clics répétés (pas de spam réseau), et prévient clairement en cas d'échec tout en restant cliquable pour réessayer.
 - Rayon de recherche réglable (5 / 10 / 25 km).
 - **Zone dessinée à la main** sur la carte (cercle, rectangle ou polygone) comme alternative au rayon — disponible sur desktop.
 - Tri des résultats par prix, distance ou nom.
