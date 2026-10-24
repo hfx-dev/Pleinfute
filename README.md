@@ -33,8 +33,9 @@ Application 100% statique (un seul fichier `index.html`, aucun backend, aucune d
 
 ### Mode Itinéraire
 - Planification d'un trajet avec **étapes multiples** (départ, arrivée, arrêts intermédiaires), avec autocomplétion d'adresse sur chaque étape — y compris en choisissant directement une **station mise en favori** (voir ci-dessous) comme étape.
+- **Utiliser ma position actuelle comme point de départ** : un bouton à côté du champ « Départ » remplit directement l'étape avec la position actuelle, sans avoir à la rechercher.
 - Calcul du trajet via **OSRM** (avec **Valhalla** en option), affichage de la distance et de la durée.
-- **Options avancées** : éviter les péages, les autoroutes, les ferries ; consommation du véhicule personnalisable pour estimer le **coût carburant + péages** du trajet.
+- **Options avancées** : éviter les péages, les autoroutes, les ferries ; consommation du véhicule personnalisable pour estimer le **coût carburant + péages** du trajet ; **type de véhicule** (léger, camping-car, poids lourd) pour affiner l'estimation des péages, dont le tarif varie fortement selon la classe du véhicule.
 - Recherche automatique des **stations les moins chères sur le trajet** (couloir de ~10 km autour de l'itinéraire), triées dans l'ordre de passage du départ à l'arrivée.
 - **Partage vers Google Maps** : une fois l'itinéraire calculé, un bouton envoie le trajet complet (départ, étapes — y compris les stations choisies — et arrivée) vers Google Maps pour la navigation réelle, via le partage natif du téléphone si disponible.
 

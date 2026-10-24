@@ -1041,10 +1041,10 @@ svg{display:block;}
 .style-opt.sel{border-color:var(--primary);color:var(--primary);}
 .style-opt.sel .sw{box-shadow:0 0 0 2px var(--primary);}
 .lang-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;}
-.lang-opt{padding:10px 4px;border-radius:12px;border:2px solid var(--border);font-size:12.5px;font-weight:700;
+.lang-opt,.vehicle-opt{padding:10px 4px;border-radius:12px;border:2px solid var(--border);font-size:12.5px;font-weight:700;
   color:var(--muted);background:var(--surface-2);text-align:center;}
-.lang-opt:hover{background:var(--surface-3);}
-.lang-opt.sel{border-color:var(--primary);color:var(--primary);background:var(--surface);}
+.lang-opt:hover,.vehicle-opt:hover{background:var(--surface-3);}
+.lang-opt.sel,.vehicle-opt.sel{border-color:var(--primary);color:var(--primary);background:var(--surface);}
 .detail-row{display:flex;align-items:center;gap:10px;padding:7px 2px;}
 .detail-row svg{width:17px;height:17px;flex-shrink:0;color:var(--muted);}
 .detail-row .dr-label{flex:1;font-size:13px;font-weight:600;color:var(--text);}
@@ -1159,6 +1159,12 @@ svg{display:block;}
   color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;}
 .rstop-del:hover{background:var(--tier-high);color:#fff;}
 .rstop-del svg{width:14px;height:14px;}
+.rstop-mylocation{flex-shrink:0;width:26px;height:26px;border-radius:8px;border:none;background:var(--surface-3);
+  color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s,color .15s;}
+.rstop-mylocation:hover{background:var(--primary);color:#fff;}
+.rstop-mylocation svg{width:14px;height:14px;}
+.rstop-mylocation.loading{opacity:.55;pointer-events:none;}
+.rstop-mylocation .spin.sm{border-color:var(--border);border-top-color:var(--primary);}
 .rstop-sugg{position:absolute;top:calc(100% + 5px);left:0;right:0;z-index:60;background:var(--surface);
   border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow-lg);overflow:hidden;display:none;}
 .rstop-sugg.show{display:block;}
@@ -1203,6 +1209,7 @@ svg{display:block;}
 .modal-close svg{width:15px;height:15px;}
 .opt-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 2px;
   border-bottom:1px solid var(--border);cursor:pointer;}
+.opt-block{padding:11px 2px;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:9px;}
 .opt-lbl{font-size:14.5px;font-weight:600;color:var(--text);}
 .switch{position:relative;width:42px;height:24px;flex-shrink:0;}
 .switch input{position:absolute;opacity:0;width:100%;height:100%;margin:0;cursor:pointer;z-index:2;}
@@ -1639,7 +1646,15 @@ svg{display:block;}
       <span class="opt-lbl"><span data-i18n="optConsoLabel">Consommation</span><br><span class="opt-sub" data-i18n="optConsoSub">pour le coût carburant (L/100 km)</span></span>
       <input type="number" class="opt-num" id="opt-conso" min="3" max="25" step="0.1" value="6.5">
     </label>
-    <div class="modal-note" data-i18n="optsNote">Les options s'appliquent au prochain calcul d'itinéraire. Péages estimés (~7,7 c€/km, véhicule classe 1).</div>
+    <div class="opt-block">
+      <span class="opt-lbl"><span data-i18n="optVehicleLabel">Type de véhicule</span><br><span class="opt-sub" data-i18n="optVehicleSub">pour le coût des péages, qui varie selon le véhicule</span></span>
+      <div class="lang-grid" id="vehicle-grid" style="margin-bottom:0">
+        <button type="button" class="vehicle-opt" data-vehicle="light" data-i18n="vehicleLight">Léger</button>
+        <button type="button" class="vehicle-opt" data-vehicle="motorhome" data-i18n="vehicleMotorhome">Camping-car</button>
+        <button type="button" class="vehicle-opt" data-vehicle="truck" data-i18n="vehicleTruck">Poids lourd</button>
+      </div>
+    </div>
+    <div class="modal-note" data-i18n="optsNote">Les options s'appliquent au prochain calcul d'itinéraire. Péages estimés selon le type de véhicule choisi (classe 1/2/3 FR).</div>
     <button class="route-go" id="opts-ok">OK</button>
   </div>
 </div>
@@ -1697,6 +1712,7 @@ svg{display:block;}
         searchPlaceholder:`Rechercher une ville…`, searchClearAria:`Effacer`,
         noCityFound:`Aucune ville trouvée`, noResult:`Aucun résultat`,
         stopDeparture:`Départ…`, stopArrival:`Arrivée…`, stopWaypoint:`Étape…`,
+        useMyLocationTitle:`Utiliser ma position actuelle`, myLocationLabel:`Ma position actuelle`,
         routeAddStop:`Ajouter une étape`, routeOptsBtn:`Options`, routeGoBtn:`Calculer l'itinéraire`,
         removeStopAria:`Supprimer l'étape`,
         fuelFieldLabel:`Type de carburant`,
@@ -1726,7 +1742,9 @@ svg{display:block;}
         optsTitle:`Options de trajet`, optsCloseAria:`Fermer`,
         optTolls:`Éviter les péages`, optHighways:`Éviter les autoroutes`, optFerries:`Éviter les ferries`,
         optConsoLabel:`Consommation`, optConsoSub:`pour le coût carburant (L/100 km)`,
-        optsNote:`Les options s'appliquent au prochain calcul d'itinéraire. Péages estimés (~7,7 c€/km, véhicule classe 1).`,
+        optVehicleLabel:`Type de véhicule`, optVehicleSub:`pour le coût des péages, qui varie selon le véhicule`,
+        vehicleLight:`Léger`, vehicleMotorhome:`Camping-car`, vehicleTruck:`Poids lourd`,
+        optsNote:`Les options s'appliquent au prochain calcul d'itinéraire. Péages estimés selon le type de véhicule choisi (classe 1/2/3 FR).`,
         shareTitle:`Partager la station`, shareCloseAria:`Fermer`,
         shareCopyBtn:`Copier le message`, shareCopiedBtn:`Copié !`,
         shareBtnTitle:`Partager cette station`, shareBtnTitleShort:`Partager`,
@@ -1815,6 +1833,7 @@ svg{display:block;}
         searchPlaceholder:`Search for a city…`, searchClearAria:`Clear`,
         noCityFound:`No city found`, noResult:`No results`,
         stopDeparture:`Starting point…`, stopArrival:`Destination…`, stopWaypoint:`Stop…`,
+        useMyLocationTitle:`Use my current location`, myLocationLabel:`My current location`,
         routeAddStop:`Add a stop`, routeOptsBtn:`Options`, routeGoBtn:`Calculate route`,
         removeStopAria:`Remove this stop`,
         fuelFieldLabel:`Fuel type`,
@@ -1844,7 +1863,9 @@ svg{display:block;}
         optsTitle:`Route options`, optsCloseAria:`Close`,
         optTolls:`Avoid tolls`, optHighways:`Avoid highways`, optFerries:`Avoid ferries`,
         optConsoLabel:`Fuel consumption`, optConsoSub:`for the fuel cost (L/100 km)`,
-        optsNote:`Options apply to the next route calculation. Estimated tolls (~7.7 c€/km, class 1 vehicle).`,
+        optVehicleLabel:`Vehicle type`, optVehicleSub:`for the toll cost, which varies by vehicle`,
+        vehicleLight:`Light`, vehicleMotorhome:`Motorhome`, vehicleTruck:`Truck`,
+        optsNote:`Options apply to the next route calculation. Estimated tolls based on the chosen vehicle type (FR class 1/2/3).`,
         shareTitle:`Share this station`, shareCloseAria:`Close`,
         shareCopyBtn:`Copy message`, shareCopiedBtn:`Copied!`,
         shareBtnTitle:`Share this station`, shareBtnTitleShort:`Share`,
@@ -1933,6 +1954,7 @@ svg{display:block;}
         searchPlaceholder:`Buscar una ciudad…`, searchClearAria:`Borrar`,
         noCityFound:`Ninguna ciudad encontrada`, noResult:`Sin resultados`,
         stopDeparture:`Punto de partida…`, stopArrival:`Destino…`, stopWaypoint:`Parada…`,
+        useMyLocationTitle:`Usar mi ubicación actual`, myLocationLabel:`Mi ubicación actual`,
         routeAddStop:`Añadir una parada`, routeOptsBtn:`Opciones`, routeGoBtn:`Calcular ruta`,
         removeStopAria:`Eliminar esta parada`,
         fuelFieldLabel:`Tipo de combustible`,
@@ -1962,7 +1984,9 @@ svg{display:block;}
         optsTitle:`Opciones de ruta`, optsCloseAria:`Cerrar`,
         optTolls:`Evitar peajes`, optHighways:`Evitar autopistas`, optFerries:`Evitar ferris`,
         optConsoLabel:`Consumo`, optConsoSub:`para el coste de combustible (L/100 km)`,
-        optsNote:`Las opciones se aplican al próximo cálculo de ruta. Peajes estimados (~7,7 c€/km, vehículo clase 1).`,
+        optVehicleLabel:`Tipo de vehículo`, optVehicleSub:`para el coste de los peajes, que varía según el vehículo`,
+        vehicleLight:`Ligero`, vehicleMotorhome:`Autocaravana`, vehicleTruck:`Camión`,
+        optsNote:`Las opciones se aplican al próximo cálculo de ruta. Peajes estimados según el tipo de vehículo elegido (clase 1/2/3 FR).`,
         shareTitle:`Compartir esta gasolinera`, shareCloseAria:`Cerrar`,
         shareCopyBtn:`Copiar mensaje`, shareCopiedBtn:`¡Copiado!`,
         shareBtnTitle:`Compartir esta gasolinera`, shareBtnTitleShort:`Compartir`,
@@ -2063,7 +2087,7 @@ svg{display:block;}
       userLat: null, userLng: null, country: 'fr', radius: 25, fuel: 'Gazole', sort: 'price',
       stations: [], filtered: [], zoneLayer: null, selectedId: null, priceLow: 0, priceHigh: 0,
       mode: 'around', stops: null, routeCoords: null,
-      routeOpts: { tolls:false, highways:false, ferries:false, conso:6.5 }, lastRoute:null,
+      routeOpts: { tolls:false, highways:false, ferries:false, conso:6.5, vehicle:'light' }, lastRoute:null,
       favorites: loadFavorites()
     };
 
@@ -2598,11 +2622,13 @@ svg{display:block;}
             <input class="rstop-input" type="text" autocomplete="off" placeholder="${ph}" value="${val}" data-i="${i}">
             <div class="rstop-sugg"></div>
           </div>
+          ${st.role==='start' ? `<button class="rstop-mylocation" data-i="${i}" title="${esc(t('useMyLocationTitle'))}" aria-label="${esc(t('useMyLocationTitle'))}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"></circle><path d="M12 2v3M12 19v3M2 12h3M19 12h3"></path><circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none"></circle></svg></button>` : ''}
           ${st.role==='via' ? `<button class="rstop-del" data-i="${i}" aria-label="${esc(t('removeStopAria'))}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>` : ''}
         </div>`;
       }).join('');
       wrap.querySelectorAll('.rstop-input').forEach(inp=>attachStopAC(inp));
       wrap.querySelectorAll('.rstop-del').forEach(b=>b.addEventListener('click',()=>{ state.stops.splice(+b.dataset.i,1); renderStops(); }));
+      wrap.querySelectorAll('.rstop-mylocation').forEach(b=>b.addEventListener('click',()=>useMyLocationForStop(+b.dataset.i)));
       updateGoState();
     }
     function updateGoState(){
@@ -2610,6 +2636,32 @@ svg{display:block;}
       $('route-go').disabled=!valid;
     }
     function addStop(){ state.stops.splice(state.stops.length-1,0,{role:'via',label:'',lat:null,lng:null}); renderStops(); }
+
+    // Remplit une étape (le départ en pratique) avec la position actuelle du
+    // téléphone/ordinateur, sans passer par la recherche de ville : pratique
+    // pour démarrer un itinéraire "d'où je suis maintenant".
+    function useMyLocationForStop(i){
+      if(!navigator.geolocation){ geoToast(t('geoToastNotSupported'), 'err'); return; }
+      const st=state.stops[i]; if(!st) return;
+      const btn=document.querySelector(`.rstop-mylocation[data-i="${i}"]`);
+      if(btn){ btn.classList.add('loading'); btn.innerHTML=`<span class="spin sm"></span>`; btn.disabled=true; }
+      navigator.geolocation.getCurrentPosition(
+        (pos)=>{
+          state.userLat=pos.coords.latitude; state.userLng=pos.coords.longitude;
+          setLocPref('on'); setGeoStatus('granted');
+          setUser(state.userLat, state.userLng, pos.coords.accuracy||0);
+          st.lat=state.userLat; st.lng=state.userLng; st.label=t('myLocationLabel');
+          renderStops();
+        },
+        (err)=>{
+          if(btn){ btn.classList.remove('loading'); btn.disabled=false; btn.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"></circle><path d="M12 2v3M12 19v3M2 12h3M19 12h3"></path><circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none"></circle></svg>`; }
+          const msg = err.code===1 ? t('geoToastDenied') : err.code===3 ? t('geoToastTimeout') : t('geoToastUnavailable');
+          geoToast(msg, 'err');
+          if(err.code===1) setGeoStatus('denied');
+        },
+        { enableHighAccuracy:true, timeout:10000, maximumAge:60000 }
+      );
+    }
 
     // Stations favorites dont le nom/la ville correspond à la requête (vide = toutes),
     // affichées en premier dans la liste, pour les retrouver sans retaper leur adresse.
@@ -2664,7 +2716,10 @@ svg{display:block;}
       inp.addEventListener('blur',()=>setTimeout(()=>box.classList.remove('show'),160));
     }
 
-    const TOLL_RATE=0.077; /* €/km — moyenne autoroutes FR classe 1 (estimation) */
+    /* €/km — moyennes autoroutes FR par classe de péage (estimation) :
+       classe 1 véhicule léger, classe 2 camping-car/intermédiaire (hauteur >2m),
+       classe 3/4 poids lourd. */
+    const TOLL_RATES = { light:0.077, motorhome:0.108, truck:0.169 };
     function renderRouteInfo(){
       $('route-share-gmaps').hidden=!state.lastRoute;
       if(!state.lastRoute){ return; }
@@ -2681,7 +2736,8 @@ svg{display:block;}
         parts.push(`${t('routeFuelCost')} <b>${fc.toFixed(0)} €</b> <span style="color:var(--faint)">${t('routeFuelCostSub',{fuel:fuelLabel(state.fuel), avg:fmt(avg), conso})}</span>`);
       }
       if(tollKm!=null){
-        const tc=tollKm*TOLL_RATE;
+        const tollRate=TOLL_RATES[o.vehicle]||TOLL_RATES.light;
+        const tc=tollKm*tollRate;
         parts.push(`${t('routeTollCost')} <b>${tc<0.5?'0':tc.toFixed(0)} €</b>${tollKm>0?` <span style="color:var(--faint)">${t('routeTollCostSub',{km:tollKm.toFixed(0)})}</span>`:''}`);
       }
       if(parts.length) html+=`<span class="route-costs">${parts.join('<br>')}</span>`;
@@ -2926,6 +2982,7 @@ svg{display:block;}
     function openOpts(){
       for(const [k,id] of Object.entries(OPT_IDS)) $(id).checked=state.routeOpts[k];
       $('opt-conso').value=state.routeOpts.conso||6.5;
+      document.querySelectorAll('#vehicle-grid .vehicle-opt').forEach(b=>b.classList.toggle('sel', b.dataset.vehicle===(state.routeOpts.vehicle||'light')));
       optsOverlay.hidden=false;
     }
     function closeOpts(){
@@ -2933,11 +2990,19 @@ svg{display:block;}
       const before=JSON.stringify(routeKeys.map(k=>state.routeOpts[k]));
       for(const [k,id] of Object.entries(OPT_IDS)) state.routeOpts[k]=$(id).checked;
       state.routeOpts.conso=Math.min(25,Math.max(3,parseFloat($('opt-conso').value)||6.5));
+      const selVehicle=document.querySelector('#vehicle-grid .vehicle-opt.sel');
+      state.routeOpts.vehicle=selVehicle ? selVehicle.dataset.vehicle : 'light';
       optsOverlay.hidden=true; syncOptCount();
+      // Le type de véhicule et la consommation ne changent que l'estimation affichée
+      // (pas le tracé ni le couloir de recherche) : pas besoin de relancer tout le
+      // calcul d'itinéraire, un simple rafraîchissement de l'affichage suffit.
       const changed=JSON.stringify(routeKeys.map(k=>state.routeOpts[k]))!==before;
       if(changed && state.routeCoords && !$('route-go').disabled) computeRoute();
       else if(state.mode==='route' && state.routeCoords) renderRouteInfo();
     }
+    document.querySelectorAll('#vehicle-grid .vehicle-opt').forEach(b=>b.addEventListener('click',()=>{
+      document.querySelectorAll('#vehicle-grid .vehicle-opt').forEach(x=>x.classList.toggle('sel', x===b));
+    }));
     $('route-opts-btn').addEventListener('click',openOpts);
     $('opts-close').addEventListener('click',closeOpts);
     $('opts-ok').addEventListener('click',closeOpts);
